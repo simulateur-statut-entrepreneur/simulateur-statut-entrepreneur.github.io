@@ -100,14 +100,35 @@
 }
 
 
-/* Applique cela au conteneur principal de ton simulateur */
-.simulator-container {
+.main-simulator-card {
     background: #ffffff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05); /* Ombre très douce */
-    border: 1px solid #e2e8f0;
-    margin-top: 20px;
+    border-radius: 24px; /* Coins très arrondis pour le côté moderne */
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); /* Ombre portée pour décoller l'outil du fond */
+    border: 1px solid #edf2f7;
+    max-width: 650px; /* On resserre pour que ce soit plus compact */
+    margin: 0 auto; /* Centrage horizontal */
+    position: relative;
+    z-index: 10; /* Passe au-dessus des éventuels éléments de fond */
+}
+
+/* On donne du peps au bouton Analyser */
+.btn-analyze {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    padding: 16px;
+    border-radius: 12px;
+    font-weight: 700;
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    margin-top: 15px;
+}
+
+.btn-analyze:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
 }
     </style>
 </head>
@@ -360,6 +381,7 @@
 </body>
 
 </html>
+
 
 
 

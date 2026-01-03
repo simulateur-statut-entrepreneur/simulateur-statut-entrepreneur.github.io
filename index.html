@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Expert Business - Recommandation Premium</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        :root { --primary: #4e73df; --success: #1cc88a; --warning: #f6c23e; --danger: #e74a3b; --text-dark: #2d3748; --bg-body: #f8f9fc; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); margin: 0; padding: 0; }
+        .container { max-width: 1000px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px; box-sizing: border-box; }
+        
+        @media (min-width: 600px) { body { padding: 40px 20px; } .container { min-height: auto; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); } }
+
+        /* HEADER & INPUTS */
+        .config-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; }
+        .toggle-group { background: #f1f5f9; padding: 4px; border-radius: 12px; display: flex; flex: 1; }
+        .toggle-btn { flex: 1; padding: 10px; border: none; background: none; cursor: pointer; border-radius: 9px; font-weight: 600; color: #718096; font-size: 13px; }
+        .toggle-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .field-label { display: block; font-size: 11px; font-weight: 800; color: #a0aec0; margin-bottom: 5px; text-transform: uppercase; }
+        input { width: 100%; padding: 16px; border: 2px solid #edf2f7; border-radius: 14px; font-size: 16px; font-weight: 600; box-sizing: border-box; background: #f8fafc; margin-bottom: 12px; }
+        .btn-analyze { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%; transition: transform 0.2s; }
+        .btn-analyze:active { transform: scale(0.98); }
+
+        /* RESULTS AREA */
+        #resultats { margin-top: 30px; display: none; }
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
+        
+        .result-block { padding: 20px 10px; border-radius: 20px; border: 2px solid #edf2f7; text-align: center; position: relative; }
+        .best-block { background: #4e73df; color: #ffffff; border-color: #2e59d9; box-shadow: 0 8px 20px rgba(78, 115, 223, 0.2); }
+        .tjm-block { background: #ffffff; color: #2c5282; border: 2px solid #ebf8ff; }
+        
+        .recommend-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(28, 200, 138, 0.3); }
+
+        .tjm-input { width: 45px !important; border: 1px solid var(--primary); border-radius: 6px; text-align: center; font-weight: bold; padding: 2px; font-size: 14px; }
+
+        /* BLOCS INFOS */
+        .costs-card { background: #fff5f5; border-left: 5px solid var(--danger); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
+        .costs-list { list-style: none; padding: 0; margin: 10px 0; font-size: 13px; }
+        .costs-list li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed rgba(231, 74, 59, 0.2); }
+
+        .impact-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; margin-bottom: 25px; }
+        .impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .impact-item b { display: block; color: #a0aec0; font-size: 9px; text-transform: uppercase; margin-bottom: 2px; }
+        .impact-item span { font-size: 12px; font-weight: 600; color: #4a5568; }
+
+        /* SELECTEUR DE STATUTS MIS EN VALEUR */
+        .status-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; align-items: end; }
+        .stat-card { background: #f8fafc; border: 1px solid #edf2f7; padding: 15px 5px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .stat-card.selected { 
+            border: 3px solid var(--primary); 
+            background: #fff; 
+            transform: translateY(-5px) scale(1.05); 
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08); 
+            z-index: 10;
+        }
+        .stat-card.recommended-outline::after { content: "TOP"; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; font-size: 8px; font-weight: 900; padding: 2px 8px; border-radius: 10px; }
+        .stat-card h5 { margin: 0 0 5px; font-size: 11px; color: #a0aec0; text-transform: uppercase; }
+        .stat-card div { font-weight: 800; font-size: 14px; color: #2d3748; }
+        .stat-card.selected div { color: var(--primary); }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="font-family:Poppins; text-align:center; margin-bottom:5px;">💎 Expert Business</h2>
+    <p style="text-align:center; color:#718096; font-size:13px; margin-bottom:30px;">Optimisation fiscale & Pilotage TNS</p>
+
+    <div class="config-bar">
+        <div class="toggle-group">
+            <button class="toggle-btn active" onclick="setType('service')" id="btn-service">Prestation</button>
+            <button class="toggle-btn" onclick="setType('commerce')" id="btn-commerce">Commerce</button>
+        </div>
+        <div style="font-size:12px; font-weight:bold; display:flex; align-items:center; gap:8px;">
+            <span style="color:#718096">ACRE</span>
+            <input type="checkbox" id="acre_check" style="width:20px; height:20px; accent-color:var(--success)">
+        </div>
+    </div>
+
+    <div class="form-container">
+        <label class="field-label">Chiffre d'Affaires HT (€/an)</label>
+        <input type="text" id="ca_display" placeholder="Ex: 100 000" oninput="handleMask(this, 'ca')">
+        <input type="hidden" id="ca">
+
+        <label class="field-label">Revenu Net Cible (€/mois)</label>
+        <input type="text" id="rev_display" placeholder="Ex: 8 000" oninput="handleMask(this, 'rev')">
+        <input type="hidden" id="rev">
+
+        <label class="field-label">Frais Matériel/Logiciels (€/mois)</label>
+        <input type="text" id="frais_display" placeholder="Ex: 300" oninput="handleMask(this, 'frais')">
+        <input type="hidden" id="frais">
+
+        <button class="btn-analyze" onclick="analyser()">Analyser la rentabilité</button>
+    </div>
+
+    <div id="resultats">
+        <div class="res-grid">
+            <div id="bloc_resume" class="result-block best-block"></div>
+            <div id="bloc_tjm" class="result-block tjm-block"></div>
+        </div>
+        
+        <div id="bloc_costs"></div>
+        <div id="bloc_impact"></div>
+
+        <p style="font-size:11px; font-weight:800; color:#a0aec0; text-transform:uppercase; margin:20px 0 10px; text-align:center;">--- Comparaison des statuts ---</p>
+        <div id="liste_statuts" class="status-selector"></div>
+    </div>
+</div>
+
+<script>
+    let typeAct = 'service';
+    let currentMode = 'CA';
+    let globalResults = null;
+    let selectedStatus = "";
+    let recommendedStatus = "";
+
+    function handleMask(el, id) {
+        let v = el.value.replace(/\D/g, '');
+        document.getElementById(id).value = v;
+        el.value = v ? Number(v).toLocaleString('fr-FR') : '';
+        if(id === 'ca') { document.getElementById('rev_display').value = ''; currentMode = 'CA'; }
+        if(id === 'rev') { document.getElementById('ca_display').value = ''; currentMode = 'REV'; }
+    }
+
+    function setType(t) {
+        typeAct = t;
+        document.getElementById('btn-service').classList.toggle('active', t==='service');
+        document.getElementById('btn-commerce').classList.toggle('active', t==='commerce');
+    }
+
+    function analyser() {
+        const caVal = parseFloat(document.getElementById('ca').value) || 0;
+        const revVal = parseFloat(document.getElementById('rev').value) || 0;
+        const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+        const acre = document.getElementById('acre_check').checked;
+
+        const config = {
+            "Micro": { tx: typeAct==='service'?0.211:0.123, max: typeAct==='service'?77700:188700, fix: 800 },
+            "EURL": { tx: 0.45, max: 99999999, fix: 2800 },
+            "SASU": { tx: 0.75, max: 99999999, fix: 3200 }
+        };
+
+        globalResults = {};
+        let top = "";
+        let bestSc = (currentMode === 'CA') ? -1 : Infinity;
+
+        for(let n in config) {
+            let s = config[n];
+            let res = { ca: 0, net: 0, ok: true, fraisFixes: s.fix };
+            let t = (acre && n === "Micro") ? s.tx / 2 : s.tx;
+            let gainAcre = (acre && n !== "Micro") ? 2600 : 0;
+            let totalFrais = fraisPerso + s.fix;
+
+            if(currentMode === 'CA') {
+                res.ca = caVal;
+                res.net = n === "Micro" ? (caVal*(1-t)-totalFrais)/12 : ((caVal-totalFrais)/(1+t) + gainAcre/12)/12;
+                res.ok = caVal <= s.max;
+                if(res.ok && res.net > bestSc) { bestSc = res.net; top = n; }
+            } else {
+                res.net = revVal;
+                res.ca = n === "Micro" ? (revVal*12 + totalFrais)/(1-t) : (revVal*12 - gainAcre)*(1+t) + totalFrais;
+                res.ok = res.ca <= s.max;
+                if(res.ok && res.ca < bestSc) { bestSc = res.ca; top = n; }
+            }
+            globalResults[n] = res;
+        }
+        recommendedStatus = top;
+        selectedStatus = top;
+        updateUI(18);
+    }
+
+    function updateUI(jours) {
+        const data = globalResults[selectedStatus];
+        document.getElementById('resultats').style.display = 'block';
+
+        // Bloc Principal avec Badge si recommandé
+        let badge = (selectedStatus === recommendedStatus) ? `<div class="recommend-badge">Conseillé</div>` : "";
+        document.getElementById('bloc_resume').innerHTML = `
+            ${badge}
+            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL ESTIMÉ</span>
+            <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
+            <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
+
+        // TJM
+        let tjm = data.ca / 12 / jours;
+        document.getElementById('bloc_tjm').innerHTML = `
+            <span style="font-size:10px; font-weight:800; color:#a0aec0;">TJM CIBLE</span>
+            <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(tjm).toLocaleString()} €</div>
+            <div style="font-size:11px;">pour <input type="number" value="${jours}" class="tjm-input" oninput="updateUI(this.value)"> j/mois</div>`;
+
+        // Frais Cachés
+        let expert = selectedStatus === "Micro" ? 0 : 1800;
+        document.getElementById('bloc_costs').innerHTML = `
+            <div class="costs-card">
+                <h4 style="margin:0; font-size:14px; color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> Frais de structure inclus</h4>
+                <ul class="costs-list">
+                    <li><span>Comptabilité & Banque</span><b>${expert + 240} €/an</b></li>
+                    <li><span>Assurance & CFE</span><b>800 €/an</b></li>
+                </ul>
+                <div style="font-size:11px; opacity:0.8;">Déjà déduits de votre net mensuel ci-dessus.</div>
+            </div>`;
+
+        // Impacts
+        const impacts = {
+            "Micro": ["TNS (Indépendant)", "Limitée", "Simplifiée", "Complexe (Sans fiche de paie)"],
+            "EURL": ["TNS (Indépendant)", "Moyenne (Prévoyance à prévoir)", "Réelle (Expert-Comptable)", "Standard (Après 2 bilans)"],
+            "SASU": ["Assimilé-Salarié", "Élevée (Cadre)", "Lourde (Fiches de paie)", "Plus facile (Fiches de paie)"]
+        };
+        const imp = impacts[selectedStatus];
+        document.getElementById('bloc_impact').innerHTML = `
+            <div class="impact-card">
+                <h4 style="margin:0 0 12px; font-size:14px;"><i class="fa-solid fa-user-shield"></i> Vie du gérant en ${selectedStatus}</h4>
+                <div class="impact-grid">
+                    <div class="impact-item"><b>Protection Sociale</b><span>${imp[0]}</span></div>
+                    <div class="impact-item"><b>Retraite</b><span>${imp[1]}</span></div>
+                    <div class="impact-item"><b>Gestion</b><span>${imp[2]}</span></div>
+                    <div class="impact-item"><b>Crédit / Location</b><span>${imp[3]}</span></div>
+                </div>
+            </div>`;
+
+        // Sélecteur de statuts (Bas)
+        let html = "";
+        for(let n in globalResults) {
+            let r = globalResults[n];
+            let isRec = (n === recommendedStatus);
+            html += `
+                <div class="stat-card ${n===selectedStatus?'selected':''} ${isRec?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(${jours});">
+                    <h5>${n}</h5>
+                    <div>${r.ok ? Math.round(r.net).toLocaleString()+'€' : 'HORS SEUIL'}</div>
+                </div>`;
+        }
+        document.getElementById('liste_statuts').innerHTML = html;
+    }
+</script>
+</body>
+</html>

@@ -332,7 +332,6 @@
         typeAct = t;
         document.getElementById('btn-service').classList.toggle('active', t==='service');
         document.getElementById('btn-commerce').classList.toggle('active', t==='commerce');
-        // Mise à jour des plafonds Micro selon le type
         config.Micro.tx = (t === 'service') ? 0.211 : 0.123;
         config.Micro.max = (t === 'service') ? 77700 : 188700;
     }
@@ -417,11 +416,29 @@
                     <li><span>Banque, Assurance & CFE</span><b>${selectedStatus === "Micro" ? '800 €/an' : '1200 €/an'}</b></li>
                 </ul>
             </div>
-            <button class="btn-detail" onclick="toggleDetails()" id="btn-detail-toggle" style="background:none; border:2px solid var(--primary); color:var(--primary); padding:10px; border-radius:12px; width:100%; font-weight:700; cursor:pointer; margin-top:10px;">
+            <button class="btn-detail" onclick="toggleDetails()" id="btn-detail-toggle" style="background:none; border:2px solid var(--primary); color:var(--primary); padding:10px; border-radius:12px; width:100%; font-weight:700; cursor:pointer; margin: 10px 0;">
                 <i class="fa-solid fa-circle-info"></i> Voir le détail du calcul
             </button>
-            <div id="detail-panel" style="display:none; background:#fff; border:1px solid #edf2f7; border-radius:12px; padding:15px; margin-top:10px;">
+            <div id="detail-panel" style="display:none; background:#fff; border:1px solid #edf2f7; border-radius:12px; padding:15px; margin-bottom:20px;">
                 <div id="detail-content"></div>
+            </div>`;
+
+        // Bloc Vie du Gérant (RÉINTÉGRÉ)
+        const impacts = {
+            "Micro": ["TNS (Indépendant)", "Limitée", "Simplifiée", "Complexe (Sans fiche de paie)"],
+            "EURL": ["TNS (Indépendant)", "Moyenne (Prévoyance à prévoir)", "Réelle (Expert-Comptable)", "Standard (Après 2 bilans)"],
+            "SASU": ["Assimilé-Salarié", "Élevée (Cadre)", "Lourde (Fiches de paie)", "Plus facile (Fiches de paie)"]
+        };
+        const imp = impacts[selectedStatus];
+        document.getElementById('bloc_impact').innerHTML = `
+            <div class="impact-card">
+                <h4 style="margin:0 0 12px; font-size:14px;"><i class="fa-solid fa-user-shield"></i> Vie du gérant en ${selectedStatus}</h4>
+                <div class="impact-grid">
+                    <div class="impact-item"><b>Protection Sociale</b><span>${imp[0]}</span></div>
+                    <div class="impact-item"><b>Retraite</b><span>${imp[1]}</span></div>
+                    <div class="impact-item"><b>Gestion</b><span>${imp[2]}</span></div>
+                    <div class="impact-item"><b>Crédit / Location</b><span>${imp[3]}</span></div>
+                </div>
             </div>`;
 
         // Sélecteur de statuts
@@ -435,9 +452,6 @@
                 </div>`;
         }
         document.getElementById('liste_statuts').innerHTML = htmlStatuts;
-        
-        // Cacher le panneau détails lors du changement de statut
-        if(document.getElementById('detail-panel')) document.getElementById('detail-panel').style.display = 'none';
     }
 
     // 5. FONCTIONS DÉTAILS
@@ -456,12 +470,12 @@
         
         let charges = (selectedStatus === "Micro") ? (caAnnuel * (document.getElementById('acre_check').checked ? s.tx/2 : s.tx)) : ((caAnnuel - s.structure - fraisPersoAnnuel) * (s.tx / (1+s.tx)));
 
-        let html = `<h4 style="margin:0 0 10px 0; font-size:14px;">Détail annuel (${selectedStatus})</h4>`;
-        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9;"><span>CA HT</span><span>+ ${caAnnuel.toLocaleString()} €</span></div>`;
-        if(s.creation > 0) html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Ouverture</span><span>- ${s.creation} €</span></div>`;
-        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais structure</span><span>- ${s.structure.toLocaleString()} €</span></div>`;
-        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Charges sociales</span><span>- ${Math.round(charges).toLocaleString()} €</span></div>`;
-        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-weight:800; padding:10px 0; color:var(--primary);"><span>NET DISPONIBLE</span><span>${Math.round(data.net*12).toLocaleString()} €/an</span></div>`;
+        let html = `<h4 style="margin:0 0 10px 0; font-size:14px; color:var(--primary);">Détail annuel (${selectedStatus})</h4>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9;"><span>Chiffre d'Affaires HT</span><span>+ ${caAnnuel.toLocaleString()} €</span></div>`;
+        if(s.creation > 0) html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais d'ouverture</span><span>- ${s.creation} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais de structure & Perso</span><span>- ${(s.structure + fraisPersoAnnuel).toLocaleString()} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Cotisations sociales (URSSAF)</span><span>- ${Math.round(charges).toLocaleString()} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-weight:800; padding:10px 0; color:var(--primary); font-size:14px;"><span>NET ANNUEL DISPONIBLE</span><span>${Math.round(data.net*12).toLocaleString()} €</span></div>`;
         
         document.getElementById('detail-content').innerHTML = html;
     }
@@ -469,6 +483,7 @@
 </body>
 
 </html>
+
 
 
 

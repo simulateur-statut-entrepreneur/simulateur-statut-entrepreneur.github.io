@@ -132,6 +132,52 @@
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
 }
+
+        .btn-detail {
+    background: none;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    width: 100%;
+    margin: 15px 0;
+    transition: all 0.3s;
+    font-size: 14px;
+}
+.btn-detail:hover { background: #ebf8ff; }
+
+.detail-panel {
+    display: none;
+    background: #fdfdfd;
+    border: 1px solid #edf2f7;
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 20px;
+    animation: fadeIn 0.4s ease;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 13px;
+}
+.detail-row.total {
+    border-top: 2px solid #edf2f7;
+    border-bottom: none;
+    font-weight: 800;
+    font-size: 15px;
+    color: var(--primary);
+    margin-top: 10px;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
     </style>
 </head>
 <body>
@@ -318,7 +364,7 @@
             <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
             <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
 
-        // CORRECTION DU BUG TJM ICI :
+        
         let tjmValue = Math.round(data.ca / 12 / jours);
         document.getElementById('bloc_tjm').innerHTML = `
             <span style="font-size:10px; font-weight:800; color:#a0aec0;">TJM CIBLE</span>
@@ -353,6 +399,13 @@
         };
         const imp = impacts[selectedStatus];
         document.getElementById('bloc_impact').innerHTML = `
+            <button class="btn-detail" onclick="toggleDetails()" id="btn-detail-toggle">
+            <i class="fa-solid fa-circle-info"></i> Voir le détail du calcul
+            </button>
+            <div id="detail-panel" class="detail-panel">
+                <div id="detail-content"></div>
+            </div>
+            
             <div class="impact-card">
                 <h4 style="margin:0 0 12px; font-size:14px;"><i class="fa-solid fa-user-shield"></i> Vie du gérant en ${selectedStatus}</h4>
                 <div class="impact-grid">
@@ -376,10 +429,54 @@
         }
         document.getElementById('liste_statuts').innerHTML = html;
     }
+
+
+    function toggleDetails() {
+    const panel = document.getElementById('detail-panel');
+    const btn = document.getElementById('btn-detail-toggle');
+    const isVisible = panel.style.display === 'block';
+    
+    panel.style.display = isVisible ? 'none' : 'block';
+    btn.innerHTML = isVisible ? 
+        '<i class="fa-solid fa-circle-info"></i> Voir le détail du calcul' : 
+        '<i class="fa-solid fa-chevron-up"></i> Masquer le détail';
+    
+    if (!isVisible) generateDetailedBreakdown();
+}
+
+function generateDetailedBreakdown() {
+    const data = globalResults[selectedStatus];
+    const caAnnuel = Math.round(data.ca);
+    const frais = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+    const structure = selectedStatus === "Micro" ? 800 + 240 : 1800 + 800 + 240;
+    
+    // Calcul des cotisations selon le statut
+    let chargesAnnuel = 0;
+    if (selectedStatus === "Micro") {
+        const acre = document.getElementById('acre_check').checked;
+        const taux = typeAct === 'service' ? 0.211 : 0.123;
+        chargesAnnuel = caAnnuel * (acre ? taux / 2 : taux);
+    } else {
+        const tauxCharges = selectedStatus === "SASU" ? 0.75 : 0.45;
+        // Approximation du calcul inverse des charges
+        chargesAnnuel = (caAnnuel - frais - structure) * (tauxCharges / (1 + tauxCharges));
+    }
+
+    let html = `<h4 style="margin-top:0;">Détail annuel (${selectedStatus})</h4>`;
+    html += `<div class="detail-row"><span>Chiffre d'Affaires HT</span><span>+ ${caAnnuel.toLocaleString()} €</span></div>`;
+    html += `<div class="detail-row"><span>Frais professionnels</span><span>- ${frais.toLocaleString()} €</span></div>`;
+    html += `<div class="detail-row"><span>Frais structure (Compta/Assurance/CFE)</span><span>- ${structure.toLocaleString()} €</span></div>`;
+    html += `<div class="detail-row"><span>Cotisations Sociales (est. 2026)</span><span>- ${Math.round(chargesAnnuel).toLocaleString()} €</span></div>`;
+    html += `<div class="detail-row total"><span>REVENU NET (AVANT IMPÔT)</span><span>${Math.round(data.net * 12).toLocaleString()} €/an</span></div>`;
+    html += `<p style="font-size:11px; color:#718096; margin-top:15px;">* Ce calcul est une estimation basée sur les taux standards 2026. L'impôt sur le revenu n'est pas déduit car il dépend de votre foyer fiscal.</p>`;
+
+    document.getElementById('detail-content').innerHTML = html;
+}
 </script>
 </body>
 
 </html>
+
 
 
 

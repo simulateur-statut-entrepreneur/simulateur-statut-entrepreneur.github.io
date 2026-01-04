@@ -409,16 +409,25 @@
         });
 
         // Frais Cachés
-        let expert = selectedStatus === "Micro" ? 0 : 1800;
+        // On récupère les infos du statut sélectionné depuis la config globale
+        const s = config[selectedStatus];
+        const expert = selectedStatus === "Micro" ? 0 : (selectedStatus === "SASU" ? 2300 : 1800);
+        const banqueAssuranceCFE = selectedStatus === "Micro" ? 800 : 1200;
+        
         document.getElementById('bloc_costs').innerHTML = `
             <div class="costs-card">
-                <h4 style="margin:0; font-size:14px; color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> Frais de structure inclus</h4>
+                <h4 style="margin:0; font-size:14px; color:var(--danger)">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Frais de structure inclus
+                </h4>
                 <ul class="costs-list">
-                    <li><span>Comptabilité & Banque</span><b>${expert + 240} €/an</b></li>
-                    <li><span>Assurance & CFE</span><b>800 €/an</b></li>
+                    <li><span>Ouverture d'entreprise (Greffe, etc.)</span><b>${s.creation > 0 ? s.creation + ' € (1ère fois)' : 'Gratuit'}</b></li>
+                    <li><span>Comptabilité & Paies</span><b>${expert} €/an</b></li>
+                    <li><span>Banque, Assurance & CFE</span><b>${banqueAssuranceCFE} €/an</b></li>
                 </ul>
-                <div style="font-size:11px; opacity:0.8;">Déjà déduits de votre net mensuel ci-dessus.</div>
-            </div>`;
+                <div style="font-size:11px; opacity:0.8; margin-top:8px;">
+                    Déjà déduits de votre net mensuel ci-dessus (lissage annuel).
+                </div>
+            </div>`;;
 
         // Impacts
         const impacts = {
@@ -474,12 +483,14 @@
 }
 
 function generateDetailedBreakdown() {
-    const data = globalResults[selectedStatus];
-    const caAnnuel = Math.round(data.ca);
-    const frais = (parseFloat(document.getElementById('frais').value) || 0) * 12;
-    const structure = selectedStatus === "Micro" ? 800 + 240 : 1800 + 800 + 240;
+    if (!globalResults || !selectedStatus) return;
     
-    // Calcul des cotisations selon le statut
+    const data = globalResults[selectedStatus];
+    const s = config[selectedStatus];
+    const caAnnuel = Math.round(data.ca);
+    const fraisPersoAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+    
+    // Calcul des charges sociales
     let chargesAnnuel = 0;
     if (selectedStatus === "Micro") {
         const acre = document.getElementById('acre_check').checked;
@@ -487,24 +498,45 @@ function generateDetailedBreakdown() {
         chargesAnnuel = caAnnuel * (acre ? taux / 2 : taux);
     } else {
         const tauxCharges = selectedStatus === "SASU" ? 0.75 : 0.45;
-        // Approximation du calcul inverse des charges
-        chargesAnnuel = (caAnnuel - frais - structure) * (tauxCharges / (1 + tauxCharges));
+        // Le net est calculé après déduction des frais de structure et frais perso
+        const baseApresFrais = caAnnuel - s.structure - fraisPersoAnnuel;
+        chargesAnnuel = baseApresFrais > 0 ? baseApresFrais * (tauxCharges / (1 + tauxCharges)) : 0;
     }
 
-    let html = `<h4 style="margin-top:0;">Détail annuel (${selectedStatus})</h4>`;
-    html += `<div class="detail-row"><span>Chiffre d'Affaires HT</span><span>+ ${caAnnuel.toLocaleString()} €</span></div>`;
-    html += `<div class="detail-row"><span>Frais professionnels</span><span>- ${frais.toLocaleString()} €</span></div>`;
-    html += `<div class="detail-row"><span>Frais structure (Compta/Assurance/CFE)</span><span>- ${structure.toLocaleString()} €</span></div>`;
-    html += `<div class="detail-row"><span>Cotisations Sociales (est. 2026)</span><span>- ${Math.round(chargesAnnuel).toLocaleString()} €</span></div>`;
-    html += `<div class="detail-row total"><span>REVENU NET (AVANT IMPÔT)</span><span>${Math.round(data.net * 12).toLocaleString()} €/an</span></div>`;
-    html += `<p style="font-size:11px; color:#718096; margin-top:15px;">* Ce calcul est une estimation basée sur les taux standards 2026. L'impôt sur le revenu n'est pas déduit car il dépend de votre foyer fiscal.</p>`;
+    let html = `<h4 style="margin-top:0; color:var(--primary)">Calcul détaillé : ${selectedStatus}</h4>`;
+    
+    // Étape 1 : Revenus
+    html += `<div class="detail-row"><span>Chiffre d'Affaires HT (Annuel)</span><span style="color:var(--success)">+ ${caAnnuel.toLocaleString()} €</span></div>`;
+    
+    // Étape 2 : Frais de création (si applicable)
+    if (s.creation > 0) {
+        html += `<div class="detail-row" style="background:#fff5f5"><span>Frais d'ouverture (Greffe, Annonce)</span><span style="color:var(--danger)">- ${s.creation} €</span></div>`;
+    }
+
+    // Étape 3 : Frais réels
+    html += `<div class="detail-row"><span>Frais Matériel / Logiciels / Autres</span><span style="color:var(--danger)">- ${fraisPersoAnnuel.toLocaleString()} €</span></div>`;
+    
+    // Étape 4 : Structure
+    html += `<div class="detail-row"><span>Frais de structure (Compta, Banque, CFE)</span><span style="color:var(--danger)">- ${s.structure.toLocaleString()} €</span></div>`;
+    
+    // Étape 5 : Charges sociales
+    html += `<div class="detail-row"><span>Charges Sociales (URSSAF / Prévoyance)</span><span style="color:var(--danger)">- ${Math.round(chargesAnnuel).toLocaleString()} €</span></div>`;
+    
+    // Résultat Final
+    const netAnnuel = Math.round(data.net * 12);
+    html += `<div class="detail-row total"><span>REVENU NET ANNUEL (DISPONIBLE)</span><span>${netAnnuel.toLocaleString()} €</span></div>`;
+    html += `<div class="detail-row total" style="background:var(--primary); color:white; border-radius:8px; padding:10px; margin-top:5px;"><span>SOIT PAR MOIS</span><span>${Math.round(data.net).toLocaleString()} € / mois</span></div>`;
+    
+    html += `<p style="font-size:11px; color:#718096; margin-top:15px; line-height:1.4;">
+        * Ce calcul inclut les barèmes 2026. Le revenu net est le montant avant impôt sur le revenu (le prélèvement à la source dépend de votre foyer fiscal).
+    </p>`;
 
     document.getElementById('detail-content').innerHTML = html;
 }
-</script>
 </body>
 
 </html>
+
 
 
 

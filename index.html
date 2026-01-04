@@ -287,14 +287,39 @@
     </p>
 </div>
 </div>
-
 <script>
+    // 1. VARIABLES GLOBALES ET CONFIGURATION
     let typeAct = 'service';
     let currentMode = 'CA';
     let globalResults = null;
     let selectedStatus = "";
     let recommendedStatus = "";
 
+    const config = {
+        "Micro": { 
+            tx: 0.211, 
+            max: 77700, 
+            structure: 800, 
+            creation: 0, 
+            isSociete: false 
+        },
+        "EURL": { 
+            tx: 0.45, 
+            max: 999999, 
+            structure: 3000, 
+            creation: 500, 
+            isSociete: true 
+        },
+        "SASU": { 
+            tx: 0.75, 
+            max: 999999, 
+            structure: 3500, 
+            creation: 600, 
+            isSociete: true 
+        }
+    };
+
+    // 2. FONCTIONS DE SAISIE
     function handleMask(el, id) {
         let v = el.value.replace(/\D/g, '');
         document.getElementById(id).value = v;
@@ -307,85 +332,62 @@
         typeAct = t;
         document.getElementById('btn-service').classList.toggle('active', t==='service');
         document.getElementById('btn-commerce').classList.toggle('active', t==='commerce');
+        // Mise à jour des plafonds Micro selon le type
+        config.Micro.tx = (t === 'service') ? 0.211 : 0.123;
+        config.Micro.max = (t === 'service') ? 77700 : 188700;
     }
 
+    // 3. LOGIQUE DE CALCUL
     function analyser() {
-    const caVal = parseFloat(document.getElementById('ca').value) || 0;
-    const revVal = parseFloat(document.getElementById('rev').value) || 0;
-    const fraisPersoMensuel = parseFloat(document.getElementById('frais').value) || 0;
-    const fraisPersoAnnuel = fraisPersoMensuel * 12;
-    const acre = document.getElementById('acre_check').checked;
+        const caVal = parseFloat(document.getElementById('ca').value) || 0;
+        const revVal = parseFloat(document.getElementById('rev').value) || 0;
+        const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+        const acre = document.getElementById('acre_check').checked;
 
-    // CONFIGURATION PRÉCISE 2026
-    const config = {
-        "Micro": { 
-            tx: typeAct === 'service' ? 0.211 : 0.123, 
-            max: typeAct === 'service' ? 77700 : 188700, 
-            structure: 1000, // Banque + CFE + Assurance
-            isSociete: false 
-        },
-        "EURL": { 
-            tx: 0.45, 
-            max: 999999, 
-            structure: 3000, // Expert-Comptable (1800) + Banque/Assurance (1200)
-            isSociete: true 
-        },
-        "SASU": { 
-            tx: 0.75, 
-            max: 999999, 
-            structure: 3500, // Expert + Paies + Banque/Assurance
-            isSociete: true 
-        }
-    };
+        globalResults = {};
+        let top = "";
+        let bestSc = (currentMode === 'CA') ? -1 : Infinity;
 
-    globalResults = {};
-    let top = "";
-    let bestSc = (currentMode === 'CA') ? -1 : Infinity;
-
-    for (let n in config) {
-        let s = config[n];
-        let res = { ca: 0, net: 0, ok: true };
-        
-        // Gestion de l'ACRE (Exonération partielle la 1ère année)
-        let tauxCharges = (acre && n === "Micro") ? s.tx / 2 : s.tx;
-        
-        if (currentMode === 'CA') {
-            res.ca = caVal;
-            if (!s.isSociete) {
-                // MICRO : On paye sur le CA, et les frais ne sont pas déductibles
-                let cotisations = caVal * tauxCharges;
-                res.net = (caVal - cotisations - s.structure - fraisPersoAnnuel) / 12;
+        for(let n in config) {
+            let s = config[n];
+            let res = { ca: 0, net: 0, ok: true };
+            let t = (acre && n === "Micro") ? s.tx / 2 : s.tx;
+            
+            if(currentMode === 'CA') {
+                res.ca = caVal;
+                if(!s.isSociete) {
+                    res.net = (caVal * (1 - t) - s.structure - fraisPerso) / 12;
+                } else {
+                    let base = caVal - s.structure - fraisPerso;
+                    res.net = base > 0 ? (base / (1 + t)) / 12 : 0;
+                }
+                res.ok = caVal <= s.max;
+                if(res.ok && res.net > bestSc) { bestSc = res.net; top = n; }
             } else {
-                // SOCIÉTÉ : On paye sur le REVENU (CA - Frais)
-                // Formule : Revenu Net = (CA - Frais de structure - Frais Perso) / (1 + Taux Charges)
-                let baseCalcul = caVal - s.structure - fraisPersoAnnuel;
-                res.net = baseCalcul > 0 ? (baseCalcul / (1 + tauxCharges)) / 12 : 0;
+                res.net = revVal;
+                if(!s.isSociete) {
+                    res.ca = (revVal * 12 + s.structure + fraisPerso) / (1 - t);
+                } else {
+                    res.ca = (revVal * 12 * (1 + t)) + s.structure + fraisPerso;
+                }
+                res.ok = res.ca <= s.max;
+                if(res.ok && res.ca < bestSc) { bestSc = res.ca; top = n; }
             }
-            res.ok = caVal <= s.max;
-            if (res.ok && res.net > bestSc) { bestSc = res.net; top = n; }
-        } else {
-            // Logique inverse (Partir du Net cible)
-            res.net = revVal;
-            let netAnnuel = revVal * 12;
-            if (!s.isSociete) {
-                res.ca = (netAnnuel + s.structure + fraisPersoAnnuel) / (1 - tauxCharges);
-            } else {
-                res.ca = (netAnnuel * (1 + tauxCharges)) + s.structure + fraisPersoAnnuel;
-            }
-            res.ok = res.ca <= s.max;
-            if (res.ok && res.ca < bestSc) { bestSc = res.ca; top = n; }
+            globalResults[n] = res;
         }
-        globalResults[n] = res;
+        recommendedStatus = top;
+        selectedStatus = top;
+        updateUI(18);
     }
-    recommendedStatus = top;
-    selectedStatus = top;
-    updateUI(18);
-}
+
+    // 4. MISE À JOUR DE L'INTERFACE
     function updateUI(jours) {
+        if(!globalResults) return;
         const data = globalResults[selectedStatus];
+        const s = config[selectedStatus];
         document.getElementById('resultats').style.display = 'block';
 
-        // Bloc Principal
+        // Bloc Résumé
         let badge = (selectedStatus === recommendedStatus) ? `<div class="recommend-badge">Conseillé</div>` : "";
         document.getElementById('bloc_resume').innerHTML = `
             ${badge}
@@ -393,150 +395,81 @@
             <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
             <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
 
-        
+        // Bloc TJM (Correction Focus)
         let tjmValue = Math.round(data.ca / 12 / jours);
         document.getElementById('bloc_tjm').innerHTML = `
             <span style="font-size:10px; font-weight:800; color:#a0aec0;">TJM CIBLE</span>
             <div style="font-size:24px; font-weight:800; margin:5px 0;"><span id="tjm_display">${tjmValue.toLocaleString()}</span> €</div>
             <div style="font-size:11px;">pour <input type="number" id="input_jours" value="${jours}" class="tjm-input"> j/mois</div>`;
 
-        // On ajoute l'écouteur après la création du HTML mais on ne relance pas updateUI entièrement
-        const inputJours = document.getElementById('input_jours');
-        inputJours.addEventListener('input', (e) => {
-            const newJours = parseFloat(e.target.value) || 1;
-            const newTjm = Math.round(data.ca / 12 / newJours);
-            document.getElementById('tjm_display').innerText = newTjm.toLocaleString();
+        document.getElementById('input_jours').addEventListener('input', (e) => {
+            const j = parseFloat(e.target.value) || 1;
+            document.getElementById('tjm_display').innerText = Math.round(data.ca / 12 / j).toLocaleString();
         });
 
-        // Frais Cachés
-        // On récupère les infos du statut sélectionné depuis la config globale
-        const s = config[selectedStatus];
-        const expert = selectedStatus === "Micro" ? 0 : (selectedStatus === "SASU" ? 2300 : 1800);
-        const banqueAssuranceCFE = selectedStatus === "Micro" ? 800 : 1200;
-        
+        // Bloc Frais
         document.getElementById('bloc_costs').innerHTML = `
             <div class="costs-card">
-                <h4 style="margin:0; font-size:14px; color:var(--danger)">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Frais de structure inclus
-                </h4>
+                <h4 style="margin:0; font-size:14px; color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> Frais de structure inclus</h4>
                 <ul class="costs-list">
-                    <li><span>Ouverture d'entreprise (Greffe, etc.)</span><b>${s.creation > 0 ? s.creation + ' € (1ère fois)' : 'Gratuit'}</b></li>
-                    <li><span>Comptabilité & Paies</span><b>${expert} €/an</b></li>
-                    <li><span>Banque, Assurance & CFE</span><b>${banqueAssuranceCFE} €/an</b></li>
+                    <li><span>Ouverture d'entreprise</span><b>${s.creation > 0 ? s.creation + ' € (1ère fois)' : 'Gratuit'}</b></li>
+                    <li><span>Comptabilité & Paies</span><b>${selectedStatus === "Micro" ? '0 €' : (selectedStatus === "SASU" ? '2300 €/an' : '1800 €/an')}</b></li>
+                    <li><span>Banque, Assurance & CFE</span><b>${selectedStatus === "Micro" ? '800 €/an' : '1200 €/an'}</b></li>
                 </ul>
-                <div style="font-size:11px; opacity:0.8; margin-top:8px;">
-                    Déjà déduits de votre net mensuel ci-dessus (lissage annuel).
-                </div>
-            </div>`;;
-
-        // Impacts
-        const impacts = {
-            "Micro": ["TNS (Indépendant)", "Limitée", "Simplifiée", "Complexe (Sans fiche de paie)"],
-            "EURL": ["TNS (Indépendant)", "Moyenne (Prévoyance à prévoir)", "Réelle (Expert-Comptable)", "Standard (Après 2 bilans)"],
-            "SASU": ["Assimilé-Salarié", "Élevée (Cadre)", "Lourde (Fiches de paie)", "Plus facile (Fiches de paie)"]
-        };
-        const imp = impacts[selectedStatus];
-        document.getElementById('bloc_impact').innerHTML = `
-            <button class="btn-detail" onclick="toggleDetails()" id="btn-detail-toggle">
-            <i class="fa-solid fa-circle-info"></i> Voir le détail du calcul
-            </button>
-            <div id="detail-panel" class="detail-panel">
-                <div id="detail-content"></div>
             </div>
-            
-            <div class="impact-card">
-                <h4 style="margin:0 0 12px; font-size:14px;"><i class="fa-solid fa-user-shield"></i> Vie du gérant en ${selectedStatus}</h4>
-                <div class="impact-grid">
-                    <div class="impact-item"><b>Protection Sociale</b><span>${imp[0]}</span></div>
-                    <div class="impact-item"><b>Retraite</b><span>${imp[1]}</span></div>
-                    <div class="impact-item"><b>Gestion</b><span>${imp[2]}</span></div>
-                    <div class="impact-item"><b>Crédit / Location</b><span>${imp[3]}</span></div>
-                </div>
+            <button class="btn-detail" onclick="toggleDetails()" id="btn-detail-toggle" style="background:none; border:2px solid var(--primary); color:var(--primary); padding:10px; border-radius:12px; width:100%; font-weight:700; cursor:pointer; margin-top:10px;">
+                <i class="fa-solid fa-circle-info"></i> Voir le détail du calcul
+            </button>
+            <div id="detail-panel" style="display:none; background:#fff; border:1px solid #edf2f7; border-radius:12px; padding:15px; margin-top:10px;">
+                <div id="detail-content"></div>
             </div>`;
 
-        // Sélecteur de statuts (Bas)
-        let html = "";
+        // Sélecteur de statuts
+        let htmlStatuts = "";
         for(let n in globalResults) {
             let r = globalResults[n];
-            let isRec = (n === recommendedStatus);
-            html += `
-                <div class="stat-card ${n===selectedStatus?'selected':''} ${isRec?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(${jours});">
+            htmlStatuts += `
+                <div class="stat-card ${n===selectedStatus?'selected':''} ${n===recommendedStatus?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(${jours});">
                     <h5>${n}</h5>
                     <div>${r.ok ? Math.round(r.net).toLocaleString()+'€' : 'HORS SEUIL'}</div>
                 </div>`;
         }
-        document.getElementById('liste_statuts').innerHTML = html;
+        document.getElementById('liste_statuts').innerHTML = htmlStatuts;
+        
+        // Cacher le panneau détails lors du changement de statut
+        if(document.getElementById('detail-panel')) document.getElementById('detail-panel').style.display = 'none';
     }
 
-
+    // 5. FONCTIONS DÉTAILS
     function toggleDetails() {
-    const panel = document.getElementById('detail-panel');
-    const btn = document.getElementById('btn-detail-toggle');
-    const isVisible = panel.style.display === 'block';
-    
-    panel.style.display = isVisible ? 'none' : 'block';
-    btn.innerHTML = isVisible ? 
-        '<i class="fa-solid fa-circle-info"></i> Voir le détail du calcul' : 
-        '<i class="fa-solid fa-chevron-up"></i> Masquer le détail';
-    
-    if (!isVisible) generateDetailedBreakdown();
-}
-
-function generateDetailedBreakdown() {
-    if (!globalResults || !selectedStatus) return;
-    
-    const data = globalResults[selectedStatus];
-    const s = config[selectedStatus];
-    const caAnnuel = Math.round(data.ca);
-    const fraisPersoAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
-    
-    // Calcul des charges sociales
-    let chargesAnnuel = 0;
-    if (selectedStatus === "Micro") {
-        const acre = document.getElementById('acre_check').checked;
-        const taux = typeAct === 'service' ? 0.211 : 0.123;
-        chargesAnnuel = caAnnuel * (acre ? taux / 2 : taux);
-    } else {
-        const tauxCharges = selectedStatus === "SASU" ? 0.75 : 0.45;
-        // Le net est calculé après déduction des frais de structure et frais perso
-        const baseApresFrais = caAnnuel - s.structure - fraisPersoAnnuel;
-        chargesAnnuel = baseApresFrais > 0 ? baseApresFrais * (tauxCharges / (1 + tauxCharges)) : 0;
+        const panel = document.getElementById('detail-panel');
+        const isVisible = panel.style.display === 'block';
+        panel.style.display = isVisible ? 'none' : 'block';
+        if (!isVisible) generateDetailedBreakdown();
     }
 
-    let html = `<h4 style="margin-top:0; color:var(--primary)">Calcul détaillé : ${selectedStatus}</h4>`;
-    
-    // Étape 1 : Revenus
-    html += `<div class="detail-row"><span>Chiffre d'Affaires HT (Annuel)</span><span style="color:var(--success)">+ ${caAnnuel.toLocaleString()} €</span></div>`;
-    
-    // Étape 2 : Frais de création (si applicable)
-    if (s.creation > 0) {
-        html += `<div class="detail-row" style="background:#fff5f5"><span>Frais d'ouverture (Greffe, Annonce)</span><span style="color:var(--danger)">- ${s.creation} €</span></div>`;
+    function generateDetailedBreakdown() {
+        const data = globalResults[selectedStatus];
+        const s = config[selectedStatus];
+        const caAnnuel = Math.round(data.ca);
+        const fraisPersoAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+        
+        let charges = (selectedStatus === "Micro") ? (caAnnuel * (document.getElementById('acre_check').checked ? s.tx/2 : s.tx)) : ((caAnnuel - s.structure - fraisPersoAnnuel) * (s.tx / (1+s.tx)));
+
+        let html = `<h4 style="margin:0 0 10px 0; font-size:14px;">Détail annuel (${selectedStatus})</h4>`;
+        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9;"><span>CA HT</span><span>+ ${caAnnuel.toLocaleString()} €</span></div>`;
+        if(s.creation > 0) html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Ouverture</span><span>- ${s.creation} €</span></div>`;
+        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais structure</span><span>- ${s.structure.toLocaleString()} €</span></div>`;
+        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Charges sociales</span><span>- ${Math.round(charges).toLocaleString()} €</span></div>`;
+        html += `<div class="detail-row" style="display:flex; justify-content:space-between; font-weight:800; padding:10px 0; color:var(--primary);"><span>NET DISPONIBLE</span><span>${Math.round(data.net*12).toLocaleString()} €/an</span></div>`;
+        
+        document.getElementById('detail-content').innerHTML = html;
     }
-
-    // Étape 3 : Frais réels
-    html += `<div class="detail-row"><span>Frais Matériel / Logiciels / Autres</span><span style="color:var(--danger)">- ${fraisPersoAnnuel.toLocaleString()} €</span></div>`;
-    
-    // Étape 4 : Structure
-    html += `<div class="detail-row"><span>Frais de structure (Compta, Banque, CFE)</span><span style="color:var(--danger)">- ${s.structure.toLocaleString()} €</span></div>`;
-    
-    // Étape 5 : Charges sociales
-    html += `<div class="detail-row"><span>Charges Sociales (URSSAF / Prévoyance)</span><span style="color:var(--danger)">- ${Math.round(chargesAnnuel).toLocaleString()} €</span></div>`;
-    
-    // Résultat Final
-    const netAnnuel = Math.round(data.net * 12);
-    html += `<div class="detail-row total"><span>REVENU NET ANNUEL (DISPONIBLE)</span><span>${netAnnuel.toLocaleString()} €</span></div>`;
-    html += `<div class="detail-row total" style="background:var(--primary); color:white; border-radius:8px; padding:10px; margin-top:5px;"><span>SOIT PAR MOIS</span><span>${Math.round(data.net).toLocaleString()} € / mois</span></div>`;
-    
-    html += `<p style="font-size:11px; color:#718096; margin-top:15px; line-height:1.4;">
-        * Ce calcul inclut les barèmes 2026. Le revenu net est le montant avant impôt sur le revenu (le prélèvement à la source dépend de votre foyer fiscal).
-    </p>`;
-
-    document.getElementById('detail-content').innerHTML = html;
-}
-</Script>  
+</script>
 </body>
 
 </html>
+
 
 
 

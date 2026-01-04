@@ -301,6 +301,8 @@
         }
         recommendedStatus = top;
         selectedStatus = top;
+        
+        // Initialisation de l'affichage
         updateUI(18);
     }
 
@@ -308,7 +310,7 @@
         const data = globalResults[selectedStatus];
         document.getElementById('resultats').style.display = 'block';
 
-        // Bloc Principal avec Badge si recommandé
+        // Bloc Principal
         let badge = (selectedStatus === recommendedStatus) ? `<div class="recommend-badge">Conseillé</div>` : "";
         document.getElementById('bloc_resume').innerHTML = `
             ${badge}
@@ -316,12 +318,20 @@
             <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
             <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
 
-        // TJM
-        let tjm = data.ca / 12 / jours;
+        // CORRECTION DU BUG TJM ICI :
+        let tjmValue = Math.round(data.ca / 12 / jours);
         document.getElementById('bloc_tjm').innerHTML = `
             <span style="font-size:10px; font-weight:800; color:#a0aec0;">TJM CIBLE</span>
-            <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(tjm).toLocaleString()} €</div>
-            <div style="font-size:11px;">pour <input type="number" value="${jours}" class="tjm-input" oninput="updateUI(this.value)"> j/mois</div>`;
+            <div style="font-size:24px; font-weight:800; margin:5px 0;"><span id="tjm_display">${tjmValue.toLocaleString()}</span> €</div>
+            <div style="font-size:11px;">pour <input type="number" id="input_jours" value="${jours}" class="tjm-input"> j/mois</div>`;
+
+        // On ajoute l'écouteur après la création du HTML mais on ne relance pas updateUI entièrement
+        const inputJours = document.getElementById('input_jours');
+        inputJours.addEventListener('input', (e) => {
+            const newJours = parseFloat(e.target.value) || 1;
+            const newTjm = Math.round(data.ca / 12 / newJours);
+            document.getElementById('tjm_display').innerText = newTjm.toLocaleString();
+        });
 
         // Frais Cachés
         let expert = selectedStatus === "Micro" ? 0 : 1800;
@@ -370,6 +380,7 @@
 </body>
 
 </html>
+
 
 
 

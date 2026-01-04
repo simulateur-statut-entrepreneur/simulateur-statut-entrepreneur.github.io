@@ -310,48 +310,77 @@
     }
 
     function analyser() {
-        const caVal = parseFloat(document.getElementById('ca').value) || 0;
-        const revVal = parseFloat(document.getElementById('rev').value) || 0;
-        const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
-        const acre = document.getElementById('acre_check').checked;
+    const caVal = parseFloat(document.getElementById('ca').value) || 0;
+    const revVal = parseFloat(document.getElementById('rev').value) || 0;
+    const fraisPersoMensuel = parseFloat(document.getElementById('frais').value) || 0;
+    const fraisPersoAnnuel = fraisPersoMensuel * 12;
+    const acre = document.getElementById('acre_check').checked;
 
-        const config = {
-            "Micro": { tx: typeAct==='service'?0.211:0.123, max: typeAct==='service'?77700:188700, fix: 800 },
-            "EURL": { tx: 0.45, max: 99999999, fix: 2800 },
-            "SASU": { tx: 0.75, max: 99999999, fix: 3200 }
-        };
-
-        globalResults = {};
-        let top = "";
-        let bestSc = (currentMode === 'CA') ? -1 : Infinity;
-
-        for(let n in config) {
-            let s = config[n];
-            let res = { ca: 0, net: 0, ok: true, fraisFixes: s.fix };
-            let t = (acre && n === "Micro") ? s.tx / 2 : s.tx;
-            let gainAcre = (acre && n !== "Micro") ? 2600 : 0;
-            let totalFrais = fraisPerso + s.fix;
-
-            if(currentMode === 'CA') {
-                res.ca = caVal;
-                res.net = n === "Micro" ? (caVal*(1-t)-totalFrais)/12 : ((caVal-totalFrais)/(1+t) + gainAcre/12)/12;
-                res.ok = caVal <= s.max;
-                if(res.ok && res.net > bestSc) { bestSc = res.net; top = n; }
-            } else {
-                res.net = revVal;
-                res.ca = n === "Micro" ? (revVal*12 + totalFrais)/(1-t) : (revVal*12 - gainAcre)*(1+t) + totalFrais;
-                res.ok = res.ca <= s.max;
-                if(res.ok && res.ca < bestSc) { bestSc = res.ca; top = n; }
-            }
-            globalResults[n] = res;
+    // CONFIGURATION PRÉCISE 2026
+    const config = {
+        "Micro": { 
+            tx: typeAct === 'service' ? 0.211 : 0.123, 
+            max: typeAct === 'service' ? 77700 : 188700, 
+            structure: 1000, // Banque + CFE + Assurance
+            isSociete: false 
+        },
+        "EURL": { 
+            tx: 0.45, 
+            max: 999999, 
+            structure: 3000, // Expert-Comptable (1800) + Banque/Assurance (1200)
+            isSociete: true 
+        },
+        "SASU": { 
+            tx: 0.75, 
+            max: 999999, 
+            structure: 3500, // Expert + Paies + Banque/Assurance
+            isSociete: true 
         }
-        recommendedStatus = top;
-        selectedStatus = top;
-        
-        // Initialisation de l'affichage
-        updateUI(18);
-    }
+    };
 
+    globalResults = {};
+    let top = "";
+    let bestSc = (currentMode === 'CA') ? -1 : Infinity;
+
+    for (let n in config) {
+        let s = config[n];
+        let res = { ca: 0, net: 0, ok: true };
+        
+        // Gestion de l'ACRE (Exonération partielle la 1ère année)
+        let tauxCharges = (acre && n === "Micro") ? s.tx / 2 : s.tx;
+        
+        if (currentMode === 'CA') {
+            res.ca = caVal;
+            if (!s.isSociete) {
+                // MICRO : On paye sur le CA, et les frais ne sont pas déductibles
+                let cotisations = caVal * tauxCharges;
+                res.net = (caVal - cotisations - s.structure - fraisPersoAnnuel) / 12;
+            } else {
+                // SOCIÉTÉ : On paye sur le REVENU (CA - Frais)
+                // Formule : Revenu Net = (CA - Frais de structure - Frais Perso) / (1 + Taux Charges)
+                let baseCalcul = caVal - s.structure - fraisPersoAnnuel;
+                res.net = baseCalcul > 0 ? (baseCalcul / (1 + tauxCharges)) / 12 : 0;
+            }
+            res.ok = caVal <= s.max;
+            if (res.ok && res.net > bestSc) { bestSc = res.net; top = n; }
+        } else {
+            // Logique inverse (Partir du Net cible)
+            res.net = revVal;
+            let netAnnuel = revVal * 12;
+            if (!s.isSociete) {
+                res.ca = (netAnnuel + s.structure + fraisPersoAnnuel) / (1 - tauxCharges);
+            } else {
+                res.ca = (netAnnuel * (1 + tauxCharges)) + s.structure + fraisPersoAnnuel;
+            }
+            res.ok = res.ca <= s.max;
+            if (res.ok && res.ca < bestSc) { bestSc = res.ca; top = n; }
+        }
+        globalResults[n] = res;
+    }
+    recommendedStatus = top;
+    selectedStatus = top;
+    updateUI(18);
+}
     function updateUI(jours) {
         const data = globalResults[selectedStatus];
         document.getElementById('resultats').style.display = 'block';
@@ -476,6 +505,7 @@ function generateDetailedBreakdown() {
 </body>
 
 </html>
+
 
 
 

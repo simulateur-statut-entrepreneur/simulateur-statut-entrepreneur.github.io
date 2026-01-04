@@ -318,25 +318,28 @@
 
     // CONFIGURATION PRÉCISE 2026
     const config = {
-        "Micro": { 
-            tx: typeAct === 'service' ? 0.211 : 0.123, 
-            max: typeAct === 'service' ? 77700 : 188700, 
-            structure: 1000, // Banque + CFE + Assurance
-            isSociete: false 
-        },
-        "EURL": { 
-            tx: 0.45, 
-            max: 999999, 
-            structure: 3000, // Expert-Comptable (1800) + Banque/Assurance (1200)
-            isSociete: true 
-        },
-        "SASU": { 
-            tx: 0.75, 
-            max: 999999, 
-            structure: 3500, // Expert + Paies + Banque/Assurance
-            isSociete: true 
-        }
-    };
+    "Micro": { 
+        tx: typeAct === 'service' ? 0.211 : 0.123, 
+        max: typeAct === 'service' ? 77700 : 188700, 
+        structure: 800, // CFE (200) + Banque/Assurance (600)
+        creation: 0,    // Gratuit
+        isSociete: false 
+    },
+    "EURL": { 
+        tx: 0.45, 
+        max: 999999, 
+        structure: 3000, // Expert (1800) + CFE/Banque/Assurance (1200)
+        creation: 500,   // Greffe + Annonce Légale + Frais de dossier
+        isSociete: true 
+    },
+    "SASU": { 
+        tx: 0.75, 
+        max: 999999, 
+        structure: 3500, // Expert + Paies + CFE/Banque/Assurance
+        creation: 600,   // Idem EURL + complexité rédactionnelle
+        isSociete: true 
+    }
+};;
 
     globalResults = {};
     let top = "";
@@ -478,6 +481,7 @@ function generateDetailedBreakdown() {
     const caAnnuel = Math.round(data.ca);
     const frais = (parseFloat(document.getElementById('frais').value) || 0) * 12;
     const structure = selectedStatus === "Micro" ? 800 + 240 : 1800 + 800 + 240;
+    const creationFrais = config[selectedStatus].creation;
     
     // Calcul des cotisations selon le statut
     let chargesAnnuel = 0;
@@ -498,13 +502,16 @@ function generateDetailedBreakdown() {
     html += `<div class="detail-row"><span>Cotisations Sociales (est. 2026)</span><span>- ${Math.round(chargesAnnuel).toLocaleString()} €</span></div>`;
     html += `<div class="detail-row total"><span>REVENU NET (AVANT IMPÔT)</span><span>${Math.round(data.net * 12).toLocaleString()} €/an</span></div>`;
     html += `<p style="font-size:11px; color:#718096; margin-top:15px;">* Ce calcul est une estimation basée sur les taux standards 2026. L'impôt sur le revenu n'est pas déduit car il dépend de votre foyer fiscal.</p>`;
-
+    if (creationFrais > 0) {
+    html += `<div class="detail-row" style="color:#718096"><span>Investissement initial (Création)</span><span>- ${creationFrais} €</span></div>`;
+}
     document.getElementById('detail-content').innerHTML = html;
 }
 </script>
 </body>
 
 </html>
+
 
 
 

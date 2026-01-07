@@ -206,35 +206,77 @@
   </div>
 </div>
 
-<div class="main-simulator-card">
-    <h2 style="text-align:center; margin-bottom:25px; color:var(--dark);">Audit Financier Indépendant</h2>
+<style>
+    :root { --primary: #4a90e2; --success: #48bb78; --danger: #f56565; --dark: #2d3748; --bg: #f8fafc; }
+    .main-simulator-card { font-family: 'Inter', sans-serif; max-width: 750px; margin: auto; padding: 30px; background: #ffffff; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); color: var(--dark); }
+    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+    .field-label { display: block; font-size: 12px; font-weight: 800; text-transform: uppercase; color: #718096; margin-bottom: 8px; }
+    input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 15px; transition: 0.3s; }
+    input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(74,144,226,0.1); }
+    .btn-analyze { width: 100%; background: var(--dark); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 16px; }
     
-    <label class="field-label">Revenu Net Mensuel Cible (€)</label>
-    <input type="text" id="rev_display" placeholder="Ex: 6 000" oninput="handleMask(this, 'rev')">
-    <input type="hidden" id="rev">
+    .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 25px 0; }
+    .status-card { padding: 15px; border: 2px solid #edf2f7; border-radius: 15px; cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
+    .status-card.active { border-color: var(--primary); background: #f0f7ff; }
+    .status-card h4 { margin: 0 0 5px; font-size: 13px; color: #4a5568; }
+    .status-card .net-val { font-weight: 800; color: var(--primary); font-size: 18px; }
+    .badge-best { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; font-size: 9px; padding: 2px 8px; border-radius: 10px; font-weight: 800; }
 
-    <label class="field-label">Situation Familiale (Nombre de parts)</label>
-    <input type="number" id="parts_fiscales" value="1" step="0.5" min="1">
+    .audit-box { background: var(--bg); padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0; }
+    .audit-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .audit-table td { padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
+    .pct { background: #cbd5e0; padding: 2px 6px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-left: 8px; }
+    
+    .tjm-container { background: var(--dark); color: white; padding: 20px; border-radius: 15px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between; }
+    .tjm-slider { flex: 1; margin: 0 20px; accent-color: var(--primary); }
+</style>
 
-    <label class="field-label">Frais de Fonctionnement Mensuels (€)</label>
-    <input type="text" id="frais_display" placeholder="Logiciels, bureau, assurances..." oninput="handleMask(this, 'frais')">
-    <input type="hidden" id="frais">
+<div class="main-simulator-card">
+    <h2 style="text-align:center; margin-bottom:30px;">Audit Financier Freelance</h2>
+    
+    <div class="input-grid">
+        <div>
+            <label class="field-label">Chiffre d'Affaires HT (€/an)</label>
+            <input type="text" id="ca_display" placeholder="Saisir CA" oninput="handleInput(this, 'ca')">
+            <input type="hidden" id="ca">
+        </div>
+        <div>
+            <label class="field-label">Revenu Net Cible (€/mois)</label>
+            <input type="text" id="rev_display" placeholder="Saisir Revenu" oninput="handleInput(this, 'rev')">
+            <input type="hidden" id="rev">
+        </div>
+        <div>
+            <label class="field-label">Situation (Parts Fiscales)</label>
+            <input type="number" id="parts" value="1" step="0.5" min="1">
+        </div>
+        <div>
+            <label class="field-label">Frais Pro (€/mois)</label>
+            <input type="text" id="frais_display" placeholder="Ex: 300" oninput="handleInput(this, 'frais')">
+            <input type="hidden" id="frais">
+        </div>
+    </div>
 
-    <button class="btn-analyze" onclick="analyser()">Lancer l'audit complet</button>
+    <button class="btn-analyze" onclick="calculer()">Analyser les résultats</button>
 
     <div id="resultats" style="display:none; margin-top:30px;">
-        <div id="conseil_expert"></div>
+        <div class="status-grid" id="status_selector"></div>
 
-        <div style="background: white; border: 1px solid #e2e8f0; padding: 25px; border-radius: 15px;">
-            <h3 style="margin-top:0; font-size:16px; text-transform:uppercase; color:var(--primary);">Décomposition du Chiffre d'Affaires</h3>
-            <table class="audit-table" id="audit_table">
-                </table>
+        <div class="audit-box">
+            <div id="advice_text" style="margin-bottom:20px; font-size:14px; padding:15px; background:white; border-radius:10px; border-left:4px solid var(--primary);"></div>
+            <table class="audit-table" id="audit_detail"></table>
         </div>
 
-        <div id="bloc_tjm" style="margin-top:20px; text-align:center; padding:20px; background:var(--dark); color:white; border-radius:15px;">
-            <span style="font-size:11px; opacity:0.8; text-transform:uppercase; letter-spacing:1px;">TJM (Tarif Journalier Moyen) conseillé</span>
-            <div id="tjm_value" style="font-size:32px; font-weight:800; margin:10px 0;">0 €</div>
-            <span style="font-size:12px; opacity:0.8;">Basé sur 18 jours facturés par mois</span>
+        <div class="tjm-container">
+            <div style="text-align:left;">
+                <span style="font-size:10px; opacity:0.7; text-transform:uppercase;">Facturation</span>
+                <div id="tjm_val" style="font-size:28px; font-weight:800; color:var(--primary);">0 €</div>
+                <span style="font-size:11px; opacity:0.7;">TJM Recommandé</span>
+            </div>
+            <input type="range" id="jours_range" min="5" max="22" value="18" class="tjm-slider" oninput="updateTJM()">
+            <div style="text-align:right;">
+                <div id="jours_label" style="font-size:24px; font-weight:800;">18</div>
+                <span style="font-size:11px; opacity:0.7;">Jours travaillés / mois</span>
+            </div>
         </div>
     </div>
 </div>
@@ -385,112 +427,123 @@
 </style>
 </div>
 <script>
-    function handleMask(el, id) {
+    let globalData = {};
+    let activeStatut = "";
+
+    function handleInput(el, id) {
         let v = el.value.replace(/\D/g, '');
         document.getElementById(id).value = v;
         el.value = v ? Number(v).toLocaleString('fr-FR') : '';
+        if(id === 'ca') document.getElementById('rev_display').value = '';
+        if(id === 'rev') document.getElementById('ca_display').value = '';
     }
 
-    function calculerIR(rev, parts) {
-        const r = (rev * 0.9) / parts; 
+    function getIR(rev, pts) {
+        const r = (rev * 0.9) / pts; 
         let i = 0;
         if (r > 177753) i = (r - 177753) * 0.45 + 41908;
         else if (r > 82341) i = (r - 82341) * 0.41 + 16086;
         else if (r > 28797) i = (r - 28797) * 0.30 + 1925;
         else if (r > 11294) i = (r - 11294) * 0.11;
-        return Math.max(0, i * parts);
+        return Math.max(0, i * pts);
     }
 
-    function analyser() {
-        const revCible = parseFloat(document.getElementById('rev').value) || 0;
-        const pts = parseFloat(document.getElementById('parts_fiscales').value) || 1;
-        const fraisM = parseFloat(document.getElementById('frais').value) || 0;
+    function simulate(statut, target, isRevMode, pts, fraisM) {
+        let ca = isRevMode ? target * 12 * 1.6 : target;
+        let res = {};
+        const it = isRevMode ? 12 : 1;
 
-        // Choix du régime optimal selon les parts
-        let meilleurRegime = (pts >= 2.5) ? "IR" : "IS";
-        
-        // Simulation itérative pour trouver le CA exact
-        let txSoc = 0.45; 
-        let ca = revCible * 12 * 1.8;
-        let finalData = {};
+        for(let i=0; i<it; i++) {
+            let fraisAn = (fraisM * 12) + (statut === 'Micro' ? 500 : 3500);
+            let reserve = (statut === 'Micro') ? 0 : ca * 0.15;
+            let cotis = 0, netCotis = 0;
 
-        for(let i=0; i<12; i++) {
-            let reserveAnnuelle = ca * 0.15;
-            let fraisFixesAnnuel = 3500 + (fraisM * 12);
-            let dispoPostFrais = ca - fraisFixesAnnuel - reserveAnnuelle;
-            let cotisations = dispoPostFrais * (txSoc / (1 + txSoc));
-            let netAvantIR = dispoPostFrais - cotisations;
-            let ir = calculerIR(netAvantIR, pts);
-            let netFinalMois = (netAvantIR - ir) / 12;
+            if(statut === 'Micro') {
+                cotis = ca * 0.211;
+                netCotis = ca - cotis - fraisAn;
+            } else if(statut === 'EURL') {
+                let dispo = ca - fraisAn - reserve;
+                cotis = dispo * (0.45 / 1.45);
+                netCotis = dispo - cotis;
+            } else if(statut === 'SASU') {
+                let dispo = ca - fraisAn - reserve;
+                cotis = dispo * (0.75 / 1.75);
+                netCotis = dispo - cotis;
+            }
 
-            finalData = {
-                ca: ca,
-                frais: fraisFixesAnnuel,
-                reserve: reserveAnnuelle,
-                cotis: cotisations,
-                ir: ir,
-                netMois: netFinalMois,
-                parts: pts,
-                survie: (pts <= 1 ? 3 : (pts <= 2.5 ? 4 : 6))
-            };
+            let ir = (statut === 'Micro') ? getIR(ca * 0.5, pts) : getIR(netCotis, pts);
+            let netFinal = (netCotis - ir) / 12;
 
-            ca += (revCible - netFinalMois) * 1.5 * 12;
+            res = { ca, cotis, ir, fraisAn, reserve, netFinal, pts, ok: (statut === 'Micro' ? ca <= 77700 : true) };
+            if(isRevMode) ca += (target - netFinal) * 1.5 * 12;
         }
+        return res;
+    }
 
-        const fmt = (v) => Math.round(v).toLocaleString('fr-FR') + " €";
-        const pct = (v) => ((v / finalData.ca) * 100).toFixed(1) + "%";
+    function calculer() {
+        const caS = parseFloat(document.getElementById('ca').value) || 0;
+        const revS = parseFloat(document.getElementById('rev').value) || 0;
+        const pts = parseFloat(document.getElementById('parts').value) || 1;
+        const fM = parseFloat(document.getElementById('frais').value) || 0;
+        const isRev = revS > 0;
+        const target = isRev ? revS : caS;
 
-        // Affichage du conseil
-        document.getElementById('resultats').style.display = 'block';
-        document.getElementById('conseil_expert').innerHTML = `
-            <div class="advice-box">
-                <strong style="color:var(--primary); font-size:12px; text-transform:uppercase;">Verdict Expert</strong><br>
-                <p style="margin:10px 0 0; font-size:14px;">
-                    Pour sécuriser un foyer de <b>${pts} parts</b>, le régime <b>EURL à l'${meilleurRegime}</b> est optimal. 
-                    Il permet de transformer <b>${pct(finalData.netMois*12)}</b> de votre CA en revenu net personnel.
-                </p>
+        const statuts = ['Micro', 'EURL', 'SASU'];
+        let maxNet = -1, best = "";
+
+        statuts.forEach(s => {
+            globalData[s] = simulate(s, target, isRev, pts, fM);
+            if(globalData[s].ok && globalData[s].netFinal > maxNet) { maxNet = globalData[s].netFinal; best = s; }
+        });
+
+        activeStatut = activeStatut || best;
+        renderUI(best);
+    }
+
+    function renderUI(best) {
+        let html = "";
+        for(let s in globalData) {
+            let d = globalData[s];
+            html += `<div class="status-card ${activeStatut === s ? 'active' : ''}" onclick="activeStatut='${s}'; renderUI('${best}')">
+                ${s === best ? '<div class="badge-best">OPTIMAL</div>' : ''}
+                <h4>${s}</h4>
+                <div class="net-val">${d.ok ? Math.round(d.netFinal).toLocaleString()+'€' : 'SEUIL DÉPASSÉ'}</div>
             </div>`;
+        }
+        document.getElementById('status_selector').innerHTML = html;
+        document.getElementById('resultats').style.display = 'block';
+        
+        const d = globalData[activeStatut];
+        const p = (v) => ((v / d.ca) * 100).toFixed(1) + "%";
+        const f = (v) => Math.round(v).toLocaleString() + " €";
+        
+        document.getElementById('advice_text').innerHTML = `<b>Analyse Expert :</b> Le statut ${activeStatut} vous permet de conserver <b>${p(d.netFinal*12)}</b> de votre production HT.`;
+        
+        document.getElementById('audit_detail').innerHTML = `
+            <tr><td>Chiffre d'Affaires HT</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>
+            <tr><td>Frais de fonctionnement <span class="pct">${p(d.fraisAn)}</span></td><td style="text-align:right">- ${f(d.fraisAn)}</td></tr>
+            <tr><td>Réserve Sécurité (Arrêt activité) <span class="pct">${p(d.reserve)}</span></td><td style="text-align:right">- ${f(d.reserve)}</td></tr>
+            <tr><td>Charges URSSAF <span class="pct">${p(d.cotis)}</span></td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
+            <tr><td>Impôt sur le Revenu (${d.pts} parts) <span class="pct">${p(d.ir)}</span></td><td style="text-align:right">- ${f(d.ir)}</td></tr>
+            <tr style="border:none; font-size:18px; color:var(--success); font-weight:800;">
+                <td style="padding-top:20px">REVENU NET FINAL</td><td style="text-align:right; padding-top:20px">${f(d.netFinal)} / mois</td>
+            </tr>`;
+        updateTJM();
+    }
 
-        // Construction du tableau d'audit
-        document.getElementById('audit_table').innerHTML = `
-            <tr>
-                <td class="label">Chiffre d'Affaires HT (100%)</td>
-                <td class="value">${fmt(finalData.ca)}</td>
-            </tr>
-            <tr>
-                <td class="label">Frais de fonctionnement <span class="percent">${pct(finalData.frais)}</span></td>
-                <td class="value">- ${fmt(finalData.frais)}</td>
-            </tr>
-            <tr>
-                <td class="label">Réserve de sécurité (Bouclier) <span class="percent">${pct(finalData.reserve)}</span></td>
-                <td class="value">- ${fmt(finalData.reserve)}</td>
-            </tr>
-            <tr>
-                <td class="label">Cotisations Sociales (URSSAF) <span class="percent">${pct(finalData.cotis)}</span></td>
-                <td class="value">- ${fmt(finalData.cotis)}</td>
-            </tr>
-            <tr>
-                <td class="label">Impôt sur le Revenu <span class="percent">${pct(finalData.ir)}</span></td>
-                <td class="value">- ${fmt(finalData.ir)}</td>
-            </tr>
-            <tr class="total-row">
-                <td style="font-weight:800;">REVENU NET DISPONIBLE</td>
-                <td class="value" style="color:var(--success);">${fmt(finalData.netMois)} / mois</td>
-            </tr>
-            <tr>
-                <td colspan="2" style="font-size:11px; color:#718096; padding-top:15px; border:none;">
-                    * Votre matelas de sécurité recommandé est de <b>${fmt((finalData.netMois + (finalData.frais/12)) * finalData.survie)}</b> 
-                    soit ${finalData.survie} mois de maintien de vie pro + perso.
-                </td>
-            </tr>
-        `;
-
-        document.getElementById('tjm_value').innerText = Math.round(finalData.ca / 12 / 18).toLocaleString() + " €";
+    function updateTJM() {
+        const jours = document.getElementById('jours_range').value;
+        document.getElementById('jours_label').innerText = jours;
+        if(globalData[activeStatut]) {
+            const tjm = Math.round(globalData[activeStatut].ca / 12 / jours);
+            document.getElementById('tjm_val').innerText = tjm.toLocaleString() + " €";
+        }
     }
 </script>
 </body>
 
 </html>
+
 
 
 

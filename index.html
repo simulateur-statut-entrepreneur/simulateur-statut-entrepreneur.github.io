@@ -447,59 +447,25 @@
         return Math.max(0, i * parts);
     }
 
-    function analyser() {
-        const caSaisi = parseFloat(document.getElementById('ca').value) || 0;
-        const revCible = parseFloat(document.getElementById('rev').value) || 0;
-        const fraisM = parseFloat(document.getElementById('frais').value) || 0;
-        const parts = parseFloat(document.getElementById('parts_fiscales').value) || 1;
-        const isIS = document.getElementById('option_fiscale').value === "IS";
-        const acre = document.getElementById('acre_check').checked;
-
-        globalResults = {};
-        let top = "";
-        let bestVal = (currentMode === 'CA') ? -1 : Infinity;
-
-        for (let n in config) {
-            let s = config[n];
-            let txSoc = (n === "Micro" && acre) ? s.tx / 2 : s.tx;
-            let res;
-
-            if (currentMode === 'REV') {
-                let tentativeCA = revCible * 12 * 1.6;
-                for(let i=0; i<10; i++) {
-                    let sim = runFlux(tentativeCA, n, s, txSoc, isIS, parts, fraisM);
-                    tentativeCA += (revCible * 12 - sim.netMois * 12) * 1.4;
-                }
-                res = runFlux(tentativeCA, n, s, txSoc, isIS, parts, fraisM);
-            } else {
-                res = runFlux(caSaisi, n, s, txSoc, isIS, parts, fraisM);
-            }
-
-            res.ok = (n === "Micro") ? res.ca <= config.Micro.max : true;
-            globalResults[n] = res;
-            if (res.ok && (currentMode === 'CA' ? res.netMois > bestVal : res.ca < bestVal)) {
-                bestVal = (currentMode === 'CA') ? res.netMois : res.ca;
-                top = n;
-            }
-        }
-        selectedStatus = top || "EURL";
-        document.getElementById('resultats').style.display = 'block';
-        updateUI();
-    }
-
     function runFlux(ca, n, s, txSoc, isIS, parts, fraisM) {
-        let res = { ca: ca, cotis: 0, ir: 0, isSoc: 0, flatTax: 0, netMois: 0, divMois: 0, salMois: 0, reserve: ca * 0.15 };
-        let fraisFonct = s.structure + (fraisM * 12);
-        let dispo = Math.max(0, ca - fraisFonct - res.reserve);
+        let res = { ca: ca, cotis: 0, ir: 0, isSoc: 0, flatTax: 0, netMois: 0, salMois: 0, divMois: 0 };
+        
+        // 1. Détermination du besoin de survie selon les parts
+        res.moisSurvie = parts <= 1 ? 3 : (parts <= 2.5 ? 4 : 6);
+        res.reserveAnnuelle = ca * 0.15; // 15% du CA stockés dans l'entreprise
+        
+        let fraisFonctAnnuel = s.structure + (fraisM * 12);
+        let dispo = Math.max(0, ca - fraisFonctAnnuel - res.reserveAnnuelle);
 
         if (n === "Micro") {
             res.cotis = ca * txSoc;
             res.ir = calculerIR(ca * (typeAct === 'service' ? 0.5 : 0.29), parts);
-            res.netMois = (ca - res.cotis - fraisFonct - res.ir) / 12;
-            res.reserve = 0; 
+            res.netMois = (ca - res.cotis - fraisFonctAnnuel - res.ir) / 12;
+            res.reserveAnnuelle = ca * 0.10; // En micro, on conseille 10% de côté
         } else {
             if (isIS) {
-                let salAn = Math.min(dispo / (1+s.tx), 22000); 
+                // Optimisation : Salaire SMIC (protection) + Dividendes (Flat Tax)
+                let salAn = Math.min(dispo / (1+s.tx), 21500); 
                 res.cotis = salAn * s.tx;
                 let benef = Math.max(0, dispo - (salAn + res.cotis));
                 res.isSoc = benef <= 42500 ? benef * 0.15 : (42500 * 0.15) + (benef - 42500) * 0.25;
@@ -514,8 +480,48 @@
                 res.netMois = (netNet - res.ir) / 12;
             }
         }
-        res.boiteMois = (fraisFonct + res.reserve) / 12;
+        res.matelasCible = (res.netMois + (fraisFonctAnnuel/12)) * res.moisSurvie;
+        res.boiteMois = (fraisFonctAnnuel + res.reserveAnnuelle) / 12;
         return res;
+    }
+
+    function analyser() {
+        const caS = parseFloat(document.getElementById('ca').value) || 0;
+        const revC = parseFloat(document.getElementById('rev').value) || 0;
+        const fraisM = parseFloat(document.getElementById('frais').value) || 0;
+        const pts = parseFloat(document.getElementById('parts_fiscales').value) || 1;
+        const isIS = document.getElementById('option_fiscale').value === "IS";
+        const acre = document.getElementById('acre_check').checked;
+
+        globalResults = {};
+        let top = "";
+        let bestVal = (currentMode === 'CA') ? -1 : Infinity;
+
+        for (let n in config) {
+            let s = config[n];
+            let txSoc = (n === "Micro" && acre) ? s.tx/2 : s.tx;
+            let res;
+
+            if (currentMode === 'REV') {
+                let tentativeCA = revC * 12 * 1.8;
+                for(let i=0; i<10; i++) {
+                    let sim = runFlux(tentativeCA, n, s, txSoc, isIS, pts, fraisM);
+                    tentativeCA += (revC * 12 - sim.netMois * 12) * 1.5;
+                }
+                res = runFlux(tentativeCA, n, s, txSoc, isIS, pts, fraisM);
+            } else {
+                res = runFlux(caS, n, s, txSoc, isIS, pts, fraisM);
+            }
+            res.ok = (n === "Micro") ? res.ca <= config.Micro.max : true;
+            globalResults[n] = res;
+            if (res.ok && (currentMode === 'CA' ? res.netMois > bestVal : res.ca < bestVal)) {
+                bestVal = (currentMode === 'CA') ? res.netMois : res.ca;
+                top = n;
+            }
+        }
+        selectedStatus = top || "EURL";
+        document.getElementById('resultats').style.display = 'block';
+        updateUI();
     }
 
     function updateTJMOnly() {
@@ -530,38 +536,45 @@
     function updateUI() {
         const d = globalResults[selectedStatus];
         updateTJMOnly();
-
         const p = (v) => d.ca > 0 ? ((v / d.ca) * 100).toFixed(1) + "%" : "0%";
 
         document.getElementById('bloc_resume').innerHTML = `
-            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL FINAL</span>
+            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL DISPONIBLE</span>
             <div style="font-size:26px; font-weight:800; margin:5px 0;">${Math.round(d.netMois).toLocaleString()} €</div>
-            <div style="font-size:11px;">Efficacité : <b>${p(d.netMois*12)}</b> du CA HT</div>`;
+            <div style="font-size:11px;">Reste après charges, impôts & réserve</div>`;
 
         document.getElementById('bloc_impact').innerHTML = `
-            <div style="background:#f1f5f9; padding:15px; border-radius:12px; margin-bottom:15px; border-left:4px solid #475569;">
-                <span style="font-size:10px; font-weight:800; color:#64748b;">DÉDIÉ AU FONCTIONNEMENT PRO</span>
-                <div style="font-size:18px; font-weight:800; color:#1e293b; margin:3px 0;">${Math.round(d.boiteMois).toLocaleString()} € / mois</div>
-                <div style="font-size:11px; color:#64748b;">(Frais fixes + réserve de sécurité de 15% incluse)</div>
+            <div style="background:#fff5f5; border: 1px solid #feb2b2; padding:15px; border-radius:12px; margin-bottom:15px;">
+                <div style="display:flex; justify-content:space-between; align-items:start;">
+                    <div>
+                        <span style="font-size:10px; font-weight:800; color:#c53030; text-transform:uppercase;">Bouclier Sécurité Annuel</span>
+                        <div style="font-size:18px; font-weight:800; color:#9b2c2c;">${Math.round(d.reserveAnnuelle).toLocaleString()} €</div>
+                    </div>
+                    <div style="text-align:right;">
+                        <span style="font-size:10px; font-weight:800; color:#c53030;">MATELAS ${d.moisSurvie} MOIS</span>
+                        <div style="font-size:16px; font-weight:700; color:#9b2c2c;">${Math.round(d.matelasCible).toLocaleString()} €</div>
+                    </div>
+                </div>
+                <p style="font-size:11px; margin-top:8px; color:#c53030; margin-bottom:0;">
+                    Conseil : Conservez <b>${Math.round(d.reserveAnnuelle).toLocaleString()}€</b> pour protéger vos proches (${document.getElementById('parts_fiscales').value} part(s)).
+                </p>
             </div>`;
 
         let detailHtml = `
             <div class="costs-card" style="font-size:12px; line-height:2.2;">
-                <h4 style="margin:0 0 10px; font-size:14px; color:var(--primary)">Tableau de bord financier (${selectedStatus})</h4>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee;"><span>Chiffre d'Affaires HT</span><b>${Math.round(d.ca).toLocaleString()} €</b></div>
-                <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Charges Sociales (URSSAF) <small>${p(d.cotis)}</small></span><span>- ${Math.round(d.cotis).toLocaleString()} €</span></div>
+                <h4 style="margin:0 0 10px; font-size:14px; color:var(--primary)">Rapport détaillé (${selectedStatus})</h4>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee;"><span>CA Annuel Brut</span><b>${Math.round(d.ca).toLocaleString()} €</b></div>
+                <div style="display:flex; justify-content:space-between; color:#718096;"><span>Fonctionnement & Réserve <small>${p(d.boiteMois*12)}</small></span><span>- ${Math.round(d.boiteMois*12).toLocaleString()} €</span></div>
+                <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Charges URSSAF <small>${p(d.cotis)}</small></span><span>- ${Math.round(d.cotis).toLocaleString()} €</span></div>
                 ${d.isSoc > 0 ? `
-                    <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Impôt Sociétés (IS) <small>${p(d.isSoc)}</small></span><span>- ${Math.round(d.isSoc).toLocaleString()} €</span></div>
-                    <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Flat Tax sur Dividendes (30%)</span><span>- ${Math.round(d.flatTax).toLocaleString()} €</span></div>
-                    <div style="background:#f0fff4; padding:10px; border-radius:8px; margin:10px 0; border:1px solid #c6f6d5;">
-                        <div style="display:flex; justify-content:space-between;"><span>Salaire Net (Moyen)</span><b>${Math.round(d.salMois).toLocaleString()} €/m</b></div>
+                    <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>IS + Flat Tax Dividendes</span><span>- ${Math.round(d.isSoc + d.flatTax).toLocaleString()} €</span></div>
+                    <div style="background:#f0fff4; padding:8px; border-radius:8px; margin:10px 0; border:1px solid #c6f6d5;">
+                        <div style="display:flex; justify-content:space-between;"><span>Salaire Net versé</span><b>${Math.round(d.salMois).toLocaleString()} €/m</b></div>
                         <div style="display:flex; justify-content:space-between;"><span>Dividendes Net</span><b>${Math.round(d.divMois).toLocaleString()} €/m</b></div>
                     </div>
-                ` : `
-                    <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Impôt sur le Revenu (IR) <small>${p(d.ir)}</small></span><span>- ${Math.round(d.ir).toLocaleString()} €</span></div>
-                `}
-                <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--success); font-size:16px; border-top:2px solid #eee; padding-top:10px;">
-                    <span>NET DANS VOTRE POCHE</span><span>${Math.round(d.netMois).toLocaleString()} €/m</span>
+                ` : `<div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Impôt sur le Revenu (IR) <small>${p(d.ir)}</small></span><span>- ${Math.round(d.ir).toLocaleString()} €</span></div>`}
+                <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--success); font-size:16px; border-top:2px solid #eee; margin-top:5px; padding-top:10px;">
+                    <span>VOTRE NET FINAL</span><span>${Math.round(d.netMois).toLocaleString()} €/mois</span>
                 </div>
             </div>`;
         document.getElementById('bloc_costs').innerHTML = detailHtml;
@@ -572,7 +585,7 @@
             htmlStatuts += `
                 <div class="stat-card ${n === selectedStatus ? 'selected' : ''}" onclick="selectedStatus='${n}'; updateUI();">
                     <h5>${n}</h5>
-                    <div style="font-size:11px;">${r.ok ? Math.round(r.netMois).toLocaleString()+'€' : 'HORS SEUIL'}</div>
+                    <div style="font-size:11px;">${r.ok ? Math.round(r.netMois).toLocaleString()+'€/m' : 'HORS SEUIL'}</div>
                 </div>`;
         }
         document.getElementById('liste_statuts').innerHTML = htmlStatuts;
@@ -581,6 +594,7 @@
 </body>
 
 </html>
+
 
 
 

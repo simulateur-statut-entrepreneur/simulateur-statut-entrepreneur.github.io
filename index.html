@@ -206,93 +206,77 @@
   </div>
 </div>
 
+
 <style>
-    :root { --primary: #4a90e2; --success: #48bb78; --dark: #2d3748; --bg: #f8fafc; }
-    body { background: #f0f2f5; margin: 0; padding: 10px; font-family: 'Inter', system-ui, sans-serif; color: var(--dark); }
-    .card { max-width: 600px; margin: auto; padding: 20px; background: #fff; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); box-sizing: border-box; }
-    
-    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-    .field-label { display: block; font-size: 10px; font-weight: 800; text-transform: uppercase; color: #718096; margin-bottom: 5px; }
-    input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 16px; box-sizing: border-box; }
-
-    .btn-main { width: 100%; background: var(--dark); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
-
-    .status-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
-    .status-tab { flex: 1; min-width: 100px; padding: 12px; border: 2px solid #edf2f7; border-radius: 14px; text-align: center; cursor: pointer; background: white; transition: 0.2s; }
-    .status-tab.active { border-color: var(--primary); background: #f0f7ff; }
-    .status-tab div { font-weight: 800; color: var(--primary); font-size: 15px; }
-
-    .mix-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; margin: 15px 0; background: #eee; }
-    .part-sal { background: var(--primary); transition: 0.3s; }
-    .part-div { background: var(--success); transition: 0.3s; }
-
-    .fiscal-toggle { display: flex; background: #edf2f7; padding: 4px; border-radius: 12px; margin: 15px 0; }
-    .f-btn { flex: 1; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 11px; color: #718096; }
-    .f-btn.active { background: var(--primary); color: white; }
-
-    .audit-table { width: 100%; border-collapse: collapse; font-size: 13px; }
-    .audit-table td { padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
-    .pct { background: #e2e8f0; padding: 2px 5px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; }
-
-    .res-footer { background: var(--dark); color: white; padding: 20px; border-radius: 20px; margin-top: 20px; text-align: center; }
-    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 10px; }
-    .day-btn { border: 1px solid #e2e8f0; background: white; padding: 8px 0; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: 700; }
-    .day-btn.active { background: var(--primary); color: white; border: none; }
+/* --- STYLE MINIMAL POUR TEST --- */
+body { font-family: Arial, sans-serif; background:#f5f5f5; padding:20px; }
+.container { max-width:900px; margin:auto; background:white; padding:25px; border-radius:10px; }
+h2 { margin-top:0; }
+input { width:100%; padding:10px; margin:5px 0 15px; }
+.status-tab { display:inline-block; width:22%; margin:1%; padding:15px; background:#eee; border-radius:8px; cursor:pointer; text-align:center; }
+.status-tab.active { background:#007bff; color:white; }
+#resultats { margin-top:25px; }
+#mix_container { margin-top:20px; }
+.bar { height:20px; display:inline-block; }
+#bar_sal { background:#4caf50; }
+#bar_div { background:#ff9800; }
+#expert_panel { background:#222; color:white; padding:15px; margin-top:20px; border-radius:8px; }
+.day-btn { padding:8px 12px; margin:3px; cursor:pointer; }
+.day-btn.active { background:#007bff; color:white; }
 </style>
 
-<div class="card">
-    <h2 style="text-align:center; font-size:18px; margin-bottom:20px;">Optimisation Freelance Expert</h2>
-    
-    <div class="input-grid">
-        <div style="grid-column: span 2;">
-            <label class="field-label">Situation (Parts Fiscales)</label>
-            <input type="number" id="parts" value="1" step="0.5" onchange="safeCalculate()">
+
+
+<div class="container">
+
+    <h2>Simulateur Statut Entrepreneur</h2>
+
+    <!-- INPUTS -->
+    <label>Revenu NET souhaité (mensuel)</label>
+    <input id="rev" oninput="handleInput(this,'rev')" placeholder="Ex: 5000">
+
+    <label>Chiffre d'affaires annuel (optionnel)</label>
+    <input id="ca" oninput="handleInput(this,'ca')" placeholder="Ex: 120000">
+
+    <label>Nombre de parts fiscales</label>
+    <input id="parts" value="1" type="number" min="1" step="0.5" oninput="calculer()">
+
+    <button onclick="calculer()">Calculer</button>
+    <button onclick="toggleExpertMode()">Mode Expert</button>
+
+    <!-- RESULTATS -->
+    <div id="resultats" style="display:none;">
+
+        <h3>Comparaison des statuts</h3>
+        <div id="status_tabs"></div>
+
+        <p id="advice_text" style="margin-top:20px; font-weight:bold;"></p>
+
+        <h3>Détails</h3>
+        <table id="audit_detail" style="width:100%; border-collapse:collapse;"></table>
+
+        <!-- MIX SALAIRE / DIVIDENDES -->
+        <div id="mix_container" style="display:none;">
+            <h4>Répartition Salaire / Dividendes</h4>
+            <div style="width:100%; background:#ddd; height:20px; border-radius:5px;">
+                <div id="bar_sal" class="bar"></div>
+                <div id="bar_div" class="bar"></div>
+            </div>
+            <p id="mix_label" style="margin-top:10px;"></p>
         </div>
-        <div>
-            <label class="field-label">Revenu Net Cible (€/m)</label>
-            <input type="text" id="rev_display" placeholder="Ex: 6000" oninput="handleInput(this, 'rev')">
-            <input type="hidden" id="rev">
-        </div>
-        <div>
-            <label class="field-label">OU Chiffre d'Affaires (€/an)</label>
-            <input type="text" id="ca_display" placeholder="Ex: 120000" oninput="handleInput(this, 'ca')">
-            <input type="hidden" id="ca">
-        </div>
+
+        <!-- MODE EXPERT -->
+        <div id="expert_panel" style="display:none;"></div>
+
+        <!-- TJM -->
+        <h3>Calcul du TJM</h3>
+        <div id="days_grid"></div>
+        <p>TJM estimé : <b id="tjm_val"></b></p>
+
     </div>
 
-    <button class="btn-main" onclick="calculer()">Lancer l'Optimisation</button>
-
-    <div id="resultats" style="display:none; margin-top:10px;">
-        <div class="status-tabs" id="status_tabs"></div>
-
-        <div id="fiscal_container">
-            <div class="fiscal-toggle">
-                <button id="btn_ir" class="f-btn" onclick="setFiscal('IR')">IMPÔT REVENU (IR)</button>
-                <button id="btn_is" class="f-btn" onclick="setFiscal('IS')">IS (SALAIRE + DIVID.)</button>
-            </div>
-        </div>
-
-        <div style="background:var(--bg); padding:15px; border-radius:15px; border:1px solid #e2e8f0;">
-            <div id="advice_text" style="font-size:12px; margin-bottom:5px; color:var(--primary); font-weight:700; line-height:1.4;"></div>
-            
-            <div id="mix_container" style="display:none;">
-                <div class="mix-bar"><div id="bar_sal" class="part-sal"></div><div id="bar_div" class="part-div"></div></div>
-                <div style="display:flex; justify-content:space-between; font-size:10px; font-weight:bold; text-transform:uppercase; margin-bottom:10px;">
-                    <span style="color:var(--primary)">● Salaire</span>
-                    <span style="color:var(--success)">● Dividendes</span>
-                </div>
-            </div>
-
-            <table class="audit-table" id="audit_detail"></table>
-        </div>
-
-        <div class="res-footer">
-            <span style="font-size:10px; opacity:0.7; text-transform:uppercase;">Objectif TJM</span>
-            <div id="tjm_val" style="font-size:32px; font-weight:800; color:var(--primary); margin:5px 0;">0 €</div>
-            <div class="days-grid" id="days_grid"></div>
-        </div>
-    </div>
 </div>
+
 
 
 
@@ -447,133 +431,382 @@
 </style>
 </div>
 <script>
-    let globalData = {}; let activeStatut = "EURL"; let activeFiscal = "IR"; let currentDays = 18;
+   /************************************
+ * 1. CONSTANTES GÉNÉRALES
+ ************************************/
+const CHARGES_SALARIALES = 0.22;
+const CHARGES_PATRONALES = 0.42;
+const COTIS_TNS = 0.42;
+const PFU = 0.30;
+const IS_REDUIT = 0.15;
+const IS_NORMAL = 0.25;
+const IS_SEUIL = 42500;
 
-    function handleInput(el, id) {
-        let v = el.value.replace(/\D/g, ''); document.getElementById(id).value = v;
-        el.value = v ? Number(v).toLocaleString('fr-FR') : '';
-        if(id === 'ca') document.getElementById('rev_display').value = '';
-        if(id === 'rev') document.getElementById('ca_display').value = '';
-    }
+let globalData = {};
+let activeStatut = "SASU";
+let activeFiscal = "IS";
+let currentDays = 18;
+let expertMode = false;
 
-    function safeCalculate() {
-        const revS = parseFloat(document.getElementById('rev').value) || 0;
-        const caS = parseFloat(document.getElementById('ca').value) || 0;
-        if (revS > 0 || caS > 0) calculer();
-    }
+/************************************
+ * 2. OUTILS GÉNÉRAUX
+ ************************************/
+function formatEuro(v) {
+    return Math.round(v).toLocaleString('fr-FR') + " €";
+}
 
-    function setFiscal(mode) { activeFiscal = mode; updateUI(); }
+function parseNumberInput(id) {
+    const v = document.getElementById(id).value.replace(/\s/g, '').replace(',', '.');
+    return parseFloat(v) || 0;
+}
 
-    function getIR(rev, pts) {
-        const r = (rev * 0.9) / pts; let i = 0;
-        if (r > 177753) i = (r - 177753) * 0.45 + 41908;
-        else if (r > 82341) i = (r - 82341) * 0.41 + 16086;
-        else if (r > 28797) i = (r - 28797) * 0.30 + 1925;
-        else if (r > 11294) i = (r - 11294) * 0.11;
-        return Math.max(0, i * pts);
-    }
+function handleInput(el, id) {
+    let v = el.value.replace(/\D/g, '');
+    document.getElementById(id).value = v;
+    el.value = v ? Number(v).toLocaleString('fr-FR') : '';
+}
 
-    function simulate(statut, target, isRevMode, pts, modeFisc) {
-        let ca = isRevMode ? target * 12 * 1.6 : target;
-        let res = {}; const it = isRevMode ? 10 : 1;
-        
-        for(let i=0; i<it; i++) {
-            let fraisAn = (statut === 'Micro' ? 600 : 4000);
-            let reserve = (statut === 'Micro') ? 0 : ca * 0.15;
-            let cotis = 0, is_tax = 0, flat_tax = 0, netP = 0, sal_net_an = 0, div_net_an = 0;
+/************************************
+ * 3. CALCUL IR (barème)
+ ************************************/
+function calcIR(revImposable, parts) {
+    const r = revImposable / parts;
+    let imp = 0;
 
-            if(statut === 'Micro') {
-                cotis = ca * 0.211;
-                netP = ca - cotis - fraisAn;
-            } else {
-                let dispo = ca - fraisAn - reserve;
-                if(modeFisc === 'IS') {
-                    let salaire_brut = Math.min(dispo / 1.45, 32000); 
-                    cotis = salaire_brut * 0.45;
-                    sal_net_an = salaire_brut;
-                    let benef = dispo - salaire_brut - cotis;
-                    is_tax = benef <= 42500 ? benef * 0.15 : (42500 * 0.15) + (benef - 42500) * 0.25;
-                    div_net_an = (benef - is_tax) * 0.70;
-                    netP = sal_net_an + div_net_an;
-                } else {
-                    cotis = dispo * (0.45 / 1.45);
-                    netP = dispo - cotis;
-                }
-            }
-            let ir = (modeFisc === 'IS') ? getIR(sal_net_an, pts) : getIR(netP, pts);
-            let netF = (netP - ir) / 12;
+    if (r > 177753) imp = (r - 177753) * 0.45 + 41908;
+    else if (r > 82341) imp = (r - 82341) * 0.41 + 16086;
+    else if (r > 28797) imp = (r - 28797) * 0.30 + 1925;
+    else if (r > 11294) imp = (r - 11294) * 0.11;
 
-            res = { ca, cotis, ir, is_tax, flat_tax, reserve, netF, sal_net_an, div_net_an, pts, ok: (statut === 'Micro' ? ca <= 77700 : true) };
-            if(isRevMode) ca += (target - netF) * 1.5 * 12;
-        } return res;
-    }
+    return Math.max(0, imp * parts);
+}
 
-    function calculer() {
-        const revS = parseFloat(document.getElementById('rev').value) || 0;
-        const caS = parseFloat(document.getElementById('ca').value) || 0;
-        if (!revS && !caS) return;
-        
-        const pts = parseFloat(document.getElementById('parts').value) || 1;
-        activeFiscal = (pts >= 2.5) ? 'IR' : 'IS'; 
-        
-        ['Micro', 'EURL', 'SASU'].forEach(s => {
-            globalData[s + '_IR'] = simulate(s, (revS||caS), revS > 0, pts, 'IR');
-            globalData[s + '_IS'] = simulate(s, (revS||caS), revS > 0, pts, 'IS');
-        });
-        document.getElementById('resultats').style.display = 'block';
-        updateUI();
-    }
+/************************************
+ * 4. CALCUL SALAIRE (SASU)
+ ************************************/
+function calcSalaireFromBudget(budgetAnnuel) {
+    const totalCharges = 1 + CHARGES_PATRONALES + CHARGES_SALARIALES;
+    const brutAnnuel = budgetAnnuel / totalCharges;
+    const netAnnuel = brutAnnuel * (1 - CHARGES_SALARIALES);
+    const cotisPatronales = brutAnnuel * CHARGES_PATRONALES;
+    return {
+        brutAnnuel,
+        netAnnuel,
+        cotisPatronales
+    };
+}
 
-    function updateUI() {
-        const pts = parseFloat(document.getElementById('parts').value);
-        let html = ""; 
-        ['Micro', 'EURL', 'SASU'].forEach(s => {
-            let d = globalData[s + '_' + activeFiscal];
-            html += `<div class="status-tab ${activeStatut === s ? 'active' : ''}" onclick="activeStatut='${s}'; updateUI()">
-                <h4>${s}</h4><div>${d.ok ? Math.round(d.netF).toLocaleString()+'€' : 'OFF'}</div>
-            </div>`;
-        });
-        document.getElementById('status_tabs').innerHTML = html;
-        document.getElementById('fiscal_container').style.display = (activeStatut === 'Micro') ? 'none' : 'block';
-        document.getElementById('btn_ir').className = 'f-btn ' + (activeFiscal === 'IR' ? 'active' : '');
-        document.getElementById('btn_is').className = 'f-btn ' + (activeFiscal === 'IS' ? 'active' : '');
+/************************************
+ * 5. CALCUL IS
+ ************************************/
+function calcIS(benef) {
+    if (benef <= 0) return 0;
+    if (benef <= IS_SEUIL) return benef * IS_REDUIT;
+    return IS_SEUIL * IS_REDUIT + (benef - IS_SEUIL) * IS_NORMAL;
+}
 
-        const d = globalData[activeStatut + '_' + activeFiscal];
-        const f = (v) => Math.round(v).toLocaleString() + " €";
-        
-        if(activeFiscal === 'IS' && activeStatut !== 'Micro') {
-            document.getElementById('mix_container').style.display = 'block';
-            let totalBrut = d.sal_net_an + d.div_net_an;
-            document.getElementById('bar_sal').style.width = (d.sal_net_an / totalBrut * 100) + '%';
-            document.getElementById('bar_div').style.width = (d.div_net_an / totalBrut * 100) + '%';
-        } else { document.getElementById('mix_container').style.display = 'none'; }
+/************************************
+ * 6. CALCUL DIVIDENDES
+ ************************************/
+function calcDividendes(benefApresIS) {
+    if (benefApresIS <= 0) return { brut: 0, net: 0, pfu: 0 };
+    const brut = benefApresIS;
+    const pfu = brut * PFU;
+    const net = brut - pfu;
+    return { brut, net, pfu };
+}
 
-        // CORRECTION ICI : Message dynamique selon le nombre de parts saisi
-        document.getElementById('advice_text').innerHTML = (pts >= 2.5 && activeFiscal === 'IS') ? 
-            `⚠️ L'IR serait plus rentable avec vos ${pts} part(s).` : 
-            `✅ Stratégie ${activeFiscal} optimisée pour ${pts} part(s).`;
+/************************************
+ * 7. SIMULATIONS PAR STATUT
+ ************************************/
 
-        let table = `<tr><td>CA Annuel HT</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>`;
-        if(activeFiscal === 'IS' && activeStatut !== 'Micro') {
-            table += `<tr><td>Salaire Net <span class="pct">Mensuel</span></td><td style="text-align:right">${f(d.sal_net_an/12)}</td></tr>
-                      <tr><td>Dividendes <span class="pct">Annuel</span></td><td style="text-align:right">${f(d.div_net_an)}</td></tr>`;
+/********** MICRO **********/
+function simulateMicro(ca, parts) {
+    const frais = 600;
+    const cotis = ca * 0.211; // simplifié
+    const netAvantIR = ca - cotis - frais;
+    const revImposable = netAvantIR * 0.90;
+    const ir = calcIR(revImposable, parts);
+    const netAnnuel = netAvantIR - ir;
+    return {
+        statut: 'Micro',
+        ca,
+        cotis,
+        ir,
+        is: 0,
+        dividendesNet: 0,
+        salaireNet: netAnnuel,
+        netMensuel: netAnnuel / 12,
+        details: {
+            revImposable,
+            netAvantIR
+        },
+        ok: ca <= 77700
+    };
+}
+
+/********** EURL IR **********/
+function simulateEURL_IR(ca, parts) {
+    const frais = 4000;
+    const dispo = ca - frais;
+    const cotis = dispo * COTIS_TNS;
+    const netAvantIR = dispo - cotis;
+    const revImposable = netAvantIR; // BIC/BNC
+    const ir = calcIR(revImposable, parts);
+    const netAnnuel = netAvantIR - ir;
+    return {
+        statut: 'EURL',
+        fiscal: 'IR',
+        ca,
+        cotis,
+        ir,
+        is: 0,
+        dividendesNet: 0,
+        salaireNet: netAnnuel,
+        netMensuel: netAnnuel / 12,
+        details: {
+            revImposable,
+            netAvantIR
+        },
+        ok: true
+    };
+}
+
+/********** EURL IS (simplifié) **********/
+function simulateEURL_IS(ca, parts) {
+    const frais = 4000;
+    const dispo = ca - frais;
+    const cotis = dispo * COTIS_TNS;
+    const benefAvantIS = dispo - cotis;
+    const is = calcIS(benefAvantIS);
+    const div = calcDividendes(benefAvantIS - is);
+    const revImposable = 0; // pas de salaire ici
+    const ir = 0;
+    const netAnnuel = div.net;
+    return {
+        statut: 'EURL',
+        fiscal: 'IS',
+        ca,
+        cotis,
+        ir,
+        is,
+        dividendesNet: div.net,
+        salaireNet: 0,
+        netMensuel: netAnnuel / 12,
+        details: {
+            benefAvantIS,
+            divBrut: div.brut,
+            pfu: div.pfu
+        },
+        ok: true
+    };
+}
+
+/********** SASU IS **********/
+function simulateSASU_IS(ca, salaireMensuelCible, parts) {
+    const frais = 4000;
+    const dispo = ca - frais;
+
+    const salaireBudgetAnnuel = salaireMensuelCible * 12;
+    const sal = calcSalaireFromBudget(salaireBudgetAnnuel);
+
+    const benefAvantIS = dispo - sal.brutAnnuel - sal.cotisPatronales;
+    const is = calcIS(benefAvantIS);
+    const div = calcDividendes(benefAvantIS - is);
+
+    const salaireImposable = sal.netAnnuel * 0.90;
+    const ir = calcIR(salaireImposable, parts);
+
+    const netAnnuel = sal.netAnnuel + div.net - ir;
+    return {
+        statut: 'SASU',
+        fiscal: 'IS',
+        ca,
+        cotis: sal.cotisPatronales,
+        ir,
+        is,
+        dividendesNet: div.net,
+        salaireNet: sal.netAnnuel,
+        netMensuel: netAnnuel / 12,
+        details: {
+            salaireBrut: sal.brutAnnuel,
+            salaireNet: sal.netAnnuel,
+            salaireImposable,
+            benefAvantIS,
+            divBrut: div.brut,
+            pfu: div.pfu
+        },
+        ok: true
+    };
+}
+
+/************************************
+ * 8. OPTIMISATION MIX SALAIRE/DIVIDENDES
+ ************************************/
+function findBestSASU_IS(ca, parts) {
+    let best = null;
+    for (let sal = 2000; sal <= 7000; sal += 500) {
+        const sim = simulateSASU_IS(ca, sal, parts);
+        if (!best || sim.netMensuel > best.netMensuel) {
+            best = { ...sim, salaireMensuelCible: sal };
         }
-        table += `<tr><td>Charges URSSAF</td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
-                  <tr><td>Impôts (IR + IS)</td><td style="text-align:right">- ${f(d.ir + d.is_tax)}</td></tr>
-                  <tr style="font-size:16px; color:var(--success); font-weight:800;"><td style="padding-top:15px">NET GLOBAL / MOIS</td><td style="text-align:right; padding-top:15px">${f(d.netF)}</td></tr>`;
-
-        document.getElementById('audit_detail').innerHTML = table;
-        
-        let daysHtml = ""; [10, 15, 18, 20, 22].forEach(j => {
-            daysHtml += `<button class="day-btn ${currentDays == j ? 'active' : ''}" onclick="currentDays=${j}; updateUI()">${j}j</button>`;
-        });
-        document.getElementById('days_grid').innerHTML = daysHtml;
-        document.getElementById('tjm_val').innerText = Math.round(d.ca / 12 / currentDays).toLocaleString() + " €";
     }
+    return best;
+}
+
+/************************************
+ * 9. MOTEUR GLOBAL
+ ************************************/
+function simulateAll(targetRevMensuel, parts) {
+    const isRevMode = targetRevMensuel > 0;
+    let caGuess = isRevMode ? targetRevMensuel * 12 * 1.7 : targetRevMensuel;
+
+    let res = {};
+    for (let k = 0; k < 8; k++) {
+        const micro = simulateMicro(caGuess, parts);
+        const eurlIR = simulateEURL_IR(caGuess, parts);
+        const eurlIS = simulateEURL_IS(caGuess, parts);
+        const sasuBest = findBestSASU_IS(caGuess, parts);
+
+        res = { micro, eurlIR, eurlIS, sasuBest };
+
+        if (isRevMode) {
+            const bestNet = Math.max(
+                micro.netMensuel,
+                eurlIR.netMensuel,
+                eurlIS.netMensuel,
+                sasuBest.netMensuel
+            );
+            caGuess += (targetRevMensuel - bestNet) * 1.5 * 12;
+            if (Math.abs(targetRevMensuel - bestNet) < 50) break;
+        }
+    }
+    return res;
+}
+
+/************************************
+ * 10. UI : CALCUL & MISE À JOUR
+ ************************************/
+function calculer() {
+    const revS = parseNumberInput('rev');
+    const caS = parseNumberInput('ca');
+    if (!revS && !caS) return;
+
+    const parts = parseFloat(document.getElementById('parts').value) || 1;
+    const target = revS || (caS / 12);
+
+    const data = simulateAll(revS ? revS : 0, parts);
+    globalData = data;
+
+    document.getElementById('resultats').style.display = 'block';
+    updateUI();
+}
+
+function toggleExpertMode() {
+    expertMode = !expertMode;
+    updateUI();
+}
+
+/************************************
+ * 11. UI : RENDU
+ ************************************/
+function updateUI() {
+    const parts = parseFloat(document.getElementById('parts').value) || 1;
+
+    const stats = [
+        { key: 'micro', label: 'Micro' },
+        { key: 'eurlIR', label: 'EURL IR' },
+        { key: 'eurlIS', label: 'EURL IS' },
+        { key: 'sasuBest', label: 'SASU IS' }
+    ];
+
+    let tabsHtml = "";
+    stats.forEach(s => {
+        const d = globalData[s.key];
+        const active = (activeStatut === s.key) ? 'active' : '';
+        const val = d.ok ? formatEuro(d.netMensuel) : 'OFF';
+        tabsHtml += `
+            <div class="status-tab ${active}" onclick="activeStatut='${s.key}'; updateUI()">
+                <h4>${s.label}</h4>
+                <div>${val}</div>
+            </div>`;
+    });
+    document.getElementById('status_tabs').innerHTML = tabsHtml;
+
+    const d = globalData[activeStatut];
+    const f = formatEuro;
+
+    // Message conseil
+    let bestKey = 'micro';
+    let bestVal = globalData.micro.netMensuel;
+    stats.forEach(s => {
+        if (globalData[s.key].netMensuel > bestVal) {
+            bestVal = globalData[s.key].netMensuel;
+            bestKey = s.key;
+        }
+    });
+
+    let bestLabel = stats.find(s => s.key === bestKey).label;
+    document.getElementById('advice_text').innerHTML =
+        `✅ Meilleur statut estimé : <b>${bestLabel}</b> avec ${f(bestVal)} / mois.`;
+
+    // Tableau synthèse
+    let table = `
+        <tr><td>CA Annuel HT</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>
+        <tr><td>Charges sociales</td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
+        <tr><td>Impôt sur le revenu</td><td style="text-align:right">- ${f(d.ir)}</td></tr>
+        <tr><td>Impôt sur les sociétés</td><td style="text-align:right">- ${f(d.is || 0)}</td></tr>
+        <tr style="font-size:16px; color:var(--success); font-weight:800;">
+            <td style="padding-top:15px">NET GLOBAL / MOIS</td>
+            <td style="text-align:right; padding-top:15px">${f(d.netMensuel)}</td>
+        </tr>
+    `;
+    document.getElementById('audit_detail').innerHTML = table;
+
+    // Mix salaire / dividendes (SASU IS uniquement)
+    if (activeStatut === 'sasuBest') {
+        document.getElementById('mix_container').style.display = 'block';
+        const total = d.salaireNet + d.dividendesNet;
+        const salPct = total > 0 ? (d.salaireNet / total * 100) : 0;
+        const divPct = total > 0 ? (d.dividendesNet / total * 100) : 0;
+        document.getElementById('bar_sal').style.width = salPct + '%';
+        document.getElementById('bar_div').style.width = divPct + '%';
+        document.getElementById('mix_label').innerText =
+            `Salaire cible optimisé : ${formatEuro(d.salaireNet / 12)} / mois`;
+    } else {
+        document.getElementById('mix_container').style.display = 'none';
+    }
+
+    // Mode expert
+    if (expertMode) {
+        let expHtml = `<h4>Détails fiscaux (mode expert)</h4><ul>`;
+        if (d.details) {
+            Object.keys(d.details).forEach(k => {
+                expHtml += `<li><b>${k}</b> : ${formatEuro(d.details[k])}</li>`;
+            });
+        }
+        expHtml += `</ul>`;
+        document.getElementById('expert_panel').innerHTML = expHtml;
+        document.getElementById('expert_panel').style.display = 'block';
+    } else {
+        document.getElementById('expert_panel').style.display = 'none';
+    }
+
+    // TJM
+    let daysHtml = "";
+    [10, 15, 18, 20, 22].forEach(j => {
+        daysHtml += `<button class="day-btn ${currentDays == j ? 'active' : ''}" onclick="currentDays=${j}; updateUI()">${j}j</button>`;
+    });
+    document.getElementById('days_grid').innerHTML = daysHtml;
+    document.getElementById('tjm_val').innerText =
+        Math.round(d.ca / 12 / currentDays).toLocaleString('fr-FR') + " €";
+}
+
 </script>
 </body>
 
 </html>
+
 
 
 

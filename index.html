@@ -207,60 +207,35 @@
 </div>
 
 <div class="main-simulator-card">
-    <div class="config-bar">
-        <div class="toggle-group">
-            <button class="toggle-btn active" onclick="setType('service')" id="btn-service">Prestation</button>
-            <button class="toggle-btn" onclick="setType('commerce')" id="btn-commerce">Commerce</button>
-        </div>
-        <div style="font-size:12px; font-weight:bold; display:flex; align-items:center; gap:8px;">
-            <span style="color:#718096">ACRE (Exonération partielle)</span>
-            <input type="checkbox" id="acre_check" style="width:20px; height:20px; accent-color:var(--success)">
-        </div>
-    </div>
+    <h2 style="text-align:center; margin-bottom:25px; color:var(--dark);">Audit Financier Indépendant</h2>
+    
+    <label class="field-label">Revenu Net Mensuel Cible (€)</label>
+    <input type="text" id="rev_display" placeholder="Ex: 6 000" oninput="handleMask(this, 'rev')">
+    <input type="hidden" id="rev">
 
-    <div class="form-container">
-        <label class="field-label">Chiffre d'Affaires HT (€/an)</label>
-        <input type="text" id="ca_display" placeholder="Laissez vide pour viser un revenu" oninput="handleMask(this, 'ca')">
-        <input type="hidden" id="ca">
+    <label class="field-label">Situation Familiale (Nombre de parts)</label>
+    <input type="number" id="parts_fiscales" value="1" step="0.5" min="1">
 
-        <label class="field-label">OU Revenu Net Cible (€/mois après impôts)</label>
-        <input type="text" id="rev_display" placeholder="Ex: 6000" oninput="handleMask(this, 'rev')">
-        <input type="hidden" id="rev">
+    <label class="field-label">Frais de Fonctionnement Mensuels (€)</label>
+    <input type="text" id="frais_display" placeholder="Logiciels, bureau, assurances..." oninput="handleMask(this, 'frais')">
+    <input type="hidden" id="frais">
 
-        <label class="field-label">Frais de fonctionnement mensuels (€/mois)</label>
-        <input type="text" id="frais_display" placeholder="Logiciels, bureau, assurance..." oninput="handleMask(this, 'frais')">
-        <input type="hidden" id="frais">
-
-        <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #cbd5e0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <label class="field-label" style="margin:0;">Régime fiscal (Société)</label>
-                <select id="option_fiscale" style="padding: 5px; border-radius: 8px; border: 1px solid #cbd5e0; font-weight: bold;">
-                    <option value="IS">IS (Optimisé Salaire/Dividendes)</option>
-                    <option value="IR">IR (Impôt sur le Revenu direct)</option>
-                </select>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label class="field-label" style="margin:0;">Parts Fiscales (Quotient)</label>
-                <input type="number" id="parts_fiscales" value="1" step="0.5" min="1" style="width: 60px; padding: 5px; border-radius: 8px; border: 1px solid #cbd5e0; text-align: center; font-weight: bold;">
-            </div>
-        </div>
-
-        <button class="btn-analyze" onclick="analyser()">Analyser la rentabilité</button>
-    </div>
+    <button class="btn-analyze" onclick="analyser()">Lancer l'audit complet</button>
 
     <div id="resultats" style="display:none; margin-top:30px;">
-        <div class="res-grid">
-            <div id="bloc_resume" class="result-block best-block" style="background:var(--primary); color:white;"></div>
-            <div id="bloc_tjm" class="result-block tjm-block" style="background: white; border: 1px solid #e2e8f0;">
-                <span style="font-size:10px; font-weight:800; color:#a0aec0;">SIMULATEUR TJM</span>
-                <div id="tjm_value" style="font-size:28px; font-weight:800; color:var(--primary); margin:5px 0;">0 €</div>
-                <input type="range" id="jours_range" min="10" max="25" value="18" style="width:100%; accent-color:var(--primary);" oninput="updateTJMOnly()">
-                <div style="font-size:11px; margin-top:5px; font-weight:bold;"><span id="jours_label">18</span> jours facturés / mois</div>
-            </div>
+        <div id="conseil_expert"></div>
+
+        <div style="background: white; border: 1px solid #e2e8f0; padding: 25px; border-radius: 15px;">
+            <h3 style="margin-top:0; font-size:16px; text-transform:uppercase; color:var(--primary);">Décomposition du Chiffre d'Affaires</h3>
+            <table class="audit-table" id="audit_table">
+                </table>
         </div>
-        
-        <div id="bloc_impact"></div> <div id="bloc_costs"></div> <p style="font-size:11px; font-weight:800; color:#a0aec0; text-transform:uppercase; margin:25px 0 10px; text-align:center;">--- Comparaison des statuts ---</p>
-        <div id="liste_statuts" class="status-selector"></div>
+
+        <div id="bloc_tjm" style="margin-top:20px; text-align:center; padding:20px; background:var(--dark); color:white; border-radius:15px;">
+            <span style="font-size:11px; opacity:0.8; text-transform:uppercase; letter-spacing:1px;">TJM (Tarif Journalier Moyen) conseillé</span>
+            <div id="tjm_value" style="font-size:32px; font-weight:800; margin:10px 0;">0 €</div>
+            <span style="font-size:12px; opacity:0.8;">Basé sur 18 jours facturés par mois</span>
+        </div>
     </div>
 </div>
     
@@ -516,6 +491,7 @@
 </body>
 
 </html>
+
 
 
 

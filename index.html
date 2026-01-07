@@ -213,8 +213,8 @@
             <button class="toggle-btn" onclick="setType('commerce')" id="btn-commerce">Commerce</button>
         </div>
         <div style="font-size:12px; font-weight:bold; display:flex; align-items:center; gap:8px;">
-            <span style="color:#718096">ACRE</span>
-            <input type="checkbox" id="acre_check" style="width:20px; height:20px; accent-color:var(--success)" onchange="analyser()">
+            <span style="color:#718096">ACRE (Exonération partielle)</span>
+            <input type="checkbox" id="acre_check" style="width:20px; height:20px; accent-color:var(--success)">
         </div>
     </div>
 
@@ -227,39 +227,39 @@
         <input type="text" id="rev_display" placeholder="Ex: 6000" oninput="handleMask(this, 'rev')">
         <input type="hidden" id="rev">
 
-        <label class="field-label">Frais Matériel/Logiciels (€/mois)</label>
-        <input type="text" id="frais_display" placeholder="Ex: 300" oninput="handleMask(this, 'frais')">
+        <label class="field-label">Frais de fonctionnement mensuels (€/mois)</label>
+        <input type="text" id="frais_display" placeholder="Logiciels, bureau, assurance..." oninput="handleMask(this, 'frais')">
         <input type="hidden" id="frais">
 
         <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px dashed #cbd5e0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <label class="field-label" style="margin:0;">Option Fiscale</label>
-                <select id="option_fiscale" onchange="analyser()" style="padding: 5px; border-radius: 8px; border: 1px solid #cbd5e0; font-weight: bold;">
-                    <option value="IS">IS (Impôt Sociétés)</option>
-                    <option value="IR">IR (Impôt Revenu)</option>
+                <label class="field-label" style="margin:0;">Régime fiscal (Société)</label>
+                <select id="option_fiscale" style="padding: 5px; border-radius: 8px; border: 1px solid #cbd5e0; font-weight: bold;">
+                    <option value="IS">IS (Optimisé Salaire/Dividendes)</option>
+                    <option value="IR">IR (Impôt sur le Revenu direct)</option>
                 </select>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
-                <label class="field-label" style="margin:0;">Parts Fiscales (Optionnel)</label>
-                <input type="number" id="parts_fiscales" value="1" step="0.5" min="1" onchange="analyser()" style="width: 60px; padding: 5px; border-radius: 8px; border: 1px solid #cbd5e0; text-align: center; font-weight: bold;">
+                <label class="field-label" style="margin:0;">Parts Fiscales (Quotient)</label>
+                <input type="number" id="parts_fiscales" value="1" step="0.5" min="1" style="width: 60px; padding: 5px; border-radius: 8px; border: 1px solid #cbd5e0; text-align: center; font-weight: bold;">
             </div>
         </div>
 
         <button class="btn-analyze" onclick="analyser()">Analyser la rentabilité</button>
     </div>
 
-    <div id="resultats" style="display:none;">
+    <div id="resultats" style="display:none; margin-top:30px;">
         <div class="res-grid">
-            <div id="bloc_resume" class="result-block best-block"></div>
+            <div id="bloc_resume" class="result-block best-block" style="background:var(--primary); color:white;"></div>
             <div id="bloc_tjm" class="result-block tjm-block" style="background: white; border: 1px solid #e2e8f0;">
-                <span style="font-size:10px; font-weight:800; color:#a0aec0;">CONFIG. TJM</span>
-                <div id="tjm_value" style="font-size:24px; font-weight:800; color:var(--primary); margin:5px 0;">0 €</div>
+                <span style="font-size:10px; font-weight:800; color:#a0aec0;">SIMULATEUR TJM</span>
+                <div id="tjm_value" style="font-size:28px; font-weight:800; color:var(--primary); margin:5px 0;">0 €</div>
                 <input type="range" id="jours_range" min="10" max="25" value="18" style="width:100%; accent-color:var(--primary);" oninput="updateTJMOnly()">
-                <div style="font-size:11px; margin-top:5px;"><span id="jours_label">18</span> jours travaillés / mois</div>
+                <div style="font-size:11px; margin-top:5px; font-weight:bold;"><span id="jours_label">18</span> jours facturés / mois</div>
             </div>
         </div>
         
-        <div id="bloc_impact"></div> <div id="bloc_costs"></div> <p style="font-size:11px; font-weight:800; color:#a0aec0; text-transform:uppercase; margin:20px 0 10px; text-align:center;">--- Comparaison des statuts ---</p>
+        <div id="bloc_impact"></div> <div id="bloc_costs"></div> <p style="font-size:11px; font-weight:800; color:#a0aec0; text-transform:uppercase; margin:25px 0 10px; text-align:center;">--- Comparaison des statuts ---</p>
         <div id="liste_statuts" class="status-selector"></div>
     </div>
 </div>
@@ -435,7 +435,6 @@
         document.getElementById('btn-commerce').classList.toggle('active', t === 'commerce');
         config.Micro.tx = (t === 'service') ? 0.211 : 0.123;
         config.Micro.max = (t === 'service') ? 77700 : 188700;
-        if(globalResults) analyser();
     }
 
     function calculerIR(rev, parts = 1) {
@@ -467,7 +466,7 @@
 
             if (currentMode === 'REV') {
                 let tentativeCA = revCible * 12 * 1.6;
-                for(let i=0; i<8; i++) {
+                for(let i=0; i<10; i++) {
                     let sim = runFlux(tentativeCA, n, s, txSoc, isIS, parts, fraisM);
                     tentativeCA += (revCible * 12 - sim.netMois * 12) * 1.4;
                 }
@@ -484,23 +483,23 @@
             }
         }
         selectedStatus = top || "EURL";
+        document.getElementById('resultats').style.display = 'block';
         updateUI();
     }
 
     function runFlux(ca, n, s, txSoc, isIS, parts, fraisM) {
-        let res = { ca: ca, cotis: 0, ir: 0, isSoc: 0, flatTax: 0, netMois: 0, divMois: 0, salMois: 0 };
-        res.fraisVar = fraisM * 12;
-        res.reserve = ca * 0.15; // 15% réserve sécurité
-        let dispo = Math.max(0, ca - s.structure - res.fraisVar - res.reserve);
+        let res = { ca: ca, cotis: 0, ir: 0, isSoc: 0, flatTax: 0, netMois: 0, divMois: 0, salMois: 0, reserve: ca * 0.15 };
+        let fraisFonct = s.structure + (fraisM * 12);
+        let dispo = Math.max(0, ca - fraisFonct - res.reserve);
 
         if (n === "Micro") {
             res.cotis = ca * txSoc;
             res.ir = calculerIR(ca * (typeAct === 'service' ? 0.5 : 0.29), parts);
-            res.netMois = (ca - res.cotis - (s.structure + res.fraisVar) - res.ir) / 12;
+            res.netMois = (ca - res.cotis - fraisFonct - res.ir) / 12;
             res.reserve = 0; 
         } else {
             if (isIS) {
-                let salAn = Math.min(dispo / (1+s.tx), 21000); 
+                let salAn = Math.min(dispo / (1+s.tx), 22000); 
                 res.cotis = salAn * s.tx;
                 let benef = Math.max(0, dispo - (salAn + res.cotis));
                 res.isSoc = benef <= 42500 ? benef * 0.15 : (42500 * 0.15) + (benef - 42500) * 0.25;
@@ -515,73 +514,65 @@
                 res.netMois = (netNet - res.ir) / 12;
             }
         }
-        res.totalBoite = (s.structure + res.fraisVar + res.reserve) / 12;
+        res.boiteMois = (fraisFonct + res.reserve) / 12;
         return res;
     }
 
     function updateTJMOnly() {
-        const jours = document.getElementById('jours_range').value;
-        document.getElementById('jours_label').innerText = jours;
+        const j = document.getElementById('jours_range').value;
+        document.getElementById('jours_label').innerText = j;
         if(globalResults) {
-            const data = globalResults[selectedStatus];
-            const tjm = Math.round(data.ca / 12 / jours);
+            const tjm = Math.round(globalResults[selectedStatus].ca / 12 / j);
             document.getElementById('tjm_value').innerText = tjm.toLocaleString() + " €";
         }
     }
 
     function updateUI() {
-        const data = globalResults[selectedStatus];
-        document.getElementById('resultats').style.display = 'block';
-
-        // Update TJM initial
+        const d = globalResults[selectedStatus];
         updateTJMOnly();
 
-        // BLOC RESUME
-        document.getElementById('bloc_resume').innerHTML = `
-            <span style="font-size:10px; font-weight:800; opacity:0.8;">${currentMode === 'CA' ? 'REVENU NET ESTIMÉ' : 'CA ANNUEL REQUIS'}</span>
-            <div style="font-size:24px; font-weight:800; margin:5px 0;">
-                ${currentMode === 'CA' ? Math.round(data.netMois).toLocaleString()+' €/mois' : Math.round(data.ca).toLocaleString()+' €/an'}
-            </div>
-            <div style="font-size:11px;">Statut : <b>${selectedStatus}</b></div>
-        `;
+        const p = (v) => d.ca > 0 ? ((v / d.ca) * 100).toFixed(1) + "%" : "0%";
 
-        // ARGENT DANS L'ENTREPRISE
+        document.getElementById('bloc_resume').innerHTML = `
+            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL FINAL</span>
+            <div style="font-size:26px; font-weight:800; margin:5px 0;">${Math.round(d.netMois).toLocaleString()} €</div>
+            <div style="font-size:11px;">Efficacité : <b>${p(d.netMois*12)}</b> du CA HT</div>`;
+
         document.getElementById('bloc_impact').innerHTML = `
             <div style="background:#f1f5f9; padding:15px; border-radius:12px; margin-bottom:15px; border-left:4px solid #475569;">
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <div>
-                        <span style="font-size:10px; font-weight:800; color:#64748b;">ARGENT RESTE DANS LA BOÎTE</span>
-                        <div style="font-size:18px; font-weight:800;">${Math.round(data.totalBoite).toLocaleString()} €/mois</div>
-                    </div>
-                    <div style="text-align:right; font-size:11px; color:#64748b;">
-                        Structure, frais <br> et réserve sécurité
-                    </div>
-                </div>
-            </div>
-        `;
+                <span style="font-size:10px; font-weight:800; color:#64748b;">DÉDIÉ AU FONCTIONNEMENT PRO</span>
+                <div style="font-size:18px; font-weight:800; color:#1e293b; margin:3px 0;">${Math.round(d.boiteMois).toLocaleString()} € / mois</div>
+                <div style="font-size:11px; color:#64748b;">(Frais fixes + réserve de sécurité de 15% incluse)</div>
+            </div>`;
 
-        // DETAIL DES CALCULS
         let detailHtml = `
-            <div class="costs-card" style="font-size:12px; line-height:2;">
-                <h4 style="margin:0 0 10px; font-size:14px; color:var(--primary)">Détail Technique (${selectedStatus})</h4>
-                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee;"><span>CA Annuel Brut</span><b>${Math.round(data.ca).toLocaleString()} €</b></div>
-                <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Cotisations Sociales</span><span>- ${Math.round(data.cotis).toLocaleString()} €</span></div>
-                ${data.isSoc > 0 ? `<div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Impôt Sociétés + Flat Tax</span><span>- ${Math.round(data.isSoc + data.flatTax).toLocaleString()} €</span></div>` : ''}
-                ${data.ir > 0 ? `<div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Impôt sur le Revenu (IR)</span><span>- ${Math.round(data.ir).toLocaleString()} €</span></div>` : ''}
-                <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--success); font-size:14px; margin-top:5px; border-top:1px solid #eee;">
-                    <span>NET DANS VOTRE POCHE</span><span>${Math.round(data.netMois).toLocaleString()} €/m</span>
+            <div class="costs-card" style="font-size:12px; line-height:2.2;">
+                <h4 style="margin:0 0 10px; font-size:14px; color:var(--primary)">Tableau de bord financier (${selectedStatus})</h4>
+                <div style="display:flex; justify-content:space-between; border-bottom:1px solid #eee;"><span>Chiffre d'Affaires HT</span><b>${Math.round(d.ca).toLocaleString()} €</b></div>
+                <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Charges Sociales (URSSAF) <small>${p(d.cotis)}</small></span><span>- ${Math.round(d.cotis).toLocaleString()} €</span></div>
+                ${d.isSoc > 0 ? `
+                    <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Impôt Sociétés (IS) <small>${p(d.isSoc)}</small></span><span>- ${Math.round(d.isSoc).toLocaleString()} €</span></div>
+                    <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Flat Tax sur Dividendes (30%)</span><span>- ${Math.round(d.flatTax).toLocaleString()} €</span></div>
+                    <div style="background:#f0fff4; padding:10px; border-radius:8px; margin:10px 0; border:1px solid #c6f6d5;">
+                        <div style="display:flex; justify-content:space-between;"><span>Salaire Net (Moyen)</span><b>${Math.round(d.salMois).toLocaleString()} €/m</b></div>
+                        <div style="display:flex; justify-content:space-between;"><span>Dividendes Net</span><b>${Math.round(d.divMois).toLocaleString()} €/m</b></div>
+                    </div>
+                ` : `
+                    <div style="display:flex; justify-content:space-between; color:#e53e3e;"><span>Impôt sur le Revenu (IR) <small>${p(d.ir)}</small></span><span>- ${Math.round(d.ir).toLocaleString()} €</span></div>
+                `}
+                <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--success); font-size:16px; border-top:2px solid #eee; padding-top:10px;">
+                    <span>NET DANS VOTRE POCHE</span><span>${Math.round(d.netMois).toLocaleString()} €/m</span>
                 </div>
             </div>`;
         document.getElementById('bloc_costs').innerHTML = detailHtml;
 
-        // SELECTEUR DE STATUTS
         let htmlStatuts = "";
         for (let n in globalResults) {
             let r = globalResults[n];
             htmlStatuts += `
                 <div class="stat-card ${n === selectedStatus ? 'selected' : ''}" onclick="selectedStatus='${n}'; updateUI();">
                     <h5>${n}</h5>
-                    <div style="font-size:11px;">${r.ok ? (currentMode==='CA' ? Math.round(r.netMois)+'€' : Math.round(r.ca/1000)+'k€') : 'HORS SEUIL'}</div>
+                    <div style="font-size:11px;">${r.ok ? Math.round(r.netMois).toLocaleString()+'€' : 'HORS SEUIL'}</div>
                 </div>`;
         }
         document.getElementById('liste_statuts').innerHTML = htmlStatuts;
@@ -590,6 +581,7 @@
 </body>
 
 </html>
+
 
 
 

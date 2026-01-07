@@ -217,30 +217,27 @@
 
     .btn-main { width: 100%; background: var(--dark); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; }
 
-    /* Tabs Statuts */
     .status-tabs { display: flex; gap: 8px; overflow-x: auto; padding: 10px 0; scrollbar-width: none; }
     .status-tab { flex: 1; min-width: 100px; padding: 12px; border: 2px solid #edf2f7; border-radius: 14px; text-align: center; cursor: pointer; background: white; transition: 0.2s; }
     .status-tab.active { border-color: var(--primary); background: #f0f7ff; }
     .status-tab div { font-weight: 800; color: var(--primary); font-size: 15px; }
 
-    /* Toggle IR/IS */
     .fiscal-toggle { display: flex; background: #edf2f7; padding: 4px; border-radius: 12px; margin: 15px 0; }
-    .f-btn { flex: 1; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 12px; color: #718096; transition: 0.3s; }
-    .f-btn.active { background: var(--primary); color: white; box-shadow: 0 2px 8px rgba(74,144,226,0.3); }
+    .f-btn { flex: 1; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 800; font-size: 11px; color: #718096; }
+    .f-btn.active { background: var(--primary); color: white; }
 
     .audit-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
     .audit-table td { padding: 10px 0; border-bottom: 1px solid #f1f5f9; }
     .pct { background: #e2e8f0; padding: 2px 5px; border-radius: 4px; font-size: 10px; font-weight: bold; margin-left: 5px; }
 
-    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 10px; }
-    .day-btn { border: 1px solid #e2e8f0; background: white; padding: 8px 0; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 700; }
-    .day-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
-
     .res-footer { background: var(--dark); color: white; padding: 20px; border-radius: 20px; margin-top: 20px; text-align: center; }
+    .days-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; margin-top: 10px; }
+    .day-btn { border: 1px solid #e2e8f0; background: white; padding: 8px 0; border-radius: 8px; cursor: pointer; font-size: 11px; font-weight: 700; }
+    .day-btn.active { background: var(--primary); color: white; border: none; }
 </style>
 
 <div class="card">
-    <h2 style="text-align:center; font-size:18px; margin-bottom:20px;">Simulateur Freelance Pro</h2>
+    <h2 style="text-align:center; font-size:18px; margin-bottom:20px;">Optimisation Salaire & Dividendes</h2>
     
     <div class="input-grid">
         <div style="grid-column: span 2;">
@@ -259,31 +256,33 @@
         </div>
     </div>
 
-    <button class="btn-main" onclick="calculer()">Calculer l'Audit</button>
+    <button class="btn-main" onclick="calculer()">Lancer l'Optimisation</button>
 
     <div id="resultats" style="display:none; margin-top:10px;">
         <div class="status-tabs" id="status_tabs"></div>
 
-        <div id="fiscal_container" style="display:none;">
-            <label class="field-label" style="text-align:center;">Option Fiscale (Arbitrage)</label>
+        <div id="fiscal_container">
+            <label class="field-label" style="text-align:center;">Stratégie Fiscale</label>
             <div class="fiscal-toggle">
                 <button id="btn_ir" class="f-btn" onclick="setFiscal('IR')">IMPÔT REVENU (IR)</button>
-                <button id="btn_is" class="f-btn" onclick="setFiscal('IS')">IMPÔT SOCIÉTÉ (IS)</button>
+                <button id="btn_is" class="f-btn" onclick="setFiscal('IS')">IS (SALAIRE + DIVID.)</button>
             </div>
         </div>
 
         <div style="background:var(--bg); padding:15px; border-radius:15px; border:1px solid #e2e8f0;">
-            <div id="advice_text" style="font-size:12px; margin-bottom:10px; color:var(--primary); font-weight:700;"></div>
+            <div id="advice_text" style="font-size:12px; margin-bottom:10px; color:var(--primary); font-weight:700; line-height:1.4;"></div>
             <table class="audit-table" id="audit_detail"></table>
         </div>
 
         <div class="res-footer">
-            <span style="font-size:10px; opacity:0.7; text-transform:uppercase;">Tarif Journalier (TJM)</span>
+            <span style="font-size:10px; opacity:0.7; text-transform:uppercase;">Objectif TJM</span>
             <div id="tjm_val" style="font-size:32px; font-weight:800; color:var(--primary); margin:5px 0;">0 €</div>
             <div class="days-grid" id="days_grid"></div>
         </div>
     </div>
 </div>
+
+
 
 
 
@@ -458,20 +457,38 @@
     function simulate(statut, target, isRevMode, pts, modeFisc) {
         let ca = isRevMode ? target * 12 * 1.6 : target;
         let res = {}; const it = isRevMode ? 10 : 1;
+        
         for(let i=0; i<it; i++) {
             let fraisAn = (statut === 'Micro' ? 600 : 4000);
             let reserve = (statut === 'Micro') ? 0 : ca * 0.15;
-            let cotis = 0, is = 0, netPerso = 0;
-            if(statut === 'Micro') { cotis = ca * 0.211; netPerso = ca - cotis - fraisAn; }
-            else {
+            let cotis = 0, is_tax = 0, flat_tax = 0, netP = 0, salaire_opti = 0, div_net = 0;
+
+            if(statut === 'Micro') {
+                cotis = ca * 0.211;
+                netP = ca - cotis - fraisAn;
+            } else {
                 let dispo = ca - fraisAn - reserve;
                 if(modeFisc === 'IS') {
-                    let sal = Math.min(dispo / 1.45, 45000); cotis = sal * 0.45;
-                    let benef = dispo - sal - cotis; is = benef * 0.15; netPerso = sal + (benef - is) * 0.7;
-                } else { cotis = dispo * (0.45 / 1.45); netPerso = dispo - cotis; }
+                    // Stratégie : Salaire "confort" pour validation trimestres (~2200€ net/m)
+                    // Mais on l'adapte si le CA est plus faible.
+                    salaire_opti = Math.min(dispo / 1.45, 30000); 
+                    cotis = salaire_opti * 0.45;
+                    let benef = dispo - salaire_opti - cotis;
+                    is_tax = benef <= 42500 ? benef * 0.15 : (42500 * 0.15) + (benef - 42500) * 0.25;
+                    let dividendes_bruts = benef - is_tax;
+                    flat_tax = dividendes_bruts * 0.30;
+                    div_net = dividendes_bruts - flat_tax;
+                    netP = salaire_opti + div_net;
+                } else {
+                    cotis = dispo * (0.45 / 1.45);
+                    netP = dispo - cotis;
+                }
             }
-            let ir = getIR(netPerso, pts); let netF = (netPerso - ir) / 12;
-            res = { ca, cotis, ir, is, reserve, netF, pts, ok: (statut === 'Micro' ? ca <= 77700 : true) };
+            // L'IR sur dividende est déjà payé par la flat tax, on ne calcule l'IR que sur le salaire
+            let ir = (modeFisc === 'IS') ? getIR(salaire_opti, pts) : getIR(netP, pts);
+            let netF = (netP - ir) / 12;
+
+            res = { ca, cotis, ir, is_tax, flat_tax, reserve, netF, salaire_opti, div_net, pts, ok: (statut === 'Micro' ? ca <= 77700 : true) };
             if(isRevMode) ca += (target - netF) * 1.5 * 12;
         } return res;
     }
@@ -480,13 +497,13 @@
         const revS = parseFloat(document.getElementById('rev').value) || 0;
         const caS = parseFloat(document.getElementById('ca').value) || 0;
         const pts = parseFloat(document.getElementById('parts').value) || 1;
-        const isRevMode = revS > 0; const target = isRevMode ? revS : caS;
+        const target = revS > 0 ? revS : caS;
         
-        activeFiscal = (pts >= 2.5) ? 'IR' : 'IS'; // Recommandation auto
+        activeFiscal = (pts >= 2.5) ? 'IR' : 'IS'; 
         
         ['Micro', 'EURL', 'SASU'].forEach(s => {
-            globalData[s + '_IR'] = simulate(s, target, isRevMode, pts, 'IR');
-            globalData[s + '_IS'] = simulate(s, target, isRevMode, pts, 'IS');
+            globalData[s + '_IR'] = simulate(s, target, revS > 0, pts, 'IR');
+            globalData[s + '_IS'] = simulate(s, target, revS > 0, pts, 'IS');
         });
         document.getElementById('resultats').style.display = 'block';
         updateUI();
@@ -510,19 +527,24 @@
         const p = (v) => ((v / d.ca) * 100).toFixed(1) + "%";
         const f = (v) => Math.round(v).toLocaleString() + " €";
         
-        const bestF = (pts >= 2.5) ? 'IR' : 'IS';
-        document.getElementById('advice_text').innerText = (activeStatut !== 'Micro') ? 
-            (activeFiscal === bestF ? `✅ Option ${activeFiscal} optimale pour ${pts} parts.` : `⚠️ L'option ${bestF} serait plus rentable ici.`) : "";
+        let conseil = (activeStatut === 'Micro') ? "La Micro est limitée, mais simple." : 
+                     (pts >= 2.5 && activeFiscal === 'IS') ? "⚠️ Attention : Avec vos parts, l'IR est souvent plus rentable que les dividendes." : 
+                     `✅ Stratégie IS : Salaire de ${f(d.salaire_opti/12)}/mois + Dividendes.`;
 
-        document.getElementById('audit_detail').innerHTML = `
-            <tr><td>CA Annuel HT</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>
-            <tr><td>Charges URSSAF <span class="pct">${p(d.cotis)}</span></td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
-            <tr><td>Impôts (IR + IS) <span class="pct">${p(d.ir + d.is)}</span></td><td style="text-align:right">- ${f(d.ir + d.is)}</td></tr>
-            <tr><td>Réserve Sécurité <span class="pct">${p(d.reserve)}</span></td><td style="text-align:right">- ${f(d.reserve)}</td></tr>
-            <tr style="border:none; font-size:16px; color:var(--success); font-weight:800;">
-                <td style="padding-top:15px">NET / MOIS</td><td style="text-align:right; padding-top:15px">${f(d.netF)}</td>
-            </tr>`;
+        document.getElementById('advice_text').innerHTML = conseil;
 
+        let table = `<tr><td>CA Annuel HT</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>`;
+        if(activeFiscal === 'IS' && activeStatut !== 'Micro') {
+            table += `<tr><td>Salaire Net (Optimisé)</td><td style="text-align:right">${f(d.salaire_opti)}</td></tr>
+                      <tr><td>Dividendes Nets <span class="pct">Flat Tax 30%</span></td><td style="text-align:right">${f(d.div_net)}</td></tr>
+                      <tr><td>Impôt Société <span class="pct">${p(d.is_tax)}</span></td><td style="text-align:right">- ${f(d.is_tax)}</td></tr>`;
+        }
+        table += `<tr><td>Charges Sociales <span class="pct">${p(d.cotis)}</span></td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
+                  <tr><td>Impôt Revenu <span class="pct">${p(d.ir)}</span></td><td style="text-align:right">- ${f(d.ir)}</td></tr>
+                  <tr style="font-size:16px; color:var(--success); font-weight:800;"><td style="padding-top:15px">NET GLOBAL / MOIS</td><td style="text-align:right; padding-top:15px">${f(d.netF)}</td></tr>`;
+
+        document.getElementById('audit_detail').innerHTML = table;
+        
         let daysHtml = ""; [10, 15, 18, 20, 22].forEach(j => {
             daysHtml += `<button class="day-btn ${currentDays == j ? 'active' : ''}" onclick="currentDays=${j}; updateUI()">${j}j</button>`;
         });
@@ -533,6 +555,7 @@
 </body>
 
 </html>
+
 
 
 

@@ -206,84 +206,122 @@
   </div>
 </div>
 
-
-    <style>
-    :root { --primary: #4a90e2; --success: #48bb78; --danger: #f56565; --dark: #2d3748; --bg: #f8fafc; }
-    .main-simulator-card { font-family: 'Inter', sans-serif; max-width: 750px; margin: auto; padding: 30px; background: #ffffff; border-radius: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); color: var(--dark); }
-    .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-    .field-label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: #718096; margin-bottom: 8px; }
-    input, select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 15px; transition: 0.3s; background: white; }
-    input:focus, select:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(74,144,226,0.1); }
-    .btn-analyze { width: 100%; background: var(--dark); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: 800; cursor: pointer; text-transform: uppercase; margin-top: 10px; font-size: 16px; }
+<style>
+    :root { --primary: #4a90e2; --success: #48bb78; --dark: #2d3748; --bg: #f8fafc; --text: #2d3748; }
     
-    .status-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 25px 0; }
-    .status-card { padding: 15px; border: 2px solid #edf2f7; border-radius: 15px; cursor: pointer; text-align: center; transition: 0.3s; position: relative; }
+    body { background: #f0f2f5; margin: 0; padding: 10px; font-family: 'Inter', system-ui, sans-serif; }
+
+    .main-simulator-card { 
+        max-width: 700px; 
+        margin: auto; 
+        padding: 20px; 
+        background: #ffffff; 
+        border-radius: 24px; 
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08); 
+        box-sizing: border-box;
+    }
+
+    /* Grille Responsive */
+    .input-grid { 
+        display: grid; 
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+        gap: 15px; 
+        margin-bottom: 20px; 
+    }
+
+    .field-group { margin-bottom: 5px; }
+    .field-label { display: block; font-size: 11px; font-weight: 800; text-transform: uppercase; color: #718096; margin-bottom: 6px; }
+    
+    input, select { 
+        width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 12px; 
+        font-size: 16px; /* Évite le zoom auto sur iPhone */
+        background: #fff; box-sizing: border-box; 
+    }
+
+    .btn-analyze { 
+        width: 100%; background: var(--dark); color: white; border: none; padding: 18px; 
+        border-radius: 14px; font-weight: 800; cursor: pointer; text-transform: uppercase; 
+        font-size: 15px; margin-top: 10px;
+    }
+
+    /* Statuts en mode "Tabs" sur mobile */
+    .status-grid { 
+        display: flex; gap: 10px; overflow-x: auto; padding: 5px 0 15px;
+        scrollbar-width: none; /* Cache scrollbar Firefox */
+    }
+    .status-grid::-webkit-scrollbar { display: none; } /* Cache scrollbar Chrome */
+
+    .status-card { 
+        min-width: 120px; flex: 1; padding: 15px; border: 2px solid #edf2f7; 
+        border-radius: 16px; text-align: center; cursor: pointer; background: white;
+    }
     .status-card.active { border-color: var(--primary); background: #f0f7ff; }
-    .status-card h4 { margin: 0 0 5px; font-size: 13px; color: #4a5568; }
-    .status-card .net-val { font-weight: 800; color: var(--primary); font-size: 18px; }
-    .badge-best { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; font-size: 9px; padding: 2px 8px; border-radius: 10px; font-weight: 800; }
+    .status-card h4 { margin: 0 0 5px; font-size: 12px; color: #718096; }
+    .status-card .net-val { font-weight: 800; color: var(--primary); font-size: 16px; }
 
-    .audit-box { background: var(--bg); padding: 25px; border-radius: 15px; border: 1px solid #e2e8f0; }
-    .audit-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    /* Sélecteur de jours ergonomique */
+    .days-selector { 
+        display: flex; justify-content: space-between; background: #edf2f7; 
+        padding: 4px; border-radius: 12px; margin-top: 10px;
+    }
+    .day-btn { 
+        flex: 1; border: none; background: none; padding: 10px 5px; 
+        border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 13px; color: #718096;
+    }
+    .day-btn.active { background: white; color: var(--primary); shadow: 0 2px 4px rgba(0,0,0,0.1); }
+
+    .audit-box { background: var(--bg); padding: 20px; border-radius: 18px; border: 1px solid #e2e8f0; margin-top: 20px; }
+    .audit-table { width: 100%; border-collapse: collapse; font-size: 13px; }
     .audit-table td { padding: 12px 0; border-bottom: 1px solid #e2e8f0; }
-    .pct { background: #cbd5e0; padding: 2px 6px; border-radius: 5px; font-size: 11px; font-weight: bold; margin-left: 8px; }
-    
-    .tjm-container { background: var(--dark); color: white; padding: 20px; border-radius: 15px; margin-top: 20px; display: flex; align-items: center; justify-content: space-between; }
-    .tjm-slider { flex: 1; margin: 0 20px; accent-color: var(--primary); }
+    .pct { background: #cbd5e0; padding: 2px 6px; border-radius: 5px; font-size: 10px; margin-left: 5px; }
+
+    .tjm-footer { 
+        background: var(--dark); color: white; padding: 20px; border-radius: 18px; 
+        margin-top: 20px; text-align: center; 
+    }
 </style>
 
 <div class="main-simulator-card">
-    <h2 style="text-align:center; margin-bottom:30px;">Audit Financier & Arbitrage Fiscal</h2>
+    <h2 style="text-align:center; margin-bottom:25px; font-size: 20px;">Audit Freelance Expert</h2>
     
     <div class="input-grid">
-        <div>
-            <label class="field-label">Chiffre d'Affaires HT (€/an)</label>
-            <input type="text" id="ca_display" placeholder="Saisir CA" oninput="handleInput(this, 'ca')">
-            <input type="hidden" id="ca">
-        </div>
-        <div>
+        <div class="field-group">
             <label class="field-label">Revenu Net Cible (€/mois)</label>
-            <input type="text" id="rev_display" placeholder="Saisir Revenu" oninput="handleInput(this, 'rev')">
+            <input type="text" id="rev_display" placeholder="Ex: 6 000" oninput="handleInput(this, 'rev')">
             <input type="hidden" id="rev">
         </div>
-        <div>
+        <div class="field-group">
             <label class="field-label">Situation (Parts Fiscales)</label>
-            <input type="number" id="parts" value="1" step="0.5" min="1">
-        </div>
-        <div>
-            <label class="field-label">Régime Fiscal Souhaité</label>
-            <select id="regime_fiscal" onchange="calculer()">
-                <option value="AUTO">Conseillé par l'IA (Recommandé)</option>
-                <option value="IR">Impôt sur le Revenu (IR)</option>
-                <option value="IS">Impôt sur les Sociétés (IS)</option>
-            </select>
+            <input type="number" id="parts" value="1" step="0.5">
         </div>
     </div>
 
-    <button class="btn-analyze" onclick="calculer()">Comparer les Stratégies</button>
+    <button class="btn-analyze" onclick="calculer()">Analyser les statuts</button>
 
-    <div id="resultats" style="display:none; margin-top:30px;">
+    <div id="resultats" style="display:none; margin-top:20px;">
         <div class="status-grid" id="status_selector"></div>
 
         <div class="audit-box">
-            <div id="advice_text" style="margin-bottom:20px; font-size:13px; padding:15px; background:white; border-radius:10px; border-left:4px solid var(--primary); line-height:1.5;"></div>
+            <div id="advice_text" style="margin-bottom:15px; font-size:13px; line-height:1.4;"></div>
             <table class="audit-table" id="audit_detail"></table>
         </div>
 
-        <div class="tjm-container">
-            <div style="text-align:left;">
-                <span style="font-size:10px; opacity:0.7; text-transform:uppercase;">Facturation</span>
-                <div id="tjm_val" style="font-size:28px; font-weight:800; color:var(--primary);">0 €</div>
-                <span style="font-size:11px; opacity:0.7;">TJM Recommandé</span>
-            </div>
-            <input type="range" id="jours_range" min="5" max="22" value="18" class="tjm-slider" oninput="updateTJM()">
-            <div style="text-align:right;">
-                <div id="jours_label" style="font-size:24px; font-weight:800;">18</div>
-                <span style="font-size:11px; opacity:0.7;">Jours / mois</span>
+        <div class="tjm-footer">
+            <span style="font-size:10px; text-transform:uppercase; opacity:0.7;">TJM Recommandé</span>
+            <div id="tjm_val" style="font-size:32px; font-weight:800; color: var(--primary); margin: 5px 0;">0 €</div>
+            
+            <label class="field-label" style="color:white; opacity:0.6; margin-top:15px;">Nombre de jours facturés / mois</label>
+            <div class="days-selector">
+                <button class="day-btn" onclick="setDays(10, this)">10j</button>
+                <button class="day-btn" onclick="setDays(15, this)">15j</button>
+                <button class="day-btn active" onclick="setDays(18, this)">18j</button>
+                <button class="day-btn" onclick="setDays(20, this)">20j</button>
+                <button class="day-btn" onclick="setDays(22, this)">22j</button>
             </div>
         </div>
     </div>
 </div>
+
 
 
     <hr style="border: 0; height: 1px; background: #edf2f7; margin: 40px 0;">
@@ -434,13 +472,19 @@
 <script>
     let globalData = {};
     let activeStatut = "";
+    let currentDays = 18;
 
     function handleInput(el, id) {
         let v = el.value.replace(/\D/g, '');
         document.getElementById(id).value = v;
         el.value = v ? Number(v).toLocaleString('fr-FR') : '';
-        if(id === 'ca') document.getElementById('rev_display').value = '';
-        if(id === 'rev') document.getElementById('ca_display').value = '';
+    }
+
+    function setDays(val, btn) {
+        currentDays = val;
+        document.querySelectorAll('.day-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateTJMDisplay();
     }
 
     function getIR(rev, pts) {
@@ -453,77 +497,59 @@
         return Math.max(0, i * pts);
     }
 
-    function simulate(statut, target, isRevMode, pts, optionFiscale) {
-        let ca = isRevMode ? target * 12 * 1.6 : target;
+    function simulate(statut, targetNet, pts) {
+        let ca = targetNet * 12 * 1.6;
         let res = {};
-        const it = isRevMode ? 12 : 1;
-
-        for(let i=0; i<it; i++) {
-            let fraisAn = (statut === 'Micro' ? 500 : 3800);
+        for(let i=0; i<12; i++) {
+            let fraisAn = (statut === 'Micro' ? 600 : 4000);
             let reserve = (statut === 'Micro') ? 0 : ca * 0.15;
-            let cotis = 0, impotsBoite = 0, netPerso = 0, flatTax = 0;
+            let optFisc = (pts >= 2.5) ? 'IR' : 'IS';
+            let cotis = 0, impotsBoite = 0, netPerso = 0;
 
             if(statut === 'Micro') {
                 cotis = ca * 0.211;
                 netPerso = ca - cotis - fraisAn;
             } else {
                 let dispo = ca - fraisAn - reserve;
-                if(optionFiscale === 'IS') {
-                    // Stratégie IS : Salaire pour optimiser (42.5k€ à 15%)
-                    let salaireAnnuel = Math.min(dispo / 1.45, 45000); 
-                    cotis = salaireAnnuel * 0.45;
-                    let benef = dispo - salaireAnnuel - cotis;
-                    impotsBoite = benef <= 42500 ? benef * 0.15 : (42500 * 0.15) + (benef - 42500) * 0.25;
-                    flatTax = (benef - impotsBoite) * 0.30;
-                    netPerso = salaireAnnuel + (benef - impotsBoite - flatTax);
+                if(optFisc === 'IS') {
+                    let sal = Math.min(dispo / 1.45, 45000);
+                    cotis = sal * 0.45;
+                    let benef = dispo - sal - cotis;
+                    impotsBoite = benef * 0.15;
+                    netPerso = sal + (benef - impotsBoite) * 0.70;
                 } else {
-                    // Stratégie IR
                     cotis = dispo * (0.45 / 1.45);
                     netPerso = dispo - cotis;
                 }
             }
-
-            let ir = (statut === 'Micro') ? getIR(ca * 0.5, pts) : getIR(netPerso, pts);
-            if(optionFiscale === 'IS') ir = getIR(netPerso * 0.7, pts); // Approximation car une partie est déjà taxée (Flat Tax)
-
+            let ir = getIR(netPerso, pts);
             let netFinal = (netPerso - ir) / 12;
-            res = { ca, cotis, ir, impotsBoite, flatTax, fraisAn, reserve, netFinal, pts, optionFiscale, ok: (statut === 'Micro' ? ca <= 77700 : true) };
-            if(isRevMode) ca += (target - netFinal) * 1.5 * 12;
+            res = { ca, cotis, ir, impotsBoite, reserve, netFinal, pts, optFisc, ok: (statut === 'Micro' ? ca <= 77700 : true) };
+            ca += (targetNet - netFinal) * 1.5 * 12;
         }
         return res;
     }
 
     function calculer() {
-        const caS = parseFloat(document.getElementById('ca').value) || 0;
         const revS = parseFloat(document.getElementById('rev').value) || 0;
         const pts = parseFloat(document.getElementById('parts').value) || 1;
-        const isRev = revS > 0;
-        const target = isRev ? revS : caS;
-        
-        let optionSaisie = document.getElementById('regime_fiscal').value;
-        let optionAuto = (pts >= 2.5) ? 'IR' : 'IS';
-        let optionFinale = (optionSaisie === 'AUTO') ? optionAuto : optionSaisie;
+        if(!revS) return alert("Saisissez un revenu cible");
 
-        const statuts = ['Micro', 'EURL', 'SASU'];
-        let maxNet = -1, best = "";
-
-        statuts.forEach(s => {
-            globalData[s] = simulate(s, target, isRev, pts, optionFinale);
-            if(globalData[s].ok && globalData[s].netFinal > maxNet) { maxNet = globalData[s].netFinal; best = s; }
+        ['Micro', 'EURL', 'SASU'].forEach(s => {
+            globalData[s] = simulate(s, revS, pts);
         });
 
-        activeStatut = activeStatut || best;
-        renderUI(best, optionAuto, optionFinale);
+        activeStatut = (pts >= 2.5 || globalData['Micro'].ca > 77700) ? 'EURL' : 'Micro';
+        renderUI();
     }
 
-    function renderUI(best, optionAuto, optionFinale) {
+    function renderUI() {
         let html = "";
         for(let s in globalData) {
             let d = globalData[s];
-            html += `<div class="status-card ${activeStatut === s ? 'active' : ''}" onclick="activeStatut='${s}'; renderUI('${best}', '${optionAuto}', '${optionFinale}')">
-                ${s === best ? '<div class="badge-best">OPTIMAL</div>' : ''}
+            html += `<div class="status-card ${activeStatut === s ? 'active' : ''}" onclick="activeStatut='${s}'; renderUI()">
                 <h4>${s}</h4>
-                <div class="net-val">${d.ok ? Math.round(d.netFinal).toLocaleString()+'€' : 'SEUIL DÉPASSÉ'}</div>
+                <div class="net-val">${d.ok ? Math.round(d.netFinal).toLocaleString()+'€' : 'OFF'}</div>
             </div>`;
         }
         document.getElementById('status_selector').innerHTML = html;
@@ -532,37 +558,23 @@
         const d = globalData[activeStatut];
         const p = (v) => ((v / d.ca) * 100).toFixed(1) + "%";
         const f = (v) => Math.round(v).toLocaleString() + " €";
-        
-        let msgConseil = (optionFinale === optionAuto) 
-            ? `✅ <b>Stratégie Optimale :</b> L'option <b>${optionFinale}</b> est recommandée pour vos <b>${d.pts} parts</b>.`
-            : `⚠️ <b>Alerte Arbitrage :</b> Vous avez forcé l'option <b>${optionFinale}</b>, mais l'option <b>${optionAuto}</b> serait plus rentable pour votre profil familial.`;
 
-        document.getElementById('advice_text').innerHTML = msgConseil;
+        document.getElementById('advice_text').innerHTML = `💡 <b>Conseil :</b> Pour <b>${d.pts} parts</b>, l'option <b>${d.optFisc}</b> est la plus efficace. Vous gardez <b>${p(d.netFinal*12)}</b> de votre CA.`;
         
-        let detailHtml = `
-            <tr><td>Chiffre d'Affaires HT</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>
-            <tr><td>Charges Sociales (URSSAF) <span class="pct">${p(d.cotis)}</span></td><td style="text-align:right">- ${f(d.cotis)}</td></tr>`;
-        
-        if(d.optionFiscale === 'IS') {
-            detailHtml += `<tr><td>Impôt Sociétés + Flat Tax <span class="pct">${p(d.impotsBoite + d.flatTax)}</span></td><td style="text-align:right">- ${f(d.impotsBoite + d.flatTax)}</td></tr>`;
-        }
-        
-        detailHtml += `
-            <tr><td>Impôt sur le Revenu <span class="pct">${p(d.ir)}</span></td><td style="text-align:right">- ${f(d.ir)}</td></tr>
-            <tr><td>Réserve & Sécurité (15%) <span class="pct">${p(d.reserve)}</span></td><td style="text-align:right">- ${f(d.reserve)}</td></tr>
-            <tr style="border:none; font-size:18px; color:var(--success); font-weight:800;">
-                <td style="padding-top:20px">NET APRÈS TOUT</td><td style="text-align:right; padding-top:20px">${f(d.netFinal)} / mois</td>
+        document.getElementById('audit_detail').innerHTML = `
+            <tr><td>CA Annuel HT</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>
+            <tr><td>Charges URSSAF <span class="pct">${p(d.cotis)}</span></td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
+            <tr><td>Impôts (IR + IS) <span class="pct">${p(d.ir + d.impotsBoite)}</span></td><td style="text-align:right">- ${f(d.ir + d.impotsBoite)}</td></tr>
+            <tr><td>Réserve Sécurité <span class="pct">${p(d.reserve)}</span></td><td style="text-align:right">- ${f(d.reserve)}</td></tr>
+            <tr style="border:none; font-size:16px; color:var(--success); font-weight:800;">
+                <td style="padding-top:15px">NET FINAL</td><td style="text-align:right; padding-top:15px">${f(d.netFinal)} / mois</td>
             </tr>`;
-        
-        document.getElementById('audit_detail').innerHTML = detailHtml;
-        updateTJM();
+        updateTJMDisplay();
     }
 
-    function updateTJM() {
-        const jours = document.getElementById('jours_range').value;
-        document.getElementById('jours_label').innerText = jours;
+    function updateTJMDisplay() {
         if(globalData[activeStatut]) {
-            const tjm = Math.round(globalData[activeStatut].ca / 12 / jours);
+            const tjm = Math.round(globalData[activeStatut].ca / 12 / currentDays);
             document.getElementById('tjm_val').innerText = tjm.toLocaleString() + " €";
         }
     }
@@ -570,6 +582,7 @@
 </body>
 
 </html>
+
 
 
 

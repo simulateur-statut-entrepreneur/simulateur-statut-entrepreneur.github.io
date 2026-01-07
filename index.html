@@ -360,160 +360,131 @@
 </style>
 </div>
 <script>
- // 1. VARIABLES GLOBALES ET CONFIGURATION (MAJ)
-let typeAct = 'service';
-let currentMode = 'CA';
-let globalResults = null;
-let selectedStatus = "";
-let recommendedStatus = "";
+    // 1. VARIABLES GLOBALES
+    let typeAct = 'service';
+    let currentMode = 'CA';
+    let globalResults = null;
+    let selectedStatus = "";
+    let recommendedStatus = "";
 
-const config = {
-    "Micro": { 
-        tx: 0.211, 
-        max: 77700, 
-        structure: 800, 
-        creation: 0, 
-        isSociete: false,
-        isIS: false // Par défaut la Micro est à l'IR
-    },
-    "EURL": { 
-        tx: 0.45, 
-        max: 999999, 
-        structure: 3000, 
-        creation: 500, 
-        isSociete: true,
-        isIS: true // On peut simuler l'EURL à l'IS par défaut
-    },
-    "SASU": { 
-        tx: 0.75, 
-        max: 999999, 
-        structure: 3500, 
-        creation: 600, 
-        isSociete: true,
-        isIS: true // La SASU est quasi toujours à l'IS
+    const config = {
+        "Micro": { tx: 0.211, max: 77700, structure: 800, creation: 0, isSociete: false },
+        "EURL": { tx: 0.45, max: 999999, structure: 3000, creation: 500, isSociete: true },
+        "SASU": { tx: 0.75, max: 999999, structure: 3500, creation: 600, isSociete: true }
+    };
+
+    // 2. FONCTIONS DE SAISIE (CORRIGE L'ERREUR handleMask)
+    function handleMask(el, id) {
+        let v = el.value.replace(/\D/g, '');
+        document.getElementById(id).value = v;
+        el.value = v ? Number(v).toLocaleString('fr-FR') : '';
+        if(id === 'ca') { document.getElementById('rev_display').value = ''; currentMode = 'CA'; }
+        if(id === 'rev') { document.getElementById('ca_display').value = ''; currentMode = 'REV'; }
     }
-};
 
-// --- NOUVEAUTÉ : CALCUL DE L'IMPÔT SUR LE REVENU (Tranches 2025/2026) ---
-function calculerIR(revenuImposable, parts = 1) {
-    const r = revenuImposable / parts;
-    let impot = 0;
-
-    if (r > 177753) {
-        impot += (r - 177753) * 0.45;
-        impot += (177753 - 82341) * 0.41;
-        impot += (82341 - 28797) * 0.30;
-        impot += (28797 - 11294) * 0.11;
-    } else if (r > 82341) {
-        impot += (r - 82341) * 0.41;
-        impot += (82341 - 28797) * 0.30;
-        impot += (28797 - 11294) * 0.11;
-    } else if (r > 28797) {
-        impot += (r - 28797) * 0.30;
-        impot += (28797 - 11294) * 0.11;
-    } else if (r > 11294) {
-        impot += (r - 11294) * 0.11;
+    function setType(t) {
+        typeAct = t;
+        document.getElementById('btn-service').classList.toggle('active', t==='service');
+        document.getElementById('btn-commerce').classList.toggle('active', t==='commerce');
+        config.Micro.tx = (t === 'service') ? 0.211 : 0.123;
+        config.Micro.max = (t === 'service') ? 77700 : 188700;
     }
-    return Math.max(0, impot * parts);
-}
 
-// --- NOUVEAUTÉ : CALCUL DE L'IMPÔT SUR LES SOCIÉTÉS ---
-function calculerIS(benefice) {
-    if (benefice <= 0) return 0;
-    if (benefice <= 42500) {
-        return benefice * 0.15;
-    } else {
-        return (42500 * 0.15) + (benefice - 42500) * 0.25;
+    // 3. LOGIQUE FISCALE
+    function calculerIR(revenuImposable, parts) {
+        const r = revenuImposable / parts;
+        let impot = 0;
+        if (r > 177753) impot += (r - 177753) * 0.45 + (177753 - 82341) * 0.41 + (82341 - 28797) * 0.30 + (28797 - 11294) * 0.11;
+        else if (r > 82341) impot += (r - 82341) * 0.41 + (82341 - 28797) * 0.30 + (28797 - 11294) * 0.11;
+        else if (r > 28797) impot += (r - 28797) * 0.30 + (28797 - 11294) * 0.11;
+        else if (r > 11294) impot += (r - 11294) * 0.11;
+        return Math.max(0, impot * parts);
     }
-}
 
-// 3. LOGIQUE DE CALCUL ADAPTÉE
-// --- FONCTION CALCUL IR (Barème 2025/2026) ---
-function calculerIR(revenuImposable, parts) {
-    const r = revenuImposable / parts;
-    let impot = 0;
-    if (r > 177753) impot += (r - 177753) * 0.45 + (177753 - 82341) * 0.41 + (82341 - 28797) * 0.30 + (28797 - 11294) * 0.11;
-    else if (r > 82341) impot += (r - 82341) * 0.41 + (82341 - 28797) * 0.30 + (28797 - 11294) * 0.11;
-    else if (r > 28797) impot += (r - 28797) * 0.30 + (28797 - 11294) * 0.11;
-    else if (r > 11294) impot += (r - 11294) * 0.11;
-    return Math.max(0, impot * parts);
-}
+    // 4. ANALYSE (CORRIGE L'ERREUR analyser)
+    function analyser() {
+        const caVal = parseFloat(document.getElementById('ca').value) || 0;
+        const revVal = parseFloat(document.getElementById('rev').value) || 0;
+        const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+        const acre = document.getElementById('acre_check').checked;
+        const optionFiscale = document.getElementById('option_fiscale').value;
+        const parts = parseFloat(document.getElementById('parts_fiscales').value) || 1;
 
-// --- FONCTION CALCUL IS ---
-function calculerIS(benefice) {
-    if (benefice <= 0) return 0;
-    if (benefice <= 42500) return benefice * 0.15;
-    return (42500 * 0.15) + (benefice - 42500) * 0.25;
-}
+        globalResults = {};
+        let top = "";
+        let bestNet = -Infinity;
 
-function analyser() {
-    const caVal = parseFloat(document.getElementById('ca').value) || 0;
-    const revVal = parseFloat(document.getElementById('rev').value) || 0;
-    const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
-    const acre = document.getElementById('acre_check').checked;
-    const optionFiscale = document.getElementById('option_fiscale').value;
-    const parts = parseFloat(document.getElementById('parts_fiscales').value) || 1;
+        for (let n in config) {
+            let s = config[n];
+            let res = { ca: 0, net: 0, ok: true };
+            let txSocial = (acre && n === "Micro") ? s.tx / 2 : s.tx;
 
-    globalResults = {};
-    let top = "";
-    let bestNetApresImpot = -Infinity;
-
-    for (let n in config) {
-        let s = config[n];
-        let res = { ca: 0, netMensuelBrut: 0, netMensuelApresImpot: 0, impotAnnuel: 0, ok: true };
-        let txSocial = (acre && n === "Micro") ? s.tx / 2 : s.tx;
-
-        if (currentMode === 'CA') {
             res.ca = caVal;
             let baseCalcul = caVal - s.structure - fraisPerso;
 
             if (n === "Micro") {
-                // Cotisations sociales
-                let cotisations = caVal * txSocial;
-                let netAvantImpotAnnuel = caVal - cotisations - s.structure - fraisPerso;
-                res.netMensuelBrut = netAvantImpotAnnuel / 12;
-                
-                // Impôt (Abattement forfaitaire : 50% services, 71% commerce)
-                let abattement = (typeAct === 'service') ? 0.50 : 0.71;
-                let revenuFiscal = caVal * (1 - abattement);
-                res.impotAnnuel = calculerIR(revenuFiscal, parts);
-                res.netMensuelApresImpot = (netAvantImpotAnnuel - res.impotAnnuel) / 12;
-
+                let netAvantImpot = caVal * (1 - txSocial) - s.structure - fraisPerso;
+                let abattement = (typeAct === 'service') ? 0.5 : 0.71;
+                let impot = calculerIR(caVal * (1 - abattement), parts);
+                res.net = (netAvantImpot - impot) / 12;
             } else {
-                // EURL / SASU
                 if (optionFiscale === "IS") {
-                    // On simule que l'entrepreneur se verse tout en salaire
-                    let salaireBrutAnnuel = baseCalcul > 0 ? (baseCalcul / (1 + s.tx)) : 0;
-                    res.netMensuelBrut = salaireBrutAnnuel / 12;
-                    res.impotAnnuel = calculerIR(salaireBrutAnnuel * 0.9, parts); // 10% abattement frais pro
-                    res.netMensuelApresImpot = (salaireBrutAnnuel - res.impotAnnuel) / 12;
+                    let salaireAnnuel = baseCalcul > 0 ? (baseCalcul / (1 + s.tx)) : 0;
+                    let impot = calculerIR(salaireAnnuel * 0.9, parts);
+                    res.net = (salaireAnnuel - impot) / 12;
                 } else {
-                    // Option IR (Transparence fiscale)
                     let cotis = baseCalcul * (s.tx / (1 + s.tx));
-                    let benefNet = baseCalcul - cotis;
-                    res.netMensuelBrut = benefNet / 12;
-                    res.impotAnnuel = calculerIR(benefNet, parts);
-                    res.netMensuelApresImpot = (benefNet - res.impotAnnuel) / 12;
+                    let benef = baseCalcul - cotis;
+                    let impot = calculerIR(benef, parts);
+                    res.net = (benef - impot) / 12;
                 }
             }
             res.ok = caVal <= s.max;
-            if (res.ok && res.netMensuelApresImpot > bestNetApresImpot) {
-                bestNetApresImpot = res.netMensuelApresImpot;
-                top = n;
-            }
+            if (res.ok && res.net > bestNet) { bestNet = res.net; top = n; }
+            globalResults[n] = res;
         }
-        // Stockage du net pour l'UI (on affiche le net après impôt par défaut car plus réaliste)
-        res.net = res.netMensuelApresImpot; 
-        globalResults[n] = res;
+        recommendedStatus = top;
+        selectedStatus = top;
+        updateUI(18); // Appel de la fonction UI
     }
-    recommendedStatus = top;
-    selectedStatus = top;
-    updateUI(18);
-}
+
+    // 5. MISE À JOUR UI (CORRIGE L'ERREUR updateUI)
+    function updateUI(jours) {
+        if(!globalResults) return;
+        const data = globalResults[selectedStatus];
+        const s = config[selectedStatus];
+        document.getElementById('resultats').style.display = 'block';
+
+        // Bloc Résumé
+        let badge = (selectedStatus === recommendedStatus) ? `<div class="recommend-badge">Conseillé</div>` : "";
+        document.getElementById('bloc_resume').innerHTML = `
+            ${badge}
+            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL APRÈS IMPÔT</span>
+            <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
+            <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
+
+        // Réutiliser votre code updateUI précédent pour les blocs TJM, costs et impact...
+        // ... (Gardez la suite de votre fonction updateUI d'origine ici)
+        
+        // Sélecteur de statuts (Correction pour afficher les résultats mis à jour)
+        let htmlStatuts = "";
+        for(let n in globalResults) {
+            let r = globalResults[n];
+            htmlStatuts += `
+                <div class="stat-card ${n===selectedStatus?'selected':''} ${n===recommendedStatus?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(${jours});">
+                    <h5>${n}</h5>
+                    <div>${r.ok ? Math.round(r.net).toLocaleString()+'€' : 'HORS SEUIL'}</div>
+                </div>`;
+        }
+        document.getElementById('liste_statuts').innerHTML = htmlStatuts;
+    }
+
+    // Gardez aussi vos fonctions toggleDetails et generateDetailedBreakdown à la fin
 </script>
 </body>
 
 </html>
+
 
 
 

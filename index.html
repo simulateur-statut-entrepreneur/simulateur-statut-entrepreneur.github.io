@@ -463,41 +463,16 @@
             let res = { ca: 0, cotisations: 0, ir: 0, isSoc: 0, flatTax: 0, netMois: 0, divMois: 0, salaireMois: 0, reserve: 0, ok: true };
 
             if (currentMode === 'REV') {
-                let ratio = (n === "Micro") ? 1.4 : (isIS ? 1.8 : 2.1);
-                res.ca = (revCible * 12 * ratio) + s.structure + (fraisMois * 12);
-            } else { res.ca = caSaisi; }
-
-            let fraisTotalAnnuel = s.structure + (fraisMois * 12);
-            res.reserve = res.ca * 0.10;
-            let disponible = res.ca - fraisTotalAnnuel - res.reserve;
-
-            if (n === "Micro") {
-                res.cotisations = res.ca * txSoc;
-                let baseIR = res.ca * (typeAct === 'service' ? 0.5 : 0.29);
-                res.ir = calculerIR(baseIR, parts);
-                res.netMois = (res.ca - res.cotisations - fraisTotalAnnuel - res.ir) / 12;
-            } else {
-                if (isIS) {
-                    // Stratégie : Salaire de base (SMIC) pour protection sociale + reste en dividendes
-                    let salaireAnnuel = 21200; // Base ~SMIC pour valider trimestres retraite
-                    if (disponible < salaireAnnuel * (1+s.tx)) salaireAnnuel = disponible / (1+s.tx);
-                    
-                    res.cotisations = salaireAnnuel * s.tx;
-                    let beneficeAvantIS = disponible - (salaireAnnuel + res.cotisations);
-                    res.isSoc = beneficeAvantIS > 0 ? (beneficeAvantIS <= 42500 ? beneficeAvantIS * 0.15 : 42500 * 0.15 + (beneficeAvantIS - 42500) * 0.25) : 0;
-                    
-                    let netApresIS = beneficeAvantIS - res.isSoc;
-                    res.flatTax = netApresIS > 0 ? netApresIS * 0.30 : 0; // 30% Flat Tax
-                    
-                    res.salaireMois = (salaireAnnuel - calculerIR(salaireAnnuel, parts)) / 12;
-                    res.divMois = (netApresIS - res.flatTax) / 12;
-                    res.netMois = res.salaireMois + res.divMois;
-                } else {
-                    res.cotisations = disponible > 0 ? disponible * (s.tx / (1 + s.tx)) : 0;
-                    let netImp = disponible - res.cotisations;
-                    res.ir = calculerIR(netImp, parts);
-                    res.netMois = (netImp - res.ir) / 12;
+                // BOUCLE D'APPROXIMATION POUR CIBLE EXACTE
+                let tentativeCA = revCible * 12 * 1.5;
+                for(let i=0; i<10; i++) { // 10 itérations pour précision chirurgicale
+                    let simulation = calculerFlux(tentativeCA, n, s, txSoc, isIS, parts, fraisMois);
+                    let ecart = (revCible * 12) - (simulation.netMois * 12);
+                    tentativeCA += ecart * 1.5; // Ajustement dynamique
                 }
+                res = calculerFlux(tentativeCA, n, s, txSoc, isIS, parts, fraisMois);
+            } else {
+                res = calculerFlux(caSaisi, n, s, txSoc, isIS, parts, fraisMois);
             }
 
             res.ok = (n === "Micro") ? res.ca <= config.Micro.max : res.ca > 0;
@@ -511,68 +486,101 @@
         updateUI();
     }
 
+    function calculerFlux(ca, n, s, txSoc, isIS, parts, fraisMois) {
+        let res = { ca: ca, cotisations: 0, ir: 0, isSoc: 0, flatTax: 0, netMois: 0, divMois: 0, salaireMois: 0, reserve: ca * 0.10 };
+        let fraisTotalAnnuel = s.structure + (fraisMois * 12);
+        let disponible = ca - fraisTotalAnnuel - res.reserve;
+
+        if (n === "Micro") {
+            res.cotisations = ca * txSoc;
+            let baseIR = ca * (typeAct === 'service' ? 0.5 : 0.29);
+            res.ir = calculerIR(baseIR, parts);
+            res.netMois = (ca - res.cotisations - fraisTotalAnnuel - res.ir) / 12;
+        } else {
+            if (isIS) {
+                let salaireAnnuel = 21200; // Maintien protection sociale
+                if (disponible < salaireAnnuel * (1+s.tx)) salaireAnnuel = Math.max(0, disponible / (1+s.tx));
+                res.cotisations = salaireAnnuel * s.tx;
+                let beneficeIS = Math.max(0, disponible - (salaireAnnuel + res.cotisations));
+                res.isSoc = beneficeIS <= 42500 ? beneficeIS * 0.15 : 42500 * 0.15 + (beneficeIS - 42500) * 0.25;
+                let netApresIS = beneficeIS - res.isSoc;
+                res.flatTax = netApresIS * 0.30;
+                res.salaireMois = (salaireAnnuel - calculerIR(salaireAnnuel, parts)) / 12;
+                res.divMois = (netApresIS - res.flatTax) / 12;
+                res.netMois = res.salaireMois + res.divMois;
+            } else {
+                res.cotisations = disponible > 0 ? disponible * (s.tx / (1 + s.tx)) : 0;
+                let netImp = disponible - res.cotisations;
+                res.ir = calculerIR(netImp, parts);
+                res.netMois = (netImp - res.ir) / 12;
+            }
+        }
+        return res;
+    }
+
     function updateUI() {
         const data = globalResults[selectedStatus];
         const isIS = document.getElementById('option_fiscale').value === "IS" && selectedStatus !== "Micro";
         document.getElementById('resultats').style.display = 'block';
 
-        const getP = (val) => ((val / data.ca) * 100).toFixed(1);
+        const getP = (val) => data.ca > 0 ? ((val / data.ca) * 100).toFixed(1) : 0;
 
         document.getElementById('bloc_resume').innerHTML = `
-            <span style="font-size:10px; font-weight:800; opacity:0.8;">REVENU NET FINAL</span>
-            <div style="font-size:26px; font-weight:800; margin:5px 0;">${Math.round(data.netMois).toLocaleString()} €/mois</div>
-            <div style="font-size:11px;">Efficacité : <b>${getP(data.netMois * 12)}%</b> du CA HT</div>
-        `;
+            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL FINAL</span>
+            <div style="font-size:26px; font-weight:800; margin:5px 0;">${Math.round(data.netMois).toLocaleString()} €</div>
+            <div style="font-size:11px;">Reste en poche : <b>${getP(data.netMois * 12)}%</b> du CA</div>`;
+
+        // BLOC TJM
+        let tjm = Math.round(data.ca / 12 / 18);
+        document.getElementById('bloc_tjm').innerHTML = `
+            <span style="font-size:10px; font-weight:800; color:#a0aec0;">TJM ESTIMÉ</span>
+            <div style="font-size:24px; font-weight:800; margin:5px 0; color:var(--primary)">${tjm.toLocaleString()} €</div>
+            <div style="font-size:11px;">Basé sur 18 jours / mois</div>`;
 
         let detailHtml = `
-            <h4 style="margin:0 0 10px; font-size:14px; color:var(--primary)">Analyse détaillée (${selectedStatus})</h4>
+            <h4 style="margin:0 0 10px; font-size:14px; color:var(--primary)">Détail des prélèvements (${selectedStatus})</h4>
             <div style="font-size:12px; line-height:2.2;">
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9;">
-                    <span>Chiffre d'Affaires HT</span><b>${Math.round(data.ca).toLocaleString()} €</b>
+                    <span>CA Annuel HT</span><b>${Math.round(data.ca).toLocaleString()} €</b>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; color:#e53e3e;">
-                    <span>Charges Sociales (URSSAF) <small>${getP(data.cotisations)}%</small></span>
-                    <span>- ${Math.round(data.cotisations).toLocaleString()} €</span>
+                    <span>Charges URSSAF (${getP(data.cotisations)}%)</span><span>- ${Math.round(data.cotisations).toLocaleString()} €</span>
                 </div>`;
 
         if (isIS) {
             detailHtml += `
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; color:#e53e3e;">
-                    <span>Impôt Sociétés (IS) <small>${getP(data.isSoc)}%</small></span>
-                    <span>- ${Math.round(data.isSoc).toLocaleString()} €</span>
+                    <span>Impôt Sociétés (IS)</span><span>- ${Math.round(data.isSoc).toLocaleString()} €</span>
                 </div>
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; color:#e53e3e;">
-                    <span>Flat Tax sur Dividendes (30%)</span>
-                    <span>- ${Math.round(data.flatTax).toLocaleString()} €</span>
+                    <span>Flat Tax Dividendes (30%)</span><span>- ${Math.round(data.flatTax).toLocaleString()} €</span>
                 </div>
-                <div style="background:#f0fff4; padding:5px 10px; border-radius:8px; margin-top:5px;">
-                    <div style="display:flex; justify-content:space-between;"><span>Salaire Net conseillé</span><b>${Math.round(data.salaireMois).toLocaleString()} €/m</b></div>
-                    <div style="display:flex; justify-content:space-between;"><span>Dividendes net</span><b>${Math.round(data.divMois).toLocaleString()} €/m</b></div>
+                <div style="background:#f8fafc; padding:10px; border-radius:8px; margin:10px 0; border-left:4px solid var(--success);">
+                    <div style="display:flex; justify-content:space-between;"><span>Salaire Net (IR déduit)</span><b>${Math.round(data.salaireMois).toLocaleString()} €/m</b></div>
+                    <div style="display:flex; justify-content:space-between;"><span>Dividendes Net (Flat Tax déduite)</span><b>${Math.round(data.divMois).toLocaleString()} €/m</b></div>
                 </div>`;
         } else {
             detailHtml += `
                 <div style="display:flex; justify-content:space-between; border-bottom:1px solid #f1f5f9; color:#e53e3e;">
-                    <span>Impôt sur le Revenu (IR) <small>${getP(data.ir)}%</small></span>
-                    <span>- ${Math.round(data.ir).toLocaleString()} €</span>
+                    <span>Impôt sur le Revenu (IR)</span><span>- ${Math.round(data.ir).toLocaleString()} €</span>
                 </div>`;
         }
 
         detailHtml += `
-                <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--success); font-size:15px; margin-top:10px;">
-                    <span>NET DANS VOTRE POCHE</span><span>${Math.round(data.netMois).toLocaleString()} €/m</span>
+                <div style="display:flex; justify-content:space-between; font-weight:800; color:var(--success); font-size:16px; margin-top:10px; border-top:2px solid #eee; padding-top:5px;">
+                    <span>VOTRE NET TOTAL</span><span>${Math.round(data.netMois).toLocaleString()} €/mois</span>
                 </div>
             </div>`;
 
         document.getElementById('bloc_costs').innerHTML = `<div class="costs-card">${detailHtml}</div>`;
 
-        // Mise à jour de la liste de comparaison
         let htmlStatuts = "";
         for (let n in globalResults) {
             let r = globalResults[n];
             htmlStatuts += `
                 <div class="stat-card ${n === selectedStatus ? 'selected' : ''}" onclick="selectedStatus='${n}'; updateUI();">
                     <h5>${n}</h5>
-                    <div style="font-size:11px;">${r.ok ? Math.round(r.netMois) + ' €/m' : 'HORS SEUIL'}</div>
+                    <div style="font-size:11px;">${r.ok ? (currentMode==='CA' ? Math.round(r.netMois)+'€' : Math.round(r.ca/1000)+'k€ CA') : 'HORS SEUIL'}</div>
                 </div>`;
         }
         document.getElementById('liste_statuts').innerHTML = htmlStatuts;
@@ -581,6 +589,7 @@
 </body>
 
 </html>
+
 
 
 

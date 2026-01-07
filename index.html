@@ -407,7 +407,7 @@
 </style>
 </div>
 <script>
-    // 1. VARIABLES GLOBALES
+    // 1. CONFIGURATION & VARIABLES
     let typeAct = 'service';
     let currentMode = 'CA';
     let globalResults = null;
@@ -415,12 +415,12 @@
     let recommendedStatus = "";
 
     const config = {
-        "Micro": { tx: 0.211, max: 77700, structure: 800, creation: 0, isSociete: false },
-        "EURL": { tx: 0.45, max: 999999, structure: 3000, creation: 500, isSociete: true },
-        "SASU": { tx: 0.75, max: 999999, structure: 3500, creation: 600, isSociete: true }
+        "Micro": { tx: 0.211, max: 77700, structure: 800, creation: 0, isSociete: false, isIS: false },
+        "EURL": { tx: 0.45, max: 999999, structure: 3000, creation: 500, isSociete: true, isIS: true },
+        "SASU": { tx: 0.75, max: 999999, structure: 3500, creation: 600, isSociete: true, isIS: true }
     };
 
-    // 2. FONCTIONS DE SAISIE (CORRIGE L'ERREUR handleMask)
+    // 2. UTILITAIRES
     function handleMask(el, id) {
         let v = el.value.replace(/\D/g, '');
         document.getElementById(id).value = v;
@@ -437,7 +437,7 @@
         config.Micro.max = (t === 'service') ? 77700 : 188700;
     }
 
-    // 3. LOGIQUE FISCALE
+    // 3. LOGIQUE FISCALE AVANCÉE
     function calculerIR(revenuImposable, parts) {
         const r = revenuImposable / parts;
         let impot = 0;
@@ -448,14 +448,22 @@
         return Math.max(0, impot * parts);
     }
 
-    // 4. ANALYSE (CORRIGE L'ERREUR analyser)
+    function calculerIS(benefice) {
+        if (benefice <= 0) return 0;
+        return benefice <= 42500 ? benefice * 0.15 : (42500 * 0.15) + (benefice - 42500) * 0.25;
+    }
+
+    // 4. ANALYSE MÉTIER
     function analyser() {
         const caVal = parseFloat(document.getElementById('ca').value) || 0;
-        const revVal = parseFloat(document.getElementById('rev').value) || 0;
-        const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
-        const acre = document.getElementById('acre_check').checked;
-        const optionFiscale = document.getElementById('option_fiscale').value;
+        const fraisPersoAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
         const parts = parseFloat(document.getElementById('parts_fiscales').value) || 1;
+        const optionFiscale = document.getElementById('option_fiscale').value;
+        const acre = document.getElementById('acre_check').checked;
+
+        // Calcul Salaire Minimum Vital (Base 1400€ net + 500€ par part supplémentaire)
+        const salaireMinVitalMensuel = 1400 + ((parts - 1) * 500);
+        const reserveConseillee = caVal * 0.15;
 
         globalResults = {};
         let top = "";
@@ -463,74 +471,112 @@
 
         for (let n in config) {
             let s = config[n];
-            let res = { ca: 0, net: 0, ok: true };
+            let res = { ca: caVal, net: 0, dividende: 0, is: 0, ir: 0, ok: true, reserve: reserveConseillee, vital: salaireMinVitalMensuel };
             let txSocial = (acre && n === "Micro") ? s.tx / 2 : s.tx;
-
-            res.ca = caVal;
-            let baseCalcul = caVal - s.structure - fraisPerso;
+            let baseDisponible = caVal - s.structure - fraisPersoAnnuel - reserveConseillee;
 
             if (n === "Micro") {
-                let netAvantImpot = caVal * (1 - txSocial) - s.structure - fraisPerso;
+                let cotis = caVal * txSocial;
+                let netBrut = caVal - cotis - s.structure - fraisPersoAnnuel;
                 let abattement = (typeAct === 'service') ? 0.5 : 0.71;
-                let impot = calculerIR(caVal * (1 - abattement), parts);
-                res.net = (netAvantImpot - impot) / 12;
+                res.ir = calculerIR(caVal * (1 - abattement), parts);
+                res.net = (netBrut - res.ir) / 12;
             } else {
                 if (optionFiscale === "IS") {
-                    let salaireAnnuel = baseCalcul > 0 ? (baseCalcul / (1 + s.tx)) : 0;
-                    let impot = calculerIR(salaireAnnuel * 0.9, parts);
-                    res.net = (salaireAnnuel - impot) / 12;
+                    // Stratégie : On prend le Salaire Vital, le reste en dividendes
+                    let salaireAnnuelVoulu = salaireMinVitalMensuel * 12;
+                    let coutTotalSalaire = salaireAnnuelVoulu * (1 + s.tx);
+                    
+                    if (coutTotalSalaire > baseDisponible) {
+                        // Si pas assez de CA, on baisse le salaire au max possible
+                        salaireAnnuelVoulu = baseDisponible / (1 + s.tx);
+                        coutTotalSalaire = baseDisponible;
+                    }
+
+                    let beneficeAvantIS = baseDisponible - coutTotalSalaire;
+                    res.is = calculerIS(beneficeAvantIS);
+                    let reliquat = beneficeAvantIS - res.is;
+                    
+                    // Flat Tax 30% sur dividendes
+                    res.dividende = (reliquat * 0.70) / 12;
+                    res.ir = calculerIR(salaireAnnuelVoulu * 0.9, parts);
+                    res.net = (salaireAnnuelVoulu - res.ir) / 12;
                 } else {
-                    let cotis = baseCalcul * (s.tx / (1 + s.tx));
-                    let benef = baseCalcul - cotis;
-                    let impot = calculerIR(benef, parts);
-                    res.net = (benef - impot) / 12;
+                    // Option IR
+                    let cotis = baseDisponible > 0 ? (baseDisponible * (s.tx / (1+s.tx))) : 0;
+                    let benef = baseDisponible - cotis;
+                    res.ir = calculerIR(benef, parts);
+                    res.net = (benef - res.ir) / 12;
                 }
             }
-            res.ok = caVal <= s.max;
-            if (res.ok && res.net > bestNet) { bestNet = res.net; top = n; }
+
+            res.ok = caVal <= s.max && res.net > 0;
+            if (res.ok && (res.net + res.dividende) > bestNet) {
+                bestNet = (res.net + res.dividende);
+                top = n;
+            }
             globalResults[n] = res;
         }
+        selectedStatus = top || "Micro";
         recommendedStatus = top;
-        selectedStatus = top;
-        updateUI(18); // Appel de la fonction UI
+        updateUI(18);
     }
 
-    // 5. MISE À JOUR UI (CORRIGE L'ERREUR updateUI)
+    // 5. MISE À JOUR INTERFACE
     function updateUI(jours) {
         if(!globalResults) return;
         const data = globalResults[selectedStatus];
         const s = config[selectedStatus];
         document.getElementById('resultats').style.display = 'block';
 
-        // Bloc Résumé
-        let badge = (selectedStatus === recommendedStatus) ? `<div class="recommend-badge">Conseillé</div>` : "";
-        document.getElementById('bloc_resume').innerHTML = `
-            ${badge}
-            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL APRÈS IMPÔT</span>
-            <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
-            <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
+        const totalMensuel = Math.round(data.net + data.dividende);
 
-        // Réutiliser votre code updateUI précédent pour les blocs TJM, costs et impact...
-        // ... (Gardez la suite de votre fonction updateUI d'origine ici)
-        
-        // Sélecteur de statuts (Correction pour afficher les résultats mis à jour)
+        document.getElementById('bloc_resume').innerHTML = `
+            ${selectedStatus === recommendedStatus ? '<div class="recommend-badge">Optimisé</div>' : ''}
+            <span style="font-size:10px; font-weight:800; opacity:0.8;">REVENU TOTAL NET (APRÈS IMPÔTS)</span>
+            <div style="font-size:26px; font-weight:800; margin:5px 0;">${totalMensuel.toLocaleString()} € / mois</div>
+            <div style="font-size:11px;">Salaire: ${Math.round(data.net).toLocaleString()}€ | Div: ${Math.round(data.dividende).toLocaleString()}€</div>
+        `;
+
+        document.getElementById('bloc_tjm').innerHTML = `
+            <span style="font-size:10px; font-weight:800; color:#a0aec0;">SÉCURITÉ & BESOINS</span>
+            <div style="font-size:14px; font-weight:700; margin:5px 0;">Salaire vital: <span style="color:var(--primary)">${Math.round(data.vital)}€</span></div>
+            <div style="font-size:14px; font-weight:700;">Réserve conseillée: <span style="color:var(--success)">${Math.round(data.reserve/12)}€/m</span></div>
+        `;
+
         let htmlStatuts = "";
         for(let n in globalResults) {
             let r = globalResults[n];
             htmlStatuts += `
-                <div class="stat-card ${n===selectedStatus?'selected':''} ${n===recommendedStatus?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(${jours});">
+                <div class="stat-card ${n===selectedStatus?'selected':''} ${n===recommendedStatus?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(18);">
                     <h5>${n}</h5>
-                    <div>${r.ok ? Math.round(r.net).toLocaleString()+'€' : 'HORS SEUIL'}</div>
+                    <div>${r.ok ? Math.round(r.net + r.dividende).toLocaleString()+'€' : 'N/A'}</div>
                 </div>`;
         }
         document.getElementById('liste_statuts').innerHTML = htmlStatuts;
+        generateDetailedBreakdown();
     }
 
-    // Gardez aussi vos fonctions toggleDetails et generateDetailedBreakdown à la fin
+    function generateDetailedBreakdown() {
+        const data = globalResults[selectedStatus];
+        const s = config[selectedStatus];
+        const caMois = data.ca / 12;
+
+        let html = `<h4 style="margin:0 0 10px 0; font-size:14px; color:var(--primary);">Détails Mensuels (${selectedStatus})</h4>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0;"><span>CA HT</span><span>${Math.round(caMois).toLocaleString()} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; color:var(--danger)"><span>Impôts (IS + IR)</span><span>- ${Math.round((data.is/12) + (data.ir/12)).toLocaleString()} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; color:var(--success)"><span>Réserve Entreprise</span><span>- ${Math.round(data.reserve/12).toLocaleString()} €</span></div>`;
+        
+        document.getElementById('bloc_costs').innerHTML = `
+            <div class="costs-card" style="margin-bottom:10px;">${html}</div>
+            <p style="font-size:11px; color:#718096;">*La réserve de 15% permet de payer la CFE, le comptable et d'anticiper les baisses d'activité.</p>
+        `;
+    }
 </script>
 </body>
 
 </html>
+
 
 
 

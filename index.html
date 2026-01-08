@@ -434,19 +434,25 @@ input { width:100%; padding:10px; margin:5px 0 15px; }
 /************************************
  * 1. CONSTANTES GÉNÉRALES
  ************************************/
-const CHARGES_SALARIALES = 0.22;
-const CHARGES_PATRONALES = 0.42;
-const COTIS_TNS = 0.42;
+const CHARGES_SALARIALES_SASU = 0.22;
+const CHARGES_PATRONALES_SASU = 0.42;
+const COTIS_TNS = 0.42; // TNS (EURL/SARL)
 const PFU = 0.30;
 const IS_REDUIT = 0.15;
 const IS_NORMAL = 0.25;
 const IS_SEUIL = 42500;
 
+// Plafonds Micro (on simplifie en BNC)
+const MICRO_PLAFOND_CA = 77700;
+
 let globalData = {};
-let activeStatut = "micro";   // IMPORTANT : correspond à une clé valide
-let activeFiscal = "IS";
+let activeStatut = "micro";   // micro, ei, eurlIR, eurlIS, sasuIS
 let currentDays = 18;
 let expertMode = false;
+
+// salaires nets saisis par l'utilisateur (optionnels)
+let userSalaryNetSASU = null;
+let userSalaryNetEURLIS = null;
 
 /************************************
  * 2. OUTILS GÉNÉRAUX
@@ -456,13 +462,16 @@ function formatEuro(v) {
 }
 
 function parseNumberInput(id) {
-    const v = document.getElementById(id).value.replace(/\s/g, '').replace(',', '.');
+    const el = document.getElementById(id);
+    if (!el) return 0;
+    const v = el.value.replace(/\s/g, '').replace(',', '.');
     return parseFloat(v) || 0;
 }
 
 function handleInput(el, id) {
     let v = el.value.replace(/\D/g, '');
-    document.getElementById(id).value = v;
+    const hidden = document.getElementById(id);
+    if (hidden) hidden.value = v;
     el.value = v ? Number(v).toLocaleString('fr-FR') : '';
 }
 
@@ -482,22 +491,35 @@ function calcIR(revImposable, parts) {
 }
 
 /************************************
- * 4. CALCUL SALAIRE (SASU)
+ * 4. CALCULS SALARIAUX
  ************************************/
-function calcSalaireFromBudget(budgetAnnuel) {
-    const totalCharges = 1 + CHARGES_PATRONALES + CHARGES_SALARIALES;
-    const brutAnnuel = budgetAnnuel / totalCharges;
-    const netAnnuel = brutAnnuel * (1 - CHARGES_SALARIALES);
-    const cotisPatronales = brutAnnuel * CHARGES_PATRONALES;
+
+// SASU / SAS : assimilé salarié
+function calcSalaireFromNetSASU(netAnnuel) {
+    const netMensuel = netAnnuel / 12;
+    const brutAnnuel = netAnnuel / (1 - CHARGES_SALARIALES_SASU);
+    const cotisPatronales = brutAnnuel * CHARGES_PATRONALES_SASU;
     return {
         brutAnnuel,
         netAnnuel,
-        cotisPatronales
+        cotisPatronales,
+        netMensuel
+    };
+}
+
+// TNS (EURL / SARL) : on part d'un net et on remonte au brut
+function calcSalaireFromNetTNS(netAnnuel) {
+    const brutAnnuel = netAnnuel / (1 - COTIS_TNS);
+    const cotis = brutAnnuel * COTIS_TNS;
+    return {
+        brutAnnuel,
+        netAnnuel,
+        cotis
     };
 }
 
 /************************************
- * 5. CALCUL IS
+ * 5. CALCUL IS & DIVIDENDES
  ************************************/
 function calcIS(benef) {
     if (benef <= 0) return 0;
@@ -505,9 +527,6 @@ function calcIS(benef) {
     return IS_SEUIL * IS_REDUIT + (benef - IS_SEUIL) * IS_NORMAL;
 }
 
-/************************************
- * 6. CALCUL DIVIDENDES
- ************************************/
 function calcDividendes(benefApresIS) {
     if (benefApresIS <= 0) return { brut: 0, net: 0, pfu: 0 };
     const brut = benefApresIS;
@@ -517,11 +536,26 @@ function calcDividendes(benefApresIS) {
 }
 
 /************************************
- * 7. SIMULATIONS PAR STATUT
+ * 6. SIMULATEURS PAR STATUT
  ************************************/
 
-/********** MICRO **********/
+/********** MICRO-ENTREPRISE **********/
 function simulateMicro(ca, parts) {
+    if (ca > MICRO_PLAFOND_CA) {
+        return {
+            statut: 'Micro-Entreprise',
+            ca,
+            cotis: 0,
+            ir: 0,
+            is: 0,
+            dividendesNet: 0,
+            salaireNet: 0,
+            netMensuel: 0,
+            details: { message: "Plafond micro dépassé" },
+            ok: false
+        };
+    }
+
     const frais = 600;
     const cotis = ca * 0.211;
     const netAvantIR = ca - cotis - frais;
@@ -530,7 +564,7 @@ function simulateMicro(ca, parts) {
     const netAnnuel = netAvantIR - ir;
 
     return {
-        statut: 'Micro',
+        statut: 'Micro-Entreprise',
         ca,
         cotis,
         ir,
@@ -538,8 +572,40 @@ function simulateMicro(ca, parts) {
         dividendesNet: 0,
         salaireNet: netAnnuel,
         netMensuel: netAnnuel / 12,
-        details: { revImposable, netAvantIR },
-        ok: ca <= 77700
+        details: {
+            revImposable,
+            netAvantIR,
+            tauxCotis: 21.1
+        },
+        ok: true
+    };
+}
+
+/********** EI (IR) **********/
+function simulateEI_IR(ca, parts) {
+    const frais = 4000;
+    const dispo = ca - frais;
+    const cotis = dispo * COTIS_TNS;
+    const netAvantIR = dispo - cotis;
+    const revImposable = netAvantIR;
+    const ir = calcIR(revImposable, parts);
+    const netAnnuel = netAvantIR - ir;
+
+    return {
+        statut: 'EI (IR)',
+        ca,
+        cotis,
+        ir,
+        is: 0,
+        dividendesNet: 0,
+        salaireNet: netAnnuel,
+        netMensuel: netAnnuel / 12,
+        details: {
+            revImposable,
+            netAvantIR,
+            tauxCotis: COTIS_TNS * 100
+        },
+        ok: true
     };
 }
 
@@ -554,8 +620,7 @@ function simulateEURL_IR(ca, parts) {
     const netAnnuel = netAvantIR - ir;
 
     return {
-        statut: 'EURL',
-        fiscal: 'IR',
+        statut: 'EURL (IR)',
         ca,
         cotis,
         ir,
@@ -563,55 +628,175 @@ function simulateEURL_IR(ca, parts) {
         dividendesNet: 0,
         salaireNet: netAnnuel,
         netMensuel: netAnnuel / 12,
-        details: { revImposable, netAvantIR },
+        details: {
+            revImposable,
+            netAvantIR,
+            tauxCotis: COTIS_TNS * 100
+        },
         ok: true
     };
 }
 
-/********** EURL IS **********/
-function simulateEURL_IS(ca, parts) {
-    const frais = 4000;
-    const dispo = ca - frais;
-    const cotis = dispo * COTIS_TNS;
-    const benefAvantIS = dispo - cotis;
-    const is = calcIS(benefAvantIS);
-    const div = calcDividendes(benefAvantIS - is);
-
-    return {
-        statut: 'EURL',
-        fiscal: 'IS',
-        ca,
-        cotis,
-        ir: 0,
-        is,
-        dividendesNet: div.net,
-        salaireNet: 0,
-        netMensuel: div.net / 12,
-        details: { benefAvantIS, divBrut: div.brut, pfu: div.pfu },
-        ok: true
-    };
-}
-
-/********** SASU IS **********/
-function simulateSASU_IS(ca, salaireMensuelCible, parts) {
+/********** EURL / SARL IS **********/
+function simulateEURL_IS(ca, parts, salaryNetUser = null) {
     const frais = 4000;
     const dispo = ca - frais;
 
-    const salaireBudgetAnnuel = salaireMensuelCible * 12;
-    const sal = calcSalaireFromBudget(salaireBudgetAnnuel);
+    let sal;
+    if (salaryNetUser && salaryNetUser > 0) {
+        sal = calcSalaireFromNetTNS(salaryNetUser * 12);
+    } else {
+        // mode auto : on teste plusieurs salaires nets annuels
+        let best = null;
+        for (let netMens = 2000; netMens <= 7000; netMens += 500) {
+            const tmp = calcSalaireFromNetTNS(netMens * 12);
+            const benefAvantIS = dispo - tmp.brutAnnuel - tmp.cotis;
+            const is = calcIS(benefAvantIS);
+            const div = calcDividendes(benefAvantIS - is);
+            const revImposable = tmp.brutAnnuel; // simplifié
+            const ir = calcIR(revImposable, parts);
+            const netAnnuel = tmp.netAnnuel + div.net - ir;
+            const netMensuel = netAnnuel / 12;
+            if (!best || netMensuel > best.netMensuel) {
+                best = {
+                    brutAnnuel: tmp.brutAnnuel,
+                    netAnnuel: tmp.netAnnuel,
+                    cotis: tmp.cotis,
+                    benefAvantIS,
+                    is,
+                    div,
+                    revImposable,
+                    ir,
+                    netAnnuel,
+                    netMensuel,
+                    salaireNetMensuel: netMens
+                };
+            }
+        }
+        return {
+            statut: 'EURL / SARL (IS)',
+            ca,
+            cotis: best.cotis,
+            ir: best.ir,
+            is: best.is,
+            dividendesNet: best.div.net,
+            salaireNet: best.netAnnuel,
+            netMensuel: best.netAnnuel / 12 + 0, // déjà netMensuel dans best, mais on garde cohérence
+            details: {
+                salaireBrut: best.brutAnnuel,
+                salaireNet: best.netAnnuel,
+                salaireNetMensuel: best.salaireNetMensuel,
+                benefAvantIS: best.benefAvantIS,
+                divBrut: best.div.brut,
+                pfu: best.div.pfu,
+                revImposable: best.revImposable,
+                tauxCotis: COTIS_TNS * 100
+            },
+            ok: true
+        };
+    }
 
-    const benefAvantIS = dispo - sal.brutAnnuel - sal.cotisPatronales;
+    // mode manuel (salaryNetUser)
+    const benefAvantIS = dispo - sal.brutAnnuel - sal.cotis;
     const is = calcIS(benefAvantIS);
     const div = calcDividendes(benefAvantIS - is);
-
-    const salaireImposable = sal.netAnnuel * 0.90;
-    const ir = calcIR(salaireImposable, parts);
-
+    const revImposable = sal.brutAnnuel; // simplifié
+    const ir = calcIR(revImposable, parts);
     const netAnnuel = sal.netAnnuel + div.net - ir;
 
     return {
-        statut: 'SASU',
-        fiscal: 'IS',
+        statut: 'EURL / SARL (IS)',
+        ca,
+        cotis: sal.cotis,
+        ir,
+        is,
+        dividendesNet: div.net,
+        salaireNet: sal.netAnnuel,
+        netMensuel: netAnnuel / 12,
+        details: {
+            salaireBrut: sal.brutAnnuel,
+            salaireNet: sal.netAnnuel,
+            salaireNetMensuel: sal.netAnnuel / 12,
+            benefAvantIS,
+            divBrut: div.brut,
+            pfu: div.pfu,
+            revImposable,
+            tauxCotis: COTIS_TNS * 100
+        },
+        ok: true
+    };
+}
+
+/********** SASU / SAS IS **********/
+function simulateSASU_IS(ca, parts, salaryNetUser = null) {
+    const frais = 4000;
+    const dispo = ca - frais;
+
+    let sal;
+    if (salaryNetUser && salaryNetUser > 0) {
+        sal = calcSalaireFromNetSASU(salaryNetUser * 12);
+    } else {
+        // mode auto : on teste plusieurs salaires nets mensuels
+        let best = null;
+        for (let netMens = 2000; netMens <= 7000; netMens += 500) {
+            const tmp = calcSalaireFromNetSASU(netMens * 12);
+            const benefAvantIS = dispo - tmp.brutAnnuel - tmp.cotisPatronales;
+            const is = calcIS(benefAvantIS);
+            const div = calcDividendes(benefAvantIS - is);
+            const salaireImposable = tmp.netAnnuel * 0.90;
+            const ir = calcIR(salaireImposable, parts);
+            const netAnnuel = tmp.netAnnuel + div.net - ir;
+            const netMensuel = netAnnuel / 12;
+            if (!best || netMensuel > best.netMensuel) {
+                best = {
+                    brutAnnuel: tmp.brutAnnuel,
+                    netAnnuel: tmp.netAnnuel,
+                    cotisPatronales: tmp.cotisPatronales,
+                    benefAvantIS,
+                    is,
+                    div,
+                    salaireImposable,
+                    ir,
+                    netAnnuel,
+                    netMensuel,
+                    salaireNetMensuel: netMens
+                };
+            }
+        }
+        return {
+            statut: 'SASU / SAS (IS)',
+            ca,
+            cotis: best.cotisPatronales,
+            ir: best.ir,
+            is: best.is,
+            dividendesNet: best.div.net,
+            salaireNet: best.netAnnuel,
+            netMensuel: best.netMensuel,
+            details: {
+                salaireBrut: best.brutAnnuel,
+                salaireNet: best.netAnnuel,
+                salaireNetMensuel: best.salaireNetMensuel,
+                salaireImposable: best.salaireImposable,
+                benefAvantIS: best.benefAvantIS,
+                divBrut: best.div.brut,
+                pfu: best.div.pfu,
+                tauxChargesSal: CHARGES_SALARIALES_SASU * 100,
+                tauxChargesPat: CHARGES_PATRONALES_SASU * 100
+            },
+            ok: true
+        };
+    }
+
+    // mode manuel (salaryNetUser)
+    const benefAvantIS = dispo - sal.brutAnnuel - sal.cotisPatronales;
+    const is = calcIS(benefAvantIS);
+    const div = calcDividendes(benefAvantIS - is);
+    const salaireImposable = sal.netAnnuel * 0.90;
+    const ir = calcIR(salaireImposable, parts);
+    const netAnnuel = sal.netAnnuel + div.net - ir;
+
+    return {
+        statut: 'SASU / SAS (IS)',
         ca,
         cotis: sal.cotisPatronales,
         ir,
@@ -622,31 +807,20 @@ function simulateSASU_IS(ca, salaireMensuelCible, parts) {
         details: {
             salaireBrut: sal.brutAnnuel,
             salaireNet: sal.netAnnuel,
+            salaireNetMensuel: sal.netAnnuel / 12,
             salaireImposable,
             benefAvantIS,
             divBrut: div.brut,
-            pfu: div.pfu
+            pfu: div.pfu,
+            tauxChargesSal: CHARGES_SALARIALES_SASU * 100,
+            tauxChargesPat: CHARGES_PATRONALES_SASU * 100
         },
         ok: true
     };
 }
 
 /************************************
- * 8. OPTIMISATION MIX SALAIRE/DIVIDENDES
- ************************************/
-function findBestSASU_IS(ca, parts) {
-    let best = null;
-    for (let sal = 2000; sal <= 7000; sal += 500) {
-        const sim = simulateSASU_IS(ca, sal, parts);
-        if (!best || sim.netMensuel > best.netMensuel) {
-            best = { ...sim, salaireMensuelCible: sal };
-        }
-    }
-    return best;
-}
-
-/************************************
- * 9. MOTEUR GLOBAL
+ * 7. MOTEUR GLOBAL
  ************************************/
 function simulateAll(targetRevMensuel, parts) {
     const isRevMode = targetRevMensuel > 0;
@@ -655,18 +829,20 @@ function simulateAll(targetRevMensuel, parts) {
     let res = {};
     for (let k = 0; k < 8; k++) {
         const micro = simulateMicro(caGuess, parts);
+        const ei = simulateEI_IR(caGuess, parts);
         const eurlIR = simulateEURL_IR(caGuess, parts);
-        const eurlIS = simulateEURL_IS(caGuess, parts);
-        const sasuBest = findBestSASU_IS(caGuess, parts);
+        const eurlIS = simulateEURL_IS(caGuess, parts, userSalaryNetEURLIS);
+        const sasuIS = simulateSASU_IS(caGuess, parts, userSalaryNetSASU);
 
-        res = { micro, eurlIR, eurlIS, sasuBest };
+        res = { micro, ei, eurlIR, eurlIS, sasuIS };
 
         if (isRevMode) {
             const bestNet = Math.max(
-                micro.netMensuel,
+                micro.ok ? micro.netMensuel : 0,
+                ei.netMensuel,
                 eurlIR.netMensuel,
                 eurlIS.netMensuel,
-                sasuBest.netMensuel
+                sasuIS.netMensuel
             );
             caGuess += (targetRevMensuel - bestNet) * 1.5 * 12;
             if (Math.abs(targetRevMensuel - bestNet) < 50) break;
@@ -676,11 +852,16 @@ function simulateAll(targetRevMensuel, parts) {
 }
 
 /************************************
- * 10. UI : CALCUL & MISE À JOUR
+ * 8. UI : CALCUL & MISE À JOUR
  ************************************/
 function calculer() {
     const revS = parseNumberInput('rev');
     const caS = parseNumberInput('ca');
+    const salaryNetInput = parseNumberInput('salary_net'); // salaire net souhaité (optionnel)
+
+    userSalaryNetSASU = salaryNetInput > 0 ? salaryNetInput : null;
+    userSalaryNetEURLIS = salaryNetInput > 0 ? salaryNetInput : null;
+
     if (!revS && !caS) return;
 
     const parts = parseFloat(document.getElementById('parts').value) || 1;
@@ -699,25 +880,25 @@ function toggleExpertMode() {
 }
 
 /************************************
- * 11. UI : RENDU
+ * 9. UI : RENDU
  ************************************/
 function updateUI() {
     if (!globalData || !globalData.micro) return;
 
-    const parts = parseFloat(document.getElementById('parts').value) || 1;
-
     const stats = [
-        { key: 'micro', label: 'Micro' },
-        { key: 'eurlIR', label: 'EURL IR' },
-        { key: 'eurlIS', label: 'EURL IS' },
-        { key: 'sasuBest', label: 'SASU IS' }
+        { key: 'micro', label: 'Micro-Entreprise' },
+        { key: 'ei', label: 'EI (IR)' },
+        { key: 'eurlIR', label: 'EURL (IR)' },
+        { key: 'eurlIS', label: 'EURL / SARL (IS)' },
+        { key: 'sasuIS', label: 'SASU / SAS (IS)' }
     ];
 
     let tabsHtml = "";
     stats.forEach(s => {
         const d = globalData[s.key];
         const active = (activeStatut === s.key) ? 'active' : '';
-        const val = d.ok ? formatEuro(d.netMensuel) : 'OFF';
+        let val = d.ok ? formatEuro(d.netMensuel) : '❌';
+        if (s.key === 'micro' && !d.ok) val = '❌ Plafond';
         tabsHtml += `
             <div class="status-tab ${active}" onclick="activeStatut='${s.key}'; updateUI()">
                 <h4>${s.label}</h4>
@@ -729,16 +910,17 @@ function updateUI() {
     const d = globalData[activeStatut];
     const f = formatEuro;
 
-    // Message conseil
-    let bestKey = 'micro';
-    let bestVal = globalData.micro.netMensuel;
+    // Meilleur statut
+    let bestKey = null;
+    let bestVal = 0;
     stats.forEach(s => {
-        if (globalData[s.key].netMensuel > bestVal) {
-            bestVal = globalData[s.key].netMensuel;
+        const ds = globalData[s.key];
+        const val = (s.key === 'micro' && !ds.ok) ? 0 : ds.netMensuel;
+        if (!bestKey || val > bestVal) {
             bestKey = s.key;
+            bestVal = val;
         }
     });
-
     let bestLabel = stats.find(s => s.key === bestKey).label;
     document.getElementById('advice_text').innerHTML =
         `✅ Meilleur statut estimé : <b>${bestLabel}</b> avec ${f(bestVal)} / mois.`;
@@ -749,15 +931,15 @@ function updateUI() {
         <tr><td>Charges sociales</td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
         <tr><td>Impôt sur le revenu</td><td style="text-align:right">- ${f(d.ir)}</td></tr>
         <tr><td>Impôt sur les sociétés</td><td style="text-align:right">- ${f(d.is || 0)}</td></tr>
-        <tr style="font-size:16px; color:var(--success); font-weight:800;">
+        <tr style="font-size:16px; color:green; font-weight:800;">
             <td style="padding-top:15px">NET GLOBAL / MOIS</td>
             <td style="text-align:right; padding-top:15px">${f(d.netMensuel)}</td>
         </tr>
     `;
     document.getElementById('audit_detail').innerHTML = table;
 
-    // Mix salaire / dividendes (SASU IS uniquement)
-    if (activeStatut === 'sasuBest') {
+    // Mix salaire / dividendes (EURL IS + SASU IS)
+    if (activeStatut === 'eurlIS' || activeStatut === 'sasuIS') {
         document.getElementById('mix_container').style.display = 'block';
         const total = d.salaireNet + d.dividendesNet;
         const salPct = total > 0 ? (d.salaireNet / total * 100) : 0;
@@ -765,7 +947,7 @@ function updateUI() {
         document.getElementById('bar_sal').style.width = salPct + '%';
         document.getElementById('bar_div').style.width = divPct + '%';
         document.getElementById('mix_label').innerText =
-            `Salaire cible optimisé : ${formatEuro(d.salaireNet / 12)} / mois`;
+            `Salaire net : ${f(d.salaireNet / 12)} / mois — Dividendes nets : ${f(d.dividendesNet)} / an`;
     } else {
         document.getElementById('mix_container').style.display = 'none';
     }
@@ -775,7 +957,12 @@ function updateUI() {
         let expHtml = `<h4>Détails fiscaux (mode expert)</h4><ul>`;
         if (d.details) {
             Object.keys(d.details).forEach(k => {
-                expHtml += `<li><b>${k}</b> : ${formatEuro(d.details[k])}</li>`;
+                const val = d.details[k];
+                if (typeof val === 'number') {
+                    expHtml += `<li><b>${k}</b> : ${formatEuro(val)}</li>`;
+                } else {
+                    expHtml += `<li><b>${k}</b> : ${val}</li>`;
+                }
             });
         }
         expHtml += `</ul>`;
@@ -796,9 +983,11 @@ function updateUI() {
 }
 </script>
 
+
 </body>
 
 </html>
+
 
 
 

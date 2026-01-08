@@ -206,175 +206,91 @@
   </div>
 </div>
 
-
-<style>
-/* --- STYLE MINIMAL POUR TEST --- */
-body { font-family: Arial, sans-serif; background:#f5f5f5; padding:20px; }
-.container { max-width:900px; margin:auto; background:white; padding:25px; border-radius:10px; }
-h2 { margin-top:0; }
-input { width:100%; padding:10px; margin:5px 0 15px; }
-.status-tab { display:inline-block; width:22%; margin:1%; padding:15px; background:#eee; border-radius:8px; cursor:pointer; text-align:center; }
-.status-tab.active { background:#007bff; color:white; }
-#resultats { margin-top:25px; }
-#mix_container { margin-top:20px; }
-.bar { height:20px; display:inline-block; }
-#bar_sal { background:#4caf50; }
-#bar_div { background:#ff9800; }
-#expert_panel { background:#222; color:white; padding:15px; margin-top:20px; border-radius:8px; }
-.day-btn { padding:8px 12px; margin:3px; cursor:pointer; }
-.day-btn.active { background:#007bff; color:white; }
-</style>
-
-
-
-<div class="container">
-
-    <h2>Simulateur Statut Entrepreneur</h2>
-
-    <!-- INPUTS -->
-    <label>Revenu NET souhaité (mensuel)</label>
-    <input id="rev" oninput="handleInput(this,'rev')" placeholder="Ex: 5000">
-
-    <label>Chiffre d'affaires annuel (optionnel)</label>
-    <input id="ca" oninput="handleInput(this,'ca')" placeholder="Ex: 120000">
-
-    <label>Nombre de parts fiscales</label>
-    <input id="parts" value="1" type="number" min="1" step="0.5" oninput="calculer()">
-
-    <button onclick="calculer()">Calculer</button>
-    <button onclick="toggleExpertMode()">Mode Expert</button>
-
-    <!-- RESULTATS -->
-    <div id="resultats" style="display:none;">
-
-        <h3>Comparaison des statuts</h3>
-        <div id="status_tabs"></div>
-
-        <p id="advice_text" style="margin-top:20px; font-weight:bold;"></p>
-
-        <h3>Détails</h3>
-        <table id="audit_detail" style="width:100%; border-collapse:collapse;"></table>
-
-        <!-- MIX SALAIRE / DIVIDENDES -->
-        <div id="mix_container" style="display:none;">
-            <h4>Répartition Salaire / Dividendes</h4>
-            <div style="width:100%; background:#ddd; height:20px; border-radius:5px;">
-                <div id="bar_sal" class="bar"></div>
-                <div id="bar_div" class="bar"></div>
-            </div>
-            <p id="mix_label" style="margin-top:10px;"></p>
+<div class="main-simulator-card">
+    <div class="config-bar">
+        <div class="toggle-group">
+            <button class="toggle-btn active" onclick="setType('service')" id="btn-service">Prestation</button>
+            <button class="toggle-btn" onclick="setType('commerce')" id="btn-commerce">Commerce</button>
         </div>
-
-        <!-- MODE EXPERT -->
-        <div id="expert_panel" style="display:none;"></div>
-
-        <!-- TJM -->
-        <h3>Calcul du TJM</h3>
-        <div id="days_grid"></div>
-        <p>TJM estimé : <b id="tjm_val"></b></p>
-
+        <div style="font-size:12px; font-weight:bold; display:flex; align-items:center; gap:8px;">
+            <span style="color:#718096">ACRE</span>
+            <input type="checkbox" id="acre_check" style="width:20px; height:20px; accent-color:var(--success)">
+        </div>
     </div>
 
+    <div class="form-container">
+        <label class="field-label">Chiffre d'Affaires HT (€/an)</label>
+        <input type="text" id="ca_display" placeholder="Ex: 100 000" oninput="handleMask(this, 'ca')">
+        <input type="hidden" id="ca">
+
+        <label class="field-label">Revenu Net Cible (€/mois)</label>
+        <input type="text" id="rev_display" placeholder="Ex: 8 000" oninput="handleMask(this, 'rev')">
+        <input type="hidden" id="rev">
+
+        <label class="field-label">Frais Matériel/Logiciels (€/mois)</label>
+        <input type="text" id="frais_display" placeholder="Ex: 300" oninput="handleMask(this, 'frais')">
+        <input type="hidden" id="frais">
+
+        <button class="btn-analyze" onclick="analyser()">Analyser la rentabilité</button>
+    </div>
+
+    <div id="resultats">
+        <div class="res-grid">
+            <div id="bloc_resume" class="result-block best-block"></div>
+            <div id="bloc_tjm" class="result-block tjm-block"></div>
+        </div>
+        
+        <div id="bloc_costs"></div>
+        <div id="bloc_impact"></div>
+
+        <p style="font-size:11px; font-weight:800; color:#a0aec0; text-transform:uppercase; margin:20px 0 10px; text-align:center;">--- Comparaison des statuts ---</p>
+        <div id="liste_statuts" class="status-selector"></div>
+    </div>
 </div>
-
-
-
-
-
-
-
-
-
+    
     <hr style="border: 0; height: 1px; background: #edf2f7; margin: 40px 0;">
 
 <div class="guide-section" style="line-height: 1.6; color: #4a5568;">
     <h2 style="font-family: Poppins; color: #2d3748; font-size: 22px;">Guide : Quel statut choisir pour votre entreprise en 2026 ?</h2>
     <p>Choisir son statut juridique est une étape cruciale qui impacte directement votre <strong>revenu net</strong> et votre protection sociale. Ce simulateur vous aide à comparer les options selon votre chiffre d'affaires (CA).</p>
 
-
-    <p>Lancer son activité demande de jongler entre stratégie commerciale et ingénierie fiscale. Le choix de votre statut ne détermine pas seulement votre gestion quotidienne, mais surtout <strong>ce qu'il restera réellement dans votre poche à la fin du mois.</strong></p>
-
-    <h2>1. La Micro-Entreprise : La simplicité avant tout</h2>
-    <p>C'est le statut le plus prisé pour démarrer. Sa gestion est ultra-simplifiée : vous ne payez des cotisations que si vous encaissez du chiffre d'affaires.</p>
-    <ul>
-        <li><strong>Avantages :</strong> Comptabilité minimale, pas de TVA jusqu'à certains seuils, idéal pour tester un projet.</li>
-        <li><strong>Inconvénients :</strong> Vous ne pouvez pas déduire vos frais réels (loyer, matériel, déplacements).</li>
-    </ul>
-    <div class="highlight">
-        <strong>Conseil :</strong> Restez en micro tant que vos frais professionnels ne dépassent pas l'abattement forfaitaire de l'administration.
-    </div>
-
-    <h2>2. Fiscalité : Le Match IS vs IR</h2>
-    <p>Pour les sociétés (SASU, EURL), vous devez choisir comment votre bénéfice sera taxé.</p>
-    
-    <h3>L'Impôt sur les Sociétés (IS)</h3>
-    <p>C'est la société qui paie l'impôt. Le taux est de <strong>15%</strong> jusqu'à 42 500 € de bénéfice, puis 25% au-delà. Vous ne payez l'impôt personnel (IR) que sur ce que vous vous versez réellement.</p>
-
-    <h3>L'Impôt sur le Revenu (IR)</h3>
-    <p>La société est "transparente". Le bénéfice total vous est directement attribué et s'ajoute à vos autres revenus familiaux. Attention au risque de changer de tranche d'imposition !</p>
-
-    <h2>3. SASU vs EURL : Salaire ou Dividendes ?</h2>
-    
-    <h3>La SASU (Société par Actions Simplifiée Unipersonnelle)</h3>
-    <p>Idéale pour les consultants bénéficiant de l'ARE (chômage). Elle permet de ne pas se verser de salaire pour maintenir ses allocations.</p>
-    <ul>
-        <li><strong>Protection :</strong> Régime "assimilé-salarié" (coûteux mais protecteur).</li>
-        <li><strong>Dividendes :</strong> Soumis à la <em>Flat Tax</em> de 30%, sans cotisations sociales supplémentaires.</li>
-    </ul>
-
-    <h3>L'EURL (Entreprise Unipersonnelle à Responsabilité Limitée)</h3>
-    <p>C'est le compromis idéal pour maximiser son revenu net immédiat hors micro-entreprise.</p>
-    <ul>
-        <li><strong>Charges sociales :</strong> Environ 45% (contre 75% en SASU).</li>
-        <li><strong>Dividendes :</strong> Moins intéressants qu'en SASU car soumis aux cotisations sociales au-delà d'un certain seuil.</li>
-    </ul>
-
-    <h2>4. Synthèse Comparative</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Statut</th>
-                <th>Régime Social</th>
-                <th>Fiscalité</th>
-                <th>Points Forts</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><strong>Micro</strong></td>
-                <td>Auto-entrepreneur</td>
-                <td>IR (Forfait)</td>
-                <td>Coût nul si 0 CA</td>
-            </tr>
-            <tr>
-                <td><strong>SASU</strong></td>
-                <td>Assimilé-Salarié</td>
-                <td>IS (souvent)</td>
-                <td>Cumul ARE / Dividendes</td>
-            </tr>
-            <tr>
-                <td><strong>EURL</strong></td>
-                <td>TNS (Indépendant)</td>
-                <td>IS ou IR</td>
-                <td>Meilleur revenu net</td>
-            </tr>
-        </tbody>
-    </table>
-
-    <div class="warning">
-        <h2>5. Les pièges à éviter</h2>
-        <ul>
-            <li><strong>Le seuil de TVA :</strong> En micro, si vous dépassez les seuils, vous devez facturer 20% de plus. Anticipez-le dans vos tarifs !</li>
-            <li><strong>L'absence de protection :</strong> Se verser uniquement des dividendes en SASU ne génère aucun droit à la retraite ni protection prévoyance.</li>
-            <li><strong>Les frais réels :</strong> Si vous avez beaucoup de frais (déplacements, bureau), fuyez la micro-entreprise.</li>
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: var(--primary); font-size: 18px;"><i class="fa-solid fa-rocket"></i> 1. La Micro-Entreprise (Auto-entrepreneur)</h3>
+        <p>C'est le statut le plus prisé pour démarrer. Sa gestion est ultra-simplifiée : vous ne payez des cotisations que si vous encaissez du chiffre d'affaires.</p>
+        <ul style="padding-left: 20px;">
+            <li><strong>Avantages :</strong> Comptabilité minimale, pas de TVA jusqu'à certains seuils, idéal pour tester un projet.</li>
+            <li><strong>Inconvénients :</strong> Vous ne pouvez pas déduire vos frais réels (loyer, matériel, déplacements).</li>
+            <li><strong>Conseil :</strong> Restez en micro tant que vos frais professionnels ne dépassent pas l'abattement forfaitaire de l'administration.</li>
         </ul>
     </div>
 
-    <p style="text-align: center; margin-top: 40px; font-style: italic;">
-        Besoin d'une simulation chiffrée selon votre projet ? Contactez un expert-comptable pour valider votre choix.
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: var(--primary); font-size: 18px;"><i class="fa-solid fa-shield-halved"></i> 2. La SASU (Société par Actions Simplifiée Unipersonnelle)</h3>
+        <p>La SASU est souvent choisie par les consultants qui bénéficient de l'<strong>ARE (chômage)</strong>. Elle permet de ne pas se verser de salaire pour maintenir ses allocations tout en faisant fructifier la société.</p>
+        <ul style="padding-left: 20px;">
+            <li><strong>Avantages :</strong> Protection sociale de haut niveau (assimilé-salarié), possibilité de se verser des dividendes, crédibilité auprès des banques.</li>
+            <li><strong>Inconvénients :</strong> Cotisations sociales élevées (environ 75% du net), fiches de paie obligatoires.</li>
+        </ul>
+    </div>
+
+    <div style="margin-bottom: 30px;">
+        <h3 style="color: var(--primary); font-size: 18px;"><i class="fa-solid fa-chart-line"></i> 3. L'EURL (Entreprise Unipersonnelle à Responsabilité Limitée)</h3>
+        <p>L'EURL est le compromis idéal pour ceux qui veulent maximiser leur revenu net mensuel immédiat sans passer par le régime de la micro-entreprise.</p>
+        <ul style="padding-left: 20px;">
+            <li><strong>Avantages :</strong> Cotisations sociales plus faibles que la SASU (environ 45%), déduction de tous les frais réels.</li>
+            <li><strong>Inconvénients :</strong> Protection sociale de Travailleur Non-Salarié (TNS), gestion comptable rigoureuse nécessaire.</li>
+        </ul>
+    </div>
+
+    <div style="background: #ebf8ff; padding: 20px; border-radius: 14px; border: 1px solid #bee3f8;">
+        <h4 style="margin-top: 0; color: #2c5282;">💡 Pourquoi utiliser ce simulateur ?</h4>
+        <p style="margin-bottom: 0; font-size: 14px;">Le calcul du <strong>revenu net après impôts et charges</strong> varie selon le secteur (service ou commerce) et l'éligibilité à l'ACRE. Notre outil intègre les barèmes 2026 pour vous donner une estimation fiable en quelques secondes.</p>
+    </div>
+    
+    <p style="text-align: center; margin-top: 30px; font-size: 12px;">
+        Pour plus d'informations officielles, consultez le site de <a href="https://www.urssaf.fr" target="_blank" style="color: var(--primary);">l'URSSAF</a> ou de <a href="https://www.infogreffe.fr" target="_blank" style="color: var(--primary);">l'Infogreffe</a>.
     </p>
 </div>
-
     <section id="ressources" style="max-width:900px;margin:40px auto;padding:20px;font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
     <h2 style="text-align:center;font-size:2rem;margin-bottom:10px;color:#1f2937;">
         Ressources utiles pour entrepreneurs
@@ -431,307 +347,201 @@ input { width:100%; padding:10px; margin:5px 0 15px; }
 </style>
 </div>
 <script>
-/************************************
- * 1. CONSTANTES GÉNÉRALES (MAJ 2024/2025)
- ************************************/
-const TAUX_SALARIAL_SASU = 0.22;
-const TAUX_PATRONAL_SASU = 0.45;
-const TAUX_TNS = 0.45; // Cotisations sur le net pour EURL/EI
-const PFU = 0.30;      // Flat tax dividendes
-const IS_REDUIT = 0.15;
-const IS_NORMAL = 0.25;
-const IS_SEUIL = 42500;
-const MICRO_PLAFOND_CA = 77700; // Seuil prestations de services BNC
+    // 1. VARIABLES GLOBALES ET CONFIGURATION
+    let typeAct = 'service';
+    let currentMode = 'CA';
+    let globalResults = null;
+    let selectedStatus = "";
+    let recommendedStatus = "";
 
-let globalData = {};
-let activeStatut = "micro";
-let currentDays = 18;
-let expertMode = false;
-
-let userSalaryNetSASU = null;
-let userSalaryNetEURLIS = null;
-
-/************************************
- * 2. OUTILS GÉNÉRAUX
- ************************************/
-function formatEuro(v) {
-    return Math.round(v).toLocaleString('fr-FR') + " €";
-}
-
-function parseNumberInput(id) {
-    const el = document.getElementById(id);
-    if (!el) return 0;
-    const v = el.value.replace(/\s/g, '').replace(',', '.');
-    return parseFloat(v) || 0;
-}
-
-/************************************
- * 3. CALCUL IR (Barème 2024)
- ************************************/
-function calcIR(revImposable, parts) {
-    const r = revImposable / parts;
-    let imp = 0;
-
-    if (r > 177753) imp = (r - 177753) * 0.45 + 41908;
-    else if (r > 82341) imp = (r - 82341) * 0.41 + 16086;
-    else if (r > 28797) imp = (r - 28797) * 0.30 + 1925;
-    else if (r > 11294) imp = (r - 11294) * 0.11;
-
-    return Math.max(0, imp * parts);
-}
-
-/************************************
- * 4. CALCULS SOCIAUX & FISCAUX
- ************************************/
-
-function calcSalaireFromNetSASU(netAnnuel) {
-    const brutAnnuel = netAnnuel / (1 - TAUX_SALARIAL_SASU);
-    const cotisPatronales = brutAnnuel * TAUX_PATRONAL_SASU;
-    const coutTotal = brutAnnuel + cotisPatronales;
-    return { brutAnnuel, netAnnuel, cotisPatronales, coutTotal };
-}
-
-function calcSalaireFromNetTNS(netAnnuel) {
-    const cotis = netAnnuel * TAUX_TNS;
-    const coutTotal = netAnnuel + cotis;
-    return { netAnnuel, cotis, coutTotal };
-}
-
-function calcIS(benef) {
-    if (benef <= 0) return 0;
-    if (benef <= IS_SEUIL) return benef * IS_REDUIT;
-    return IS_SEUIL * IS_REDUIT + (benef - IS_SEUIL) * IS_NORMAL;
-}
-
-/************************************
- * 5. SIMULATEURS PAR STATUT
- ************************************/
-
-function simulateMicro(ca, parts) {
-    if (ca > MICRO_PLAFOND_CA) return { ok: false };
-    
-    const fraisGestion = 600; 
-    const cotis = ca * 0.211; // Taux BNC auto-entrepreneur
-    const netAvantIR = ca - cotis - fraisGestion;
-    const revImposable = ca * (1 - 0.34); // Abattement 34% BNC
-    const ir = calcIR(revImposable, parts);
-    const netAnnuel = netAvantIR - ir;
-
-    return {
-        statut: 'Micro-Entreprise',
-        ca, cotis, ir, is: 0, dividendesNet: 0,
-        salaireNet: netAnnuel,
-        netMensuel: netAnnuel / 12,
-        details: { revImposable, abattement: "34%" },
-        ok: true
-    };
-}
-
-function simulateEURL_IS(ca, parts, salaryNetUser = null) {
-    const frais = 4000;
-    const dispo = ca - frais;
-    let best = null;
-
-    // On teste plusieurs niveaux de salaire pour optimiser
-    let testNets = salaryNetUser ? [salaryNetUser * 12] : [24000, 36000, 48000, 60000];
-
-    testNets.forEach(netTest => {
-        const s = calcSalaireFromNetTNS(netTest);
-        const benefAvantIS = Math.max(0, dispo - s.coutTotal);
-        const is = calcIS(benefAvantIS);
-        const divNet = (benefAvantIS - is) * (1 - PFU);
-        const ir = calcIR(s.netAnnuel * 0.9, parts);
-        const netGlobal = (s.netAnnuel + divNet - ir);
-
-        if (!best || netGlobal > best.netGlobal) {
-            best = { ...s, is, divNet, ir, netGlobal, benefAvantIS };
+    const config = {
+        "Micro": { 
+            tx: 0.211, 
+            max: 77700, 
+            structure: 800, 
+            creation: 0, 
+            isSociete: false 
+        },
+        "EURL": { 
+            tx: 0.45, 
+            max: 999999, 
+            structure: 3000, 
+            creation: 500, 
+            isSociete: true 
+        },
+        "SASU": { 
+            tx: 0.75, 
+            max: 999999, 
+            structure: 3500, 
+            creation: 600, 
+            isSociete: true 
         }
-    });
-
-    return {
-        statut: 'EURL / SARL (IS)',
-        ca, cotis: best.cotis, ir: best.ir, is: best.is,
-        dividendesNet: best.divNet,
-        salaireNet: best.netAnnuel,
-        netMensuel: best.netGlobal / 12,
-        details: { benefAvantIS: best.benefAvantIS, salaireNetMensuel: best.netAnnuel / 12 },
-        ok: true
     };
-}
 
-function simulateSASU_IS(ca, parts, salaryNetUser = null) {
-    const frais = 4000;
-    const dispo = ca - frais;
-    let best = null;
-
-    let testNets = salaryNetUser ? [salaryNetUser * 12] : [0, 24000, 36000, 48000];
-
-    testNets.forEach(netTest => {
-        const s = calcSalaireFromNetSASU(netTest);
-        const benefAvantIS = Math.max(0, dispo - s.coutTotal);
-        const is = calcIS(benefAvantIS);
-        const divNet = (benefAvantIS - is) * (1 - PFU);
-        const ir = calcIR(s.netAnnuel * 0.9, parts);
-        const netGlobal = (s.netAnnuel + divNet - ir);
-
-        if (!best || netGlobal > best.netGlobal) {
-            best = { ...s, is, divNet, ir, netGlobal, benefAvantIS };
-        }
-    });
-
-    return {
-        statut: 'SASU / SAS (IS)',
-        ca,
-        cotis: best.coutTotal - best.netAnnuel,
-        ir: best.ir, is: best.is,
-        dividendesNet: best.divNet,
-        salaireNet: best.netAnnuel,
-        netMensuel: best.netGlobal / 12,
-        details: { benefAvantIS: best.benefAvantIS, coutTotalEntreprise: best.coutTotal },
-        ok: true
-    };
-}
-
-// Pour EI et EURL IR, le bénéfice est taxé directement à l'IR
-function simulateEI_IR(ca, parts) {
-    const frais = 4000;
-    const baseCotis = (ca - frais) / 1.45; // Approximation du net avant IR
-    const cotis = baseCotis * 0.45;
-    const netAvantIR = ca - frais - cotis;
-    const ir = calcIR(netAvantIR, parts);
-    const netAnnuel = netAvantIR - ir;
-
-    return {
-        statut: 'EI (IR)',
-        ca, cotis, ir, is: 0, dividendesNet: 0,
-        salaireNet: netAnnuel,
-        netMensuel: netAnnuel / 12,
-        details: { revImposable: netAvantIR },
-        ok: true
-    };
-}
-
-/************************************
- * 6. MOTEUR GLOBAL & UI
- ************************************/
-function simulateAll(targetRevMensuel, parts) {
-    const isRevMode = targetRevMensuel > 0;
-    let caGuess = isRevMode ? targetRevMensuel * 12 * 1.7 : targetRevMensuel;
-
-    let res = {};
-    for (let k = 0; k < 10; k++) {
-        res = {
-            micro: simulateMicro(caGuess, parts),
-            ei: simulateEI_IR(caGuess, parts),
-            eurlIR: simulateEI_IR(caGuess, parts), // Proche de EI IR
-            eurlIS: simulateEURL_IS(caGuess, parts, userSalaryNetEURLIS),
-            sasuIS: simulateSASU_IS(caGuess, parts, userSalaryNetSASU)
-        };
-
-        if (isRevMode) {
-            const bestNet = Math.max(
-                res.micro.ok ? res.micro.netMensuel : 0,
-                res.ei.netMensuel,
-                res.eurlIS.netMensuel,
-                res.sasuIS.netMensuel
-            );
-            caGuess += (targetRevMensuel - bestNet) * 1.5 * 12;
-            if (Math.abs(targetRevMensuel - bestNet) < 10) break;
-        } else {
-            break; 
-        }
+    // 2. FONCTIONS DE SAISIE
+    function handleMask(el, id) {
+        let v = el.value.replace(/\D/g, '');
+        document.getElementById(id).value = v;
+        el.value = v ? Number(v).toLocaleString('fr-FR') : '';
+        if(id === 'ca') { document.getElementById('rev_display').value = ''; currentMode = 'CA'; }
+        if(id === 'rev') { document.getElementById('ca_display').value = ''; currentMode = 'REV'; }
     }
-    return res;
-}
 
-function calculer() {
-    const revS = parseNumberInput('rev');
-    const caS = parseNumberInput('ca');
-    const salaryNetInput = parseNumberInput('salary_net');
+    function setType(t) {
+        typeAct = t;
+        document.getElementById('btn-service').classList.toggle('active', t==='service');
+        document.getElementById('btn-commerce').classList.toggle('active', t==='commerce');
+        config.Micro.tx = (t === 'service') ? 0.211 : 0.123;
+        config.Micro.max = (t === 'service') ? 77700 : 188700;
+    }
 
-    userSalaryNetSASU = salaryNetInput > 0 ? salaryNetInput : null;
-    userSalaryNetEURLIS = salaryNetInput > 0 ? salaryNetInput : null;
+    // 3. LOGIQUE DE CALCUL
+    function analyser() {
+        const caVal = parseFloat(document.getElementById('ca').value) || 0;
+        const revVal = parseFloat(document.getElementById('rev').value) || 0;
+        const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+        const acre = document.getElementById('acre_check').checked;
 
-    const parts = parseFloat(document.getElementById('parts').value) || 1;
-    globalData = simulateAll(revS, parts || 1);
+        globalResults = {};
+        let top = "";
+        let bestSc = (currentMode === 'CA') ? -1 : Infinity;
 
-    document.getElementById('resultats').style.display = 'block';
-    updateUI();
-}
+        for(let n in config) {
+            let s = config[n];
+            let res = { ca: 0, net: 0, ok: true };
+            let t = (acre && n === "Micro") ? s.tx / 2 : s.tx;
+            
+            if(currentMode === 'CA') {
+                res.ca = caVal;
+                if(!s.isSociete) {
+                    res.net = (caVal * (1 - t) - s.structure - fraisPerso) / 12;
+                } else {
+                    let base = caVal - s.structure - fraisPerso;
+                    res.net = base > 0 ? (base / (1 + t)) / 12 : 0;
+                }
+                res.ok = caVal <= s.max;
+                if(res.ok && res.net > bestSc) { bestSc = res.net; top = n; }
+            } else {
+                res.net = revVal;
+                if(!s.isSociete) {
+                    res.ca = (revVal * 12 + s.structure + fraisPerso) / (1 - t);
+                } else {
+                    res.ca = (revVal * 12 * (1 + t)) + s.structure + fraisPerso;
+                }
+                res.ok = res.ca <= s.max;
+                if(res.ok && res.ca < bestSc) { bestSc = res.ca; top = n; }
+            }
+            globalResults[n] = res;
+        }
+        recommendedStatus = top;
+        selectedStatus = top;
+        updateUI(18);
+    }
 
-function updateUI() {
-    if (!globalData.eurlIS) return;
+    // 4. MISE À JOUR DE L'INTERFACE
+    function updateUI(jours) {
+        if(!globalResults) return;
+        const data = globalResults[selectedStatus];
+        const s = config[selectedStatus];
+        document.getElementById('resultats').style.display = 'block';
 
-    const stats = [
-        { key: 'micro', label: 'Micro-Entreprise' },
-        { key: 'ei', label: 'EI (IR)' },
-        { key: 'eurlIS', label: 'EURL / SARL (IS)' },
-        { key: 'sasuIS', label: 'SASU (IS)' }
-    ];
+        // Bloc Résumé
+        let badge = (selectedStatus === recommendedStatus) ? `<div class="recommend-badge">Conseillé</div>` : "";
+        document.getElementById('bloc_resume').innerHTML = `
+            ${badge}
+            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL ESTIMÉ</span>
+            <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
+            <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
 
-    let tabsHtml = "";
-    stats.forEach(s => {
-        const d = globalData[s.key];
-        const active = (activeStatut === s.key) ? 'active' : '';
-        let val = (d && d.ok) ? formatEuro(d.netMensuel) : '❌';
-        tabsHtml += `
-            <div class="status-tab ${active}" onclick="activeStatut='${s.key}'; updateUI()">
-                <h4>${s.label}</h4>
-                <div>${val}</div>
+        // Bloc TJM (Correction Focus)
+        let tjmValue = Math.round(data.ca / 12 / jours);
+        document.getElementById('bloc_tjm').innerHTML = `
+            <span style="font-size:10px; font-weight:800; color:#a0aec0;">TJM CIBLE</span>
+            <div style="font-size:24px; font-weight:800; margin:5px 0;"><span id="tjm_display">${tjmValue.toLocaleString()}</span> €</div>
+            <div style="font-size:11px;">pour <input type="number" id="input_jours" value="${jours}" class="tjm-input"> j/mois</div>`;
+
+        document.getElementById('input_jours').addEventListener('input', (e) => {
+            const j = parseFloat(e.target.value) || 1;
+            document.getElementById('tjm_display').innerText = Math.round(data.ca / 12 / j).toLocaleString();
+        });
+
+        // Bloc Frais
+        document.getElementById('bloc_costs').innerHTML = `
+            <div class="costs-card">
+                <h4 style="margin:0; font-size:14px; color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> Frais de structure inclus</h4>
+                <ul class="costs-list">
+                    <li><span>Ouverture d'entreprise</span><b>${s.creation > 0 ? s.creation + ' € (1ère fois)' : 'Gratuit'}</b></li>
+                    <li><span>Comptabilité & Paies</span><b>${selectedStatus === "Micro" ? '0 €' : (selectedStatus === "SASU" ? '2300 €/an' : '1800 €/an')}</b></li>
+                    <li><span>Banque, Assurance & CFE</span><b>${selectedStatus === "Micro" ? '800 €/an' : '1200 €/an'}</b></li>
+                </ul>
+            </div>
+            <button class="btn-detail" onclick="toggleDetails()" id="btn-detail-toggle" style="background:none; border:2px solid var(--primary); color:var(--primary); padding:10px; border-radius:12px; width:100%; font-weight:700; cursor:pointer; margin: 10px 0;">
+                <i class="fa-solid fa-circle-info"></i> Voir le détail du calcul
+            </button>
+            <div id="detail-panel" style="display:none; background:#fff; border:1px solid #edf2f7; border-radius:12px; padding:15px; margin-bottom:20px;">
+                <div id="detail-content"></div>
             </div>`;
-    });
-    document.getElementById('status_tabs').innerHTML = tabsHtml;
 
-    const d = globalData[activeStatut];
-    if (!d || !d.ok) {
-        document.getElementById('audit_detail').innerHTML = "<tr><td colspan='2'>Statut non éligible (Plafond dépassé)</td></tr>";
-        return;
+        // Bloc Vie du Gérant (RÉINTÉGRÉ)
+        const impacts = {
+            "Micro": ["TNS (Indépendant)", "Limitée", "Simplifiée", "Complexe (Sans fiche de paie)"],
+            "EURL": ["TNS (Indépendant)", "Moyenne (Prévoyance à prévoir)", "Réelle (Expert-Comptable)", "Standard (Après 2 bilans)"],
+            "SASU": ["Assimilé-Salarié", "Élevée (Cadre)", "Lourde (Fiches de paie)", "Plus facile (Fiches de paie)"]
+        };
+        const imp = impacts[selectedStatus];
+        document.getElementById('bloc_impact').innerHTML = `
+            <div class="impact-card">
+                <h4 style="margin:0 0 12px; font-size:14px;"><i class="fa-solid fa-user-shield"></i> Vie du gérant en ${selectedStatus}</h4>
+                <div class="impact-grid">
+                    <div class="impact-item"><b>Protection Sociale</b><span>${imp[0]}</span></div>
+                    <div class="impact-item"><b>Retraite</b><span>${imp[1]}</span></div>
+                    <div class="impact-item"><b>Gestion</b><span>${imp[2]}</span></div>
+                    <div class="impact-item"><b>Crédit / Location</b><span>${imp[3]}</span></div>
+                </div>
+            </div>`;
+
+        // Sélecteur de statuts
+        let htmlStatuts = "";
+        for(let n in globalResults) {
+            let r = globalResults[n];
+            htmlStatuts += `
+                <div class="stat-card ${n===selectedStatus?'selected':''} ${n===recommendedStatus?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(${jours});">
+                    <h5>${n}</h5>
+                    <div>${r.ok ? Math.round(r.net).toLocaleString()+'€' : 'HORS SEUIL'}</div>
+                </div>`;
+        }
+        document.getElementById('liste_statuts').innerHTML = htmlStatuts;
     }
 
-    const f = formatEuro;
-    document.getElementById('audit_detail').innerHTML = `
-        <tr><td>CA Annuel HT estimé</td><td style="text-align:right"><b>${f(d.ca)}</b></td></tr>
-        <tr><td>Charges sociales (URSSAF)</td><td style="text-align:right">- ${f(d.cotis)}</td></tr>
-        <tr><td>Impôt sur les sociétés</td><td style="text-align:right">- ${f(d.is || 0)}</td></tr>
-        <tr><td>Impôt sur le revenu (IR)</td><td style="text-align:right">- ${f(d.ir)}</td></tr>
-        <tr style="font-size:18px; color:green; font-weight:800;">
-            <td style="padding-top:15px">REVENU NET / MOIS</td>
-            <td style="text-align:right; padding-top:15px">${f(d.netMensuel)}</td>
-        </tr>
-    `;
+    // 5. FONCTIONS DÉTAILS
+    function toggleDetails() {
+        const panel = document.getElementById('detail-panel');
+        const isVisible = panel.style.display === 'block';
+        panel.style.display = isVisible ? 'none' : 'block';
+        if (!isVisible) generateDetailedBreakdown();
+    }
 
-    // Gestion du TJM
-    document.getElementById('tjm_val').innerText = Math.round(d.ca / 12 / currentDays) + " €";
-}
+    function generateDetailedBreakdown() {
+        const data = globalResults[selectedStatus];
+        const s = config[selectedStatus];
+        const caAnnuel = Math.round(data.ca);
+        const fraisPersoAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+        
+        let charges = (selectedStatus === "Micro") ? (caAnnuel * (document.getElementById('acre_check').checked ? s.tx/2 : s.tx)) : ((caAnnuel - s.structure - fraisPersoAnnuel) * (s.tx / (1+s.tx)));
+
+        let html = `<h4 style="margin:0 0 10px 0; font-size:14px; color:var(--primary);">Détail annuel (${selectedStatus})</h4>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9;"><span>Chiffre d'Affaires HT</span><span>+ ${caAnnuel.toLocaleString()} €</span></div>`;
+        if(s.creation > 0) html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais d'ouverture</span><span>- ${s.creation} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais de structure & Perso</span><span>- ${(s.structure + fraisPersoAnnuel).toLocaleString()} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Cotisations sociales (URSSAF)</span><span>- ${Math.round(charges).toLocaleString()} €</span></div>`;
+        html += `<div style="display:flex; justify-content:space-between; font-weight:800; padding:10px 0; color:var(--primary); font-size:14px;"><span>NET ANNUEL DISPONIBLE</span><span>${Math.round(data.net*12).toLocaleString()} €</span></div>`;
+        
+        document.getElementById('detail-content').innerHTML = html;
+    }
 </script>
-
-
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

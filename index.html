@@ -431,7 +431,7 @@ input { width:100%; padding:10px; margin:5px 0 15px; }
 </style>
 </div>
 <script>
-   /************************************
+/************************************
  * 1. CONSTANTES GÉNÉRALES
  ************************************/
 const CHARGES_SALARIALES = 0.22;
@@ -443,7 +443,7 @@ const IS_NORMAL = 0.25;
 const IS_SEUIL = 42500;
 
 let globalData = {};
-let activeStatut = "SASU";
+let activeStatut = "micro";   // IMPORTANT : correspond à une clé valide
 let activeFiscal = "IS";
 let currentDays = 18;
 let expertMode = false;
@@ -523,11 +523,12 @@ function calcDividendes(benefApresIS) {
 /********** MICRO **********/
 function simulateMicro(ca, parts) {
     const frais = 600;
-    const cotis = ca * 0.211; // simplifié
+    const cotis = ca * 0.211;
     const netAvantIR = ca - cotis - frais;
     const revImposable = netAvantIR * 0.90;
     const ir = calcIR(revImposable, parts);
     const netAnnuel = netAvantIR - ir;
+
     return {
         statut: 'Micro',
         ca,
@@ -537,10 +538,7 @@ function simulateMicro(ca, parts) {
         dividendesNet: 0,
         salaireNet: netAnnuel,
         netMensuel: netAnnuel / 12,
-        details: {
-            revImposable,
-            netAvantIR
-        },
+        details: { revImposable, netAvantIR },
         ok: ca <= 77700
     };
 }
@@ -551,9 +549,10 @@ function simulateEURL_IR(ca, parts) {
     const dispo = ca - frais;
     const cotis = dispo * COTIS_TNS;
     const netAvantIR = dispo - cotis;
-    const revImposable = netAvantIR; // BIC/BNC
+    const revImposable = netAvantIR;
     const ir = calcIR(revImposable, parts);
     const netAnnuel = netAvantIR - ir;
+
     return {
         statut: 'EURL',
         fiscal: 'IR',
@@ -564,15 +563,12 @@ function simulateEURL_IR(ca, parts) {
         dividendesNet: 0,
         salaireNet: netAnnuel,
         netMensuel: netAnnuel / 12,
-        details: {
-            revImposable,
-            netAvantIR
-        },
+        details: { revImposable, netAvantIR },
         ok: true
     };
 }
 
-/********** EURL IS (simplifié) **********/
+/********** EURL IS **********/
 function simulateEURL_IS(ca, parts) {
     const frais = 4000;
     const dispo = ca - frais;
@@ -580,24 +576,18 @@ function simulateEURL_IS(ca, parts) {
     const benefAvantIS = dispo - cotis;
     const is = calcIS(benefAvantIS);
     const div = calcDividendes(benefAvantIS - is);
-    const revImposable = 0; // pas de salaire ici
-    const ir = 0;
-    const netAnnuel = div.net;
+
     return {
         statut: 'EURL',
         fiscal: 'IS',
         ca,
         cotis,
-        ir,
+        ir: 0,
         is,
         dividendesNet: div.net,
         salaireNet: 0,
-        netMensuel: netAnnuel / 12,
-        details: {
-            benefAvantIS,
-            divBrut: div.brut,
-            pfu: div.pfu
-        },
+        netMensuel: div.net / 12,
+        details: { benefAvantIS, divBrut: div.brut, pfu: div.pfu },
         ok: true
     };
 }
@@ -618,6 +608,7 @@ function simulateSASU_IS(ca, salaireMensuelCible, parts) {
     const ir = calcIR(salaireImposable, parts);
 
     const netAnnuel = sal.netAnnuel + div.net - ir;
+
     return {
         statut: 'SASU',
         fiscal: 'IS',
@@ -695,14 +686,14 @@ function calculer() {
     const parts = parseFloat(document.getElementById('parts').value) || 1;
     const target = revS || (caS / 12);
 
-    const data = simulateAll(revS ? revS : 0, parts);
-    globalData = data;
+    globalData = simulateAll(revS ? revS : 0, parts);
 
     document.getElementById('resultats').style.display = 'block';
     updateUI();
 }
 
 function toggleExpertMode() {
+    if (!globalData || !globalData.micro) return;
     expertMode = !expertMode;
     updateUI();
 }
@@ -711,6 +702,8 @@ function toggleExpertMode() {
  * 11. UI : RENDU
  ************************************/
 function updateUI() {
+    if (!globalData || !globalData.micro) return;
+
     const parts = parseFloat(document.getElementById('parts').value) || 1;
 
     const stats = [
@@ -801,11 +794,12 @@ function updateUI() {
     document.getElementById('tjm_val').innerText =
         Math.round(d.ca / 12 / currentDays).toLocaleString('fr-FR') + " €";
 }
-
 </script>
+
 </body>
 
 </html>
+
 
 
 

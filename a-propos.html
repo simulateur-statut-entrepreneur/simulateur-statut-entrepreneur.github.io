@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>À propos & Mentions légales – Simulateur Statut Entrepreneur 2026</title>
+  <meta name="description" content="Découvrez le projet Simulateur Statut Entrepreneur 2026 : notre mission d'aide aux entrepreneurs français, nos mentions légales et notre politique de confidentialité.">
+  <link rel="canonical" href="https://simulateur-statut-entrepreneur.github.io/a-propos.html">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172012578136460" crossorigin="anonymous"></script>
+  <style>
+    :root { --primary: #4e73df; --success: #1cc88a; --warning: #f6c23e; --danger: #e74a3b; --text-dark: #2d3748; --bg-body: #f8f9fc; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); }
+    @media (min-width: 600px) { body { padding: 40px 20px; } }
+    .container { max-width: 1000px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px; box-sizing: border-box; }
+    @media (min-width: 600px) { .container { min-height: auto; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); } }
+
+    nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0 0 22px; border-bottom: 1px solid #edf2f7; margin-bottom: 30px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); text-decoration: none; }
+    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    .nav-links a { color: #718096; text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; }
+    .nav-links a:hover { background: #ebf8ff; color: var(--primary); }
+    .nav-links a.active { background: var(--primary); color: #fff; }
+
+    .hero { text-align: center; margin-bottom: 30px; }
+    .hero-tag { display: inline-block; background: #ebf8ff; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #bee3f8; }
+    .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); color: var(--text-dark); margin-bottom: 10px; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { color: #718096; font-size: 15px; line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+    .section-title { font-family: 'Poppins', sans-serif; font-size: 1.2rem; color: var(--text-dark); margin-bottom: 4px; font-weight: 700; }
+    .prose { font-size: 14px; color: #4a5568; line-height: 1.8; }
+    .prose + .prose { margin-top: 10px; }
+    .prose strong { color: var(--text-dark); }
+
+    .mission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 18px 0; }
+    .mission-card { background: #f8fafc; border: 1px solid #edf2f7; border-radius: 14px; padding: 18px; text-align: center; }
+    .mission-card .icon { font-size: 1.8rem; margin-bottom: 10px; }
+    .mission-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+    .mission-card p { font-size: 12px; color: #718096; line-height: 1.6; }
+
+    .warn { background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--warning); border-radius: 12px; padding: 14px 16px; margin: 18px 0; }
+    .warn p { font-size: 13px; color: #4a5568; line-height: 1.65; }
+    .warn strong { color: #92400e; }
+
+    .mentions-card { background: #f8fafc; border: 1px solid #edf2f7; border-radius: 14px; overflow: hidden; margin: 16px 0; }
+    .mentions-card h3 { font-size: 13px; font-weight: 800; padding: 12px 16px; background: #edf2f7; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.05em; }
+    .mention-row { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid #f1f5f9; font-size: 13px; gap: 10px; }
+    .mention-row:last-child { border-bottom: none; }
+    .mention-row:nth-child(even) { background: #fdfdfd; }
+    .mention-key { color: #718096; }
+    .mention-val { font-weight: 600; color: var(--text-dark); text-align: right; }
+
+    .contact-card { background: #ebf8ff; border: 1px solid #bee3f8; border-radius: 14px; padding: 18px; display: flex; align-items: center; gap: 14px; }
+    .contact-card .icon { font-size: 2.2rem; flex-shrink: 0; }
+    .contact-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+    .contact-card p { font-size: 13px; color: #4a5568; line-height: 1.55; }
+
+    hr { border: 0; height: 1px; background: #edf2f7; margin: 28px 0; }
+
+    footer { border-top: 1px solid #edf2f7; padding: 20px 0 0; margin-top: 30px; text-align: center; }
+    footer p { color: #a0aec0; font-size: 12px; }
+    footer a { color: #a0aec0; text-decoration: none; margin: 0 6px; }
+    footer a:hover { color: var(--primary); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <nav>
+    <a href="index.html" class="nav-logo"><i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026</a>
+    <div class="nav-links">
+      <a href="index.html">Simulateur</a>
+      <a href="guide.html">Guide</a>
+      <a href="statuts.html">Les statuts</a>
+      <a href="faq.html">FAQ</a>
+      <a href="a-propos.html" class="active">À propos</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <span class="hero-tag"><i class="fa-solid fa-circle-info"></i> À propos</span>
+    <h1>Notre <span>mission</span></h1>
+    <p>Aider les entrepreneurs français à choisir leur statut juridique de manière éclairée — gratuitement, simplement, sans jargon.</p>
+  </div>
+
+  <h2 class="section-title"><i class="fa-solid fa-bullseye" style="color:var(--primary);margin-right:8px"></i>Le projet</h2>
+  <p class="prose">Chaque année, des centaines de milliers de personnes créent leur entreprise en France. Pourtant, le choix du statut juridique reste opaque pour la majorité d'entre elles. Les outils existants sont souvent trop complexes, payants ou orientés vers la vente de services.</p>
+  <p class="prose" style="margin-top:10px">Le <strong>Simulateur Statut Entrepreneur</strong> est né d'un constat simple : il manquait un outil <strong>gratuit, clair et accessible</strong> pour comparer micro-entreprise, SASU et EURL en quelques minutes, sans connaissances comptables préalables. Mis à jour pour <strong>2026</strong>, il intègre les derniers barèmes URSSAF et fiscaux.</p>
+
+  <div class="mission-grid">
+    <div class="mission-card">
+      <div class="icon">🎯</div>
+      <h4>Clarté</h4>
+      <p>Des résultats lisibles, sans acronymes et sans jargon fiscal inutile.</p>
+    </div>
+    <div class="mission-card">
+      <div class="icon">🆓</div>
+      <h4>Gratuité totale</h4>
+      <p>L'outil est et restera entièrement gratuit. Aucune inscription requise.</p>
+    </div>
+    <div class="mission-card">
+      <div class="icon">⚡</div>
+      <h4>Rapidité</h4>
+      <p>Une recommandation personnalisée en moins de 2 minutes.</p>
+    </div>
+    <div class="mission-card">
+      <div class="icon">🔒</div>
+      <h4>Confidentialité</h4>
+      <p>Aucune donnée personnelle collectée. Tout se passe dans votre navigateur.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2 class="section-title"><i class="fa-solid fa-users" style="color:var(--primary);margin-right:8px"></i>À qui s'adresse le simulateur ?</h2>
+  <p class="prose">Le simulateur est conçu pour toute personne souhaitant créer ou structurer son activité professionnelle en France :</p>
+  <br>
+  <p class="prose">
+    <i class="fa-solid fa-laptop-code" style="color:var(--primary);margin-right:6px"></i> <strong>Freelances et consultants</strong> qui hésitent entre micro-entreprise et société<br><br>
+    <i class="fa-solid fa-hammer" style="color:var(--warning);margin-right:6px"></i> <strong>Artisans et commerçants</strong> souhaitant choisir la structure la plus adaptée<br><br>
+    <i class="fa-solid fa-briefcase" style="color:var(--success);margin-right:6px"></i> <strong>Salariés</strong> qui envisagent de créer une activité complémentaire<br><br>
+    <i class="fa-solid fa-seedling" style="color:var(--danger);margin-right:6px"></i> <strong>Porteurs de projet</strong> qui veulent comprendre les implications financières avant de se lancer
+  </p>
+
+  <hr>
+
+  <h2 class="section-title"><i class="fa-solid fa-database" style="color:var(--primary);margin-right:8px"></i>Fiabilité des données</h2>
+  <p class="prose">Les calculs sont basés sur la <strong>législation française en vigueur en 2026</strong> : taux de cotisations sociales URSSAF, barèmes fiscaux IS/IR, seuils TVA et plafonds micro-entreprise. Les données sont mises à jour à chaque changement légal significatif.</p>
+
+  <div class="warn">
+    <p><i class="fa-solid fa-triangle-exclamation" style="color:var(--warning);margin-right:8px"></i><strong>Avertissement légal :</strong> Les informations et estimations fournies par ce simulateur sont données à titre indicatif uniquement. Elles ne constituent pas un conseil juridique, fiscal ou comptable. Nous déclinons toute responsabilité quant aux décisions prises sur la base des résultats affichés. Pour toute décision importante, consultez un <strong>expert-comptable ou un avocat</strong>.</p>
+  </div>
+
+  <hr>
+
+  <h2 class="section-title"><i class="fa-solid fa-file-contract" style="color:var(--primary);margin-right:8px"></i>Mentions légales</h2>
+
+  <div class="mentions-card">
+    <h3>Informations éditeur</h3>
+    <div class="mention-row"><span class="mention-key">Nom du site</span><span class="mention-val">Simulateur Statut Entrepreneur</span></div>
+    <div class="mention-row"><span class="mention-key">URL</span><span class="mention-val">simulateur-statut-entrepreneur.github.io</span></div>
+    <div class="mention-row"><span class="mention-key">Hébergeur</span><span class="mention-val">GitHub Pages – GitHub Inc., USA</span></div>
+    <div class="mention-row"><span class="mention-key">Nature du site</span><span class="mention-val">Site statique – outil d'aide à la décision</span></div>
+    <div class="mention-row"><span class="mention-key">Collecte de données personnelles</span><span class="mention-val">Aucune</span></div>
+    <div class="mention-row"><span class="mention-key">Cookies de tracking</span><span class="mention-val">Aucun (hors Google AdSense)</span></div>
+    <div class="mention-row"><span class="mention-key">Droit applicable</span><span class="mention-val">Droit français</span></div>
+  </div>
+
+  <hr>
+
+  <h2 class="section-title"><i class="fa-solid fa-shield" style="color:var(--primary);margin-right:8px"></i>Propriété intellectuelle</h2>
+  <p class="prose">L'ensemble du contenu de ce site (textes, calculs, interface) est la propriété de ses auteurs. Toute reproduction totale ou partielle sans autorisation préalable est interdite. Le code source du simulateur est hébergé sur <strong>GitHub</strong> sous une licence open source.</p>
+
+  <hr>
+
+  <h2 class="section-title"><i class="fa-solid fa-envelope" style="color:var(--primary);margin-right:8px"></i>Contact</h2>
+  <div class="contact-card">
+    <div class="icon">💬</div>
+    <div>
+      <h4>Une question, une erreur à signaler ?</h4>
+      <p>Pour signaler une erreur dans les calculs, suggérer une amélioration ou toute autre question, ouvrez une <strong>issue sur le dépôt GitHub</strong> du projet. Nous mettons à jour les barèmes dès que la législation évolue.</p>
+    </div>
+  </div>
+
+  <footer>
+    <p>
+      <a href="index.html">Simulateur</a>
+      <a href="guide.html">Guide</a>
+      <a href="statuts.html">Les statuts</a>
+      <a href="faq.html">FAQ</a>
+    </p>
+    <p style="margin-top:8px;">© 2026 Simulateur Statut Entrepreneur – Outil gratuit d'aide à la décision.</p>
+  </footer>
+
+</div>
+</body>
+</html>

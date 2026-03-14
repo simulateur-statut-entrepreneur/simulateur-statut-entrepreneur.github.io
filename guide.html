@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide d'utilisation – Simulateur Statut Entrepreneur 2026</title>
+  <meta name="description" content="Apprenez à utiliser le simulateur de statut entrepreneur 2026 pour comparer micro-entreprise, SASU et EURL et calculer votre revenu net.">
+  <link rel="canonical" href="https://simulateur-statut-entrepreneur.github.io/guide.html">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172012578136460" crossorigin="anonymous"></script>
+  <style>
+    :root { --primary: #4e73df; --success: #1cc88a; --warning: #f6c23e; --danger: #e74a3b; --text-dark: #2d3748; --bg-body: #f8f9fc; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); }
+    @media (min-width: 600px) { body { padding: 40px 20px; } }
+    .container { max-width: 1000px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px; box-sizing: border-box; }
+    @media (min-width: 600px) { .container { min-height: auto; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); } }
+
+    nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0 0 22px; border-bottom: 1px solid #edf2f7; margin-bottom: 30px; }
+    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); text-decoration: none; }
+    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    .nav-links a { color: #718096; text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; }
+    .nav-links a:hover { background: #ebf8ff; color: var(--primary); }
+    .nav-links a.active { background: var(--primary); color: #fff; }
+
+    .hero { text-align: center; margin-bottom: 35px; }
+    .hero-tag { display: inline-block; background: #ebf8ff; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #bee3f8; }
+    .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); color: var(--text-dark); margin-bottom: 10px; }
+    .hero h1 span { color: var(--primary); }
+    .hero p { color: #718096; font-size: 15px; line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+    .section-title { font-family: 'Poppins', sans-serif; font-size: 1.2rem; color: var(--text-dark); margin-bottom: 4px; font-weight: 700; }
+    .section-sub { color: #718096; font-size: 13px; margin-bottom: 18px; }
+
+    .step-grid { display: flex; flex-direction: column; gap: 12px; margin: 16px 0 28px; }
+    .step-card { display: flex; align-items: flex-start; gap: 14px; background: #f8fafc; border: 1px solid #edf2f7; border-radius: 16px; padding: 16px; transition: border-color 0.2s, box-shadow 0.2s; }
+    .step-card:hover { border-color: var(--primary); box-shadow: 0 4px 12px rgba(78,115,223,0.1); }
+    .step-num { width: 34px; height: 34px; border-radius: 50%; background: var(--primary); color: #fff; font-weight: 700; font-size: 14px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; }
+    .step-card h3 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .step-card p { font-size: 13px; color: #718096; line-height: 1.65; }
+
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; margin: 16px 0 28px; }
+    .info-card { background: #f8fafc; border: 1px solid #edf2f7; border-radius: 14px; padding: 16px; text-align: center; }
+    .info-card .icon { font-size: 1.7rem; margin-bottom: 8px; }
+    .info-card h4 { font-size: 13px; font-weight: 700; margin-bottom: 4px; }
+    .info-card p { font-size: 12px; color: #718096; line-height: 1.6; }
+
+    .tip { background: #ebf8ff; border: 1px solid #bee3f8; border-left: 4px solid var(--primary); border-radius: 12px; padding: 14px 16px; margin: 16px 0; display: flex; gap: 10px; align-items: flex-start; }
+    .tip p { font-size: 13px; color: #4a5568; line-height: 1.65; }
+    .tip strong { color: var(--primary); }
+
+    .warn { background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--warning); border-radius: 12px; padding: 14px 16px; margin: 16px 0; display: flex; gap: 10px; align-items: flex-start; }
+    .warn p { font-size: 13px; color: #4a5568; line-height: 1.65; }
+
+    hr { border: 0; height: 1px; background: #edf2f7; margin: 30px 0; }
+
+    .btn-cta { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+
+    footer { border-top: 1px solid #edf2f7; padding: 20px 0 0; margin-top: 30px; text-align: center; }
+    footer p { color: #a0aec0; font-size: 12px; }
+    footer a { color: #a0aec0; text-decoration: none; margin: 0 6px; }
+    footer a:hover { color: var(--primary); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <nav>
+    <a href="index.html" class="nav-logo"><i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026</a>
+    <div class="nav-links">
+      <a href="index.html">Simulateur</a>
+      <a href="guide.html" class="active">Guide</a>
+      <a href="statuts.html">Les statuts</a>
+      <a href="faq.html">FAQ</a>
+      <a href="a-propos.html">À propos</a>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <span class="hero-tag"><i class="fa-solid fa-book-open"></i> Guide d'utilisation</span>
+    <h1>Comment utiliser le simulateur <span>efficacement</span></h1>
+    <p>En quelques minutes, identifiez le statut juridique le plus adapté à votre projet grâce à notre outil mis à jour pour <strong>2026</strong>.</p>
+  </div>
+
+  <h2 class="section-title"><i class="fa-solid fa-list-check" style="color:var(--primary);margin-right:6px"></i>Les 5 étapes du simulateur</h2>
+  <p class="section-sub">Suivez ces étapes pour obtenir une recommandation personnalisée.</p>
+
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-num">1</div>
+      <div>
+        <h3>Choisissez votre type d'activité</h3>
+        <p>Sélectionnez <strong>Prestation de services</strong> (freelance, consultant, artisan) ou <strong>Commerce</strong> (vente de marchandises, restauration). Ce choix détermine le taux de cotisations de la micro-entreprise et les plafonds de CA applicables (77 700 € pour les services, 188 700 € pour le commerce en 2026).</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">2</div>
+      <div>
+        <h3>Entrez votre CA prévisionnel ou votre revenu cible</h3>
+        <p>Vous pouvez raisonner dans les deux sens : soit en entrant votre <strong>chiffre d'affaires annuel estimé</strong>, soit en partant d'un <strong>revenu net mensuel cible</strong>. Les deux champs sont exclusifs — le simulateur calcule automatiquement l'autre valeur.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">3</div>
+      <div>
+        <h3>Indiquez vos frais professionnels mensuels</h3>
+        <p>Renseignez vos dépenses récurrentes (matériel, logiciels, abonnements, déplacements). Ces frais sont <strong>déductibles en SASU et EURL</strong> mais pas en micro-entreprise — c'est souvent le critère décisif pour choisir entre les statuts au-delà de 30 000 € de CA.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">4</div>
+      <div>
+        <h3>Activez l'ACRE si vous y êtes éligible</h3>
+        <p>L'<strong>ACRE</strong> (Aide à la Création ou Reprise d'Entreprise) réduit de moitié vos cotisations sociales en micro-entreprise la première année. Cochez la case si vous créez votre activité et êtes demandeur d'emploi, jeune de moins de 26 ans, ou bénéficiaire de minima sociaux.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num">5</div>
+      <div>
+        <h3>Comparez les statuts et analysez le détail</h3>
+        <p>Le simulateur affiche le <strong>revenu net estimé</strong> pour chaque statut ainsi que le <strong>TJM cible</strong> (Taux Journalier Moyen). Cliquez sur Micro, EURL ou SASU pour basculer entre les statuts, puis sur "Voir le détail du calcul" pour voir la décomposition complète.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    <i class="fa-solid fa-lightbulb" style="color:var(--primary);margin-top:2px;flex-shrink:0"></i>
+    <p><strong>Astuce :</strong> Faites plusieurs simulations avec différents niveaux de CA pour visualiser le point de bascule où la SASU ou l'EURL devient plus avantageuse. En règle générale, ce seuil se situe autour de <strong>40 000 à 50 000 € de CA annuel</strong> pour un prestataire de services.</p>
+  </div>
+
+  <hr>
+
+  <h2 class="section-title"><i class="fa-solid fa-magnifying-glass-chart" style="color:var(--primary);margin-right:6px"></i>Ce que le simulateur calcule</h2>
+  <p class="section-sub">Quatre critères clés pour une comparaison complète.</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="icon">💰</div>
+      <h4>Charges sociales</h4>
+      <p>Cotisations micro-social (~21%), TNS EURL (~45%) ou assimilé-salarié SASU (~75% du net).</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🏢</div>
+      <h4>Frais de structure</h4>
+      <p>Comptabilité, banque, assurance et CFE inclus dans l'estimation selon chaque statut.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">🛡️</div>
+      <h4>Protection sociale</h4>
+      <p>Statut TNS ou assimilé-salarié, impact sur la retraite, la maladie et l'accès au chômage.</p>
+    </div>
+    <div class="info-card">
+      <div class="icon">📈</div>
+      <h4>TJM cible</h4>
+      <p>Taux journalier moyen à facturer selon votre nombre de jours travaillés par mois.</p>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2 class="section-title"><i class="fa-solid fa-circle-info" style="color:var(--primary);margin-right:6px"></i>Interpréter les résultats</h2>
+  <p class="section-sub">Comment lire les recommandations du simulateur.</p>
+
+  <div class="step-grid">
+    <div class="step-card">
+      <div class="step-num" style="background:var(--success)"><i class="fa-solid fa-star" style="font-size:11px"></i></div>
+      <div>
+        <h3>Le badge "Conseillé"</h3>
+        <p>Le statut mis en avant est celui qui maximise votre revenu net selon vos paramètres. Il représente le meilleur équilibre entre charges, protection sociale et facilité de gestion pour votre profil.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num" style="background:#a0aec0"><i class="fa-solid fa-xmark" style="font-size:13px"></i></div>
+      <div>
+        <h3>Le statut "HORS SEUIL"</h3>
+        <p>Si la micro-entreprise affiche "HORS SEUIL", votre CA dépasse le plafond légal autorisé. Vous devez obligatoirement opter pour une société (SASU ou EURL) dans ce cas.</p>
+      </div>
+    </div>
+    <div class="step-card">
+      <div class="step-num" style="background:var(--warning)"><i class="fa-solid fa-list" style="font-size:11px"></i></div>
+      <div>
+        <h3>Le détail du calcul</h3>
+        <p>Cliquez sur "Voir le détail du calcul" pour afficher la décomposition annuelle : CA brut, frais déduits, cotisations URSSAF et revenu net disponible. Utile pour préparer un rendez-vous avec votre comptable.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn">
+    <i class="fa-solid fa-triangle-exclamation" style="color:var(--warning);margin-top:2px;flex-shrink:0"></i>
+    <p><strong>Important :</strong> Les estimations fournies sont indicatives et basées sur les barèmes 2026. Elles n'intègrent pas l'impôt sur le revenu personnel ni les situations atypiques. Pour une décision définitive, consultez un <strong>expert-comptable</strong>.</p>
+  </div>
+
+  <div style="text-align:center; margin-top:28px;">
+    <a href="index.html" class="btn-cta"><i class="fa-solid fa-rocket"></i> Lancer le simulateur</a>
+  </div>
+
+  <footer>
+    <p>
+      <a href="index.html">Simulateur</a>
+      <a href="statuts.html">Les statuts</a>
+      <a href="faq.html">FAQ</a>
+      <a href="a-propos.html">À propos</a>
+    </p>
+    <p style="margin-top:8px;">© 2026 Simulateur Statut Entrepreneur – Outil d'aide à la décision, non un conseil juridique.</p>
+  </footer>
+
+</div>
+</body>
+</html>

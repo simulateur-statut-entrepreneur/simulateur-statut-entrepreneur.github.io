@@ -3,170 +3,229 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FAQ – Questions fréquentes sur les statuts entrepreneur 2026</title>
-  <meta name="description" content="Réponses aux questions les plus fréquentes sur le choix du statut juridique : micro-entreprise, SASU, EURL, charges sociales, fiscalité et création d'entreprise en France.">
+  <title>FAQ – Questions fréquentes sur les 7 statuts entrepreneur 2026</title>
+  <meta name="description" content="Réponses aux questions fréquentes sur Micro, EI, EURL, SASU, Portage salarial, Holding et SARL de famille. Charges, fiscalité, ACRE, dividendes et création d'entreprise en France 2026.">
   <link rel="canonical" href="https://simulateur-statut-entrepreneur.github.io/faq.html">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172012578136460" crossorigin="anonymous"></script>
   <style>
-    :root { --primary: #4e73df; --success: #1cc88a; --warning: #f6c23e; --danger: #e74a3b; --text-dark: #2d3748; --bg-body: #f8f9fc; }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); }
-    @media (min-width: 600px) { body { padding: 40px 20px; } }
-    .container { max-width: 1000px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px; box-sizing: border-box; }
-    @media (min-width: 600px) { .container { min-height: auto; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); } }
+    :root{--primary:#4e73df;--success:#1cc88a;--warning:#f6c23e;--danger:#e74a3b;--text-dark:#2d3748;--text-mid:#4a5568;--text-light:#718096;--border:#edf2f7;--bg:#f8f9fc;--bg-card:#f8fafc}
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-dark)}
+    @media(min-width:600px){body{padding:40px 20px}}
+    .container{max-width:1000px;margin:auto;background:#fff;min-height:100vh;padding:25px 20px;box-sizing:border-box}
+    @media(min-width:600px){.container{min-height:auto;border-radius:24px;box-shadow:0 15px 35px rgba(0,0,0,0.1)}}
 
-    nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0 0 22px; border-bottom: 1px solid #edf2f7; margin-bottom: 30px; }
-    .nav-logo { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); text-decoration: none; }
-    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
-    .nav-links a { color: #718096; text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; }
-    .nav-links a:hover { background: #ebf8ff; color: var(--primary); }
-    .nav-links a.active { background: var(--primary); color: #fff; }
+    nav{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:0 0 22px;border-bottom:1px solid var(--border);margin-bottom:28px}
+    .nav-logo{font-family:'Poppins',sans-serif;font-size:15px;font-weight:700;color:var(--primary);text-decoration:none}
+    .nav-links{display:flex;gap:4px;flex-wrap:wrap}
+    .nav-links a{color:var(--text-light);text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;transition:all .2s}
+    .nav-links a:hover{background:#ebf8ff;color:var(--primary)}
+    .nav-links a.active{background:var(--primary);color:#fff}
 
-    .hero { text-align: center; margin-bottom: 30px; }
-    .hero-tag { display: inline-block; background: #ebf8ff; color: var(--primary); font-size: 11px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 12px; border-radius: 20px; margin-bottom: 12px; border: 1px solid #bee3f8; }
-    .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); color: var(--text-dark); margin-bottom: 10px; }
-    .hero h1 span { color: var(--primary); }
-    .hero p { color: #718096; font-size: 15px; line-height: 1.7; max-width: 600px; margin: 0 auto; }
+    .hero{text-align:center;margin-bottom:28px}
+    .hero-tag{display:inline-block;background:#ebf8ff;color:var(--primary);font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:4px 12px;border-radius:20px;margin-bottom:12px;border:1px solid #bee3f8}
+    .hero h1{font-family:'Poppins',sans-serif;font-size:clamp(1.5rem,4vw,2.2rem);color:var(--text-dark);margin-bottom:10px}
+    .hero h1 span{color:var(--primary)}
+    .hero p{color:var(--text-light);font-size:15px;line-height:1.7;max-width:640px;margin:0 auto}
 
-    .cat-label { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); margin: 28px 0 12px; padding-bottom: 8px; border-bottom: 2px solid #ebf8ff; display: flex; align-items: center; gap: 8px; }
+    .cat-label{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin:28px 0 12px;padding-bottom:8px;border-bottom:2px solid #ebf8ff;display:flex;align-items:center;gap:8px}
 
-    .faq-item { border-bottom: 1px solid #f1f5f9; }
-    .faq-q { width: 100%; text-align: left; background: none; border: none; color: var(--text-dark); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; padding: 14px 0; cursor: pointer; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: color 0.2s; }
-    .faq-q:hover { color: var(--primary); }
-    .faq-icon { width: 24px; height: 24px; border-radius: 50%; border: 2px solid #edf2f7; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; transition: all 0.2s; color: #a0aec0; }
-    .faq-item.open .faq-icon { background: var(--primary); border-color: var(--primary); color: #fff; }
-    .faq-a { display: none; padding: 0 0 14px 0; color: #718096; font-size: 13px; line-height: 1.8; }
-    .faq-a strong { color: var(--text-dark); }
-    .faq-item.open .faq-a { display: block; }
+    .faq-item{border-bottom:1px solid var(--border)}
+    .faq-q{width:100%;text-align:left;background:none;border:none;color:var(--text-dark);font-family:'Inter',sans-serif;font-size:14px;font-weight:700;padding:13px 0;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:color .2s}
+    .faq-q:hover{color:var(--primary)}
+    .faq-icon{width:22px;height:22px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;transition:all .2s;color:#a0aec0}
+    .faq-item.open .faq-icon{background:var(--primary);border-color:var(--primary);color:#fff}
+    .faq-a{display:none;padding:0 0 13px;color:var(--text-mid);font-size:13px;line-height:1.8}
+    .faq-a strong{color:var(--text-dark)}
+    .faq-a .tip{background:#ebf8ff;border-left:3px solid var(--primary);padding:8px 12px;border-radius:0 8px 8px 0;margin-top:8px;font-size:12px;color:#2c5282}
+    .faq-item.open .faq-a{display:block}
 
-    .cta-box { background: linear-gradient(135deg, #ebf8ff, #f0fdf4); border: 1px solid #bee3f8; border-radius: 18px; padding: 24px; text-align: center; margin-top: 30px; }
-    .cta-box h3 { font-family: 'Poppins', sans-serif; font-size: 1.3rem; color: var(--text-dark); margin-bottom: 6px; }
-    .cta-box p { color: #718096; font-size: 13px; margin-bottom: 16px; }
-    .btn-cta { display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 15px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
-    .btn-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+    .cta-box{background:linear-gradient(135deg,#ebf8ff,#f0fdf4);border:1px solid #bee3f8;border-radius:16px;padding:22px;text-align:center;margin-top:28px}
+    .cta-box h3{font-family:'Poppins',sans-serif;font-size:1.2rem;color:var(--text-dark);margin-bottom:6px}
+    .cta-box p{color:var(--text-light);font-size:13px;margin-bottom:14px}
+    .btn-cta{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff;padding:13px 26px;border-radius:12px;font-weight:700;font-size:14px;text-decoration:none;transition:transform .2s,box-shadow .2s}
+    .btn-cta:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(37,99,235,.3)}
 
-    footer { border-top: 1px solid #edf2f7; padding: 20px 0 0; margin-top: 30px; text-align: center; }
-    footer p { color: #a0aec0; font-size: 12px; }
-    footer a { color: #a0aec0; text-decoration: none; margin: 0 6px; }
-    footer a:hover { color: var(--primary); }
+    footer{border-top:1px solid var(--border);padding:18px 0 0;margin-top:28px;text-align:center}
+    footer p{color:#a0aec0;font-size:12px}
+    footer a{color:#a0aec0;text-decoration:none;margin:0 6px}
+    footer a:hover{color:var(--primary)}
   </style>
 </head>
 <body>
 <div class="container">
 
-  <nav>
-    <a href="index.html" class="nav-logo"><i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026</a>
-    <div class="nav-links">
-      <a href="index.html">Simulateur</a>
-      <a href="guide.html">Guide</a>
-      <a href="statuts.html">Les statuts</a>
-      <a href="faq.html" class="active">FAQ</a>
-      <a href="a-propos.html">À propos</a>
-    </div>
-  </nav>
-
-  <div class="hero">
-    <span class="hero-tag"><i class="fa-solid fa-circle-question"></i> FAQ</span>
-    <h1>Questions <span>fréquentes</span></h1>
-    <p>Tout ce que vous devez savoir sur le choix de votre statut juridique, les charges, la fiscalité et la création d'entreprise en France en <strong>2026</strong>.</p>
+<nav>
+  <a href="index.html" class="nav-logo"><i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026</a>
+  <div class="nav-links">
+    <a href="index.html">Simulateur</a><a href="guide.html">Guide</a>
+    <a href="statuts.html">Les statuts</a>
+    <a href="faq.html" class="active">FAQ</a><a href="a-propos.html">À propos</a>
   </div>
+</nav>
 
-  <!-- CATÉGORIE 1 -->
-  <div class="cat-label"><i class="fa-solid fa-scale-balanced"></i> Choisir son statut</div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Quel est le meilleur statut pour démarrer seul en 2026 ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Il n'existe pas de statut universellement meilleur : tout dépend de votre CA prévisionnel, de vos frais et de vos objectifs. <strong>La micro-entreprise</strong> est idéale pour démarrer avec un CA modeste (sous 77 700 € pour les services) car la création est gratuite et les formalités réduites au minimum. Dès que votre CA dépasse ce seuil ou que vous avez des frais professionnels importants, la <strong>SASU ou l'EURL</strong> deviennent plus avantageuses. Utilisez le simulateur pour trouver votre point de bascule exact.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Quelle est la principale différence entre SASU et EURL ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">La différence clé est le <strong>régime social du dirigeant</strong>. En SASU, le président est <strong>assimilé-salarié</strong> : charges plus élevées (~75% du salaire net) mais meilleure protection sociale et accès possible au chômage en fin de mandat. En EURL, le gérant est <strong>TNS</strong> (Travailleur Non Salarié) : charges moins élevées (~45%) mais protection moindre et pas d'accès au chômage. La SASU est aussi plus flexible dans la rédaction des statuts, ce qui facilite une future levée de fonds.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">À partir de quel CA est-il intéressant de créer une société ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">En règle générale, le passage en société (SASU ou EURL) devient financièrement intéressant à partir de <strong>40 000 à 50 000 € de CA annuel</strong> pour un prestataire de services, notamment si vous avez des frais professionnels déductibles. En dessous de ce seuil, la micro-entreprise est généralement plus avantageuse grâce à sa simplicité et à l'absence de frais de structure. Simulez votre situation précise sur notre outil car ce seuil varie selon vos frais et votre secteur.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Peut-on changer de statut après la création ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Oui, mais les formalités varient. Passer de la <strong>micro-entreprise à une société</strong> nécessite de créer une nouvelle structure (SASU/EURL) et de radier l'auto-entreprise. La transformation d'une <strong>EURL en SARL</strong> est simple si vous accueillez un associé. Passer d'une <strong>EURL en SASU</strong> requiert une transformation juridique avec rédaction de nouveaux statuts. Dans tous les cas, il est conseillé d'anticiper ce choix dès le départ et de prévoir la structure dans laquelle vous souhaitez évoluer.</div>
-  </div>
-
-  <!-- CATÉGORIE 2 -->
-  <div class="cat-label"><i class="fa-solid fa-rocket"></i> Micro-entreprise</div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Quels sont les plafonds de CA de la micro-entreprise en 2026 ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">En 2026, les plafonds sont de <strong>188 700 €</strong> pour les activités de vente de marchandises, hébergement et restauration, et de <strong>77 700 €</strong> pour les prestations de services et les professions libérales. Si vous dépassez ces seuils deux années consécutives, vous êtes obligé de basculer vers un régime réel. Au-delà du seuil de franchise TVA (distinct du plafond CA), vous devrez facturer la TVA à vos clients.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Peut-on cumuler auto-entreprise et emploi salarié ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Oui, le cumul est tout à fait légal et très courant. Vérifiez simplement que votre <strong>contrat de travail</strong> ne comporte pas de clause d'exclusivité ou de non-concurrence qui l'interdirait. Si vous êtes fonctionnaire, des règles spécifiques s'appliquent selon votre corps. Le cumul vous permet de tester une activité sans risque financier tout en conservant la protection sociale de salarié, ce qui est idéal pour une activité de transition ou complémentaire.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Qu'est-ce que le versement libératoire de l'impôt en micro-entreprise ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">C'est une option permettant de payer votre <strong>impôt sur le revenu simultanément à vos cotisations sociales</strong>, sous forme d'un pourcentage fixe de votre CA (1% vente, 1,7% services BIC, 2,2% BNC). Elle est avantageuse si votre tranche marginale d'imposition est de 30% ou plus. Pour en bénéficier, votre revenu fiscal de référence de l'année N-2 ne doit pas dépasser un plafond (environ 27 000 € pour une personne seule en 2026).</div>
-  </div>
-
-  <!-- CATÉGORIE 3 -->
-  <div class="cat-label"><i class="fa-solid fa-building"></i> SASU &amp; EURL</div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Quel est le coût réel de création d'une SASU ou EURL ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Le coût comprend : les <strong>frais d'immatriculation</strong> (environ 40-60 € sur le guichet unique), la <strong>publication au journal d'annonces légales</strong> (environ 120-200 €), et éventuellement les <strong>honoraires pour la rédaction des statuts</strong> (200 à 1 500 € selon la complexité). Via les plateformes en ligne spécialisées, comptez 200 à 500 € tout compris. Prévoyez aussi un capital social initial : le minimum légal est 1 €, mais un capital de 1 000 € ou plus rassure vos partenaires bancaires.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Peut-on se verser des dividendes et est-ce avantageux ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Oui, les deux structures le permettent. En <strong>SASU</strong>, les dividendes sont soumis uniquement au Prélèvement Forfaitaire Unique (PFU) de 30% (12,8% IR + 17,2% prélèvements sociaux), sans cotisations sociales supplémentaires — c'est un avantage majeur. En <strong>EURL à l'IS</strong>, les dividendes dépassant 10% du capital social sont soumis aux cotisations TNS, ce qui les rend moins attractifs. Attention : les dividendes ne génèrent pas de droits à la retraite dans les deux cas.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Faut-il obligatoirement un expert-comptable pour une SASU ou EURL ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Ce n'est pas légalement obligatoire (sauf au-delà de certains seuils en SARL), mais <strong>fortement recommandé</strong>. La comptabilité complète (grand-livre, bilan, liasses fiscales, déclarations TVA) est complexe et les erreurs peuvent coûter cher en pénalités ou redressements. Un expert-comptable coûte 1 500 à 3 000 € par an selon votre activité, mais vous fait généralement économiser davantage en optimisation fiscale. Il existe des logiciels de comptabilité pour gérer soi-même si on y consacre du temps.</div>
-  </div>
-
-  <!-- CATÉGORIE 4 -->
-  <div class="cat-label"><i class="fa-solid fa-coins"></i> Charges &amp; fiscalité</div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Comment sont calculées les charges sociales du gérant d'EURL (TNS) ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Les cotisations TNS sont calculées sur la <strong>rémunération nette perçue</strong>. Le taux global est d'environ <strong>45%</strong>, couvrant : maladie-maternité, retraite de base, retraite complémentaire, invalidité-décès, et CSG/CRDS. La première année, des cotisations provisionnelles sont calculées sur une base forfaitaire, puis régularisées en N+1 selon votre revenu réel. Prévoyez de la trésorerie pour cette régularisation si votre CA dépasse les estimations initiales.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">Quand est-il intéressant de passer à l'Impôt sur les Sociétés (IS) ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">Le passage à l'IS devient généralement avantageux lorsque votre bénéfice annuel dépasse <strong>40 000 à 50 000 €</strong>, car vous pouvez maîtriser votre rémunération, laisser des bénéfices dans la société à un taux réduit de 15% (jusqu'à 42 500 €), et optimiser via les dividendes. En dessous de ce seuil, l'IR peut être préférable, notamment car les déficits sont reportables sur le revenu personnel les premières années. Notre simulateur vous aide à visualiser ce seuil selon votre situation.</div>
-  </div>
-
-  <div class="faq-item">
-    <button class="faq-q" onclick="toggle(this)">La TVA est-elle obligatoire dès la création d'une SASU ou EURL ? <span class="faq-icon">+</span></button>
-    <div class="faq-a">En SASU ou EURL, vous êtes <strong>assujetti à la TVA dès la création</strong>, sauf si vous optez pour la franchise en base de TVA (mêmes seuils que la micro-entreprise). La facturation de TVA implique des déclarations périodiques et une comptabilité plus rigoureuse, mais vous permet de <strong>récupérer la TVA sur vos achats professionnels</strong> — ce qui est particulièrement avantageux si vous investissez en matériel ou si vos clients sont des entreprises (eux-mêmes assujettis à la TVA).</div>
-  </div>
-
-  <div class="cta-box">
-    <h3>Toujours pas décidé ?</h3>
-    <p>Utilisez notre simulateur pour obtenir une recommandation personnalisée en moins de 2 minutes.</p>
-    <a href="index.html" class="btn-cta"><i class="fa-solid fa-calculator"></i> Lancer le simulateur</a>
-  </div>
-
-  <footer>
-    <p>
-      <a href="index.html">Simulateur</a>
-      <a href="guide.html">Guide</a>
-      <a href="statuts.html">Les statuts</a>
-      <a href="a-propos.html">À propos</a>
-    </p>
-    <p style="margin-top:8px;">© 2026 Simulateur Statut Entrepreneur – Outil d'aide à la décision, non un conseil juridique.</p>
-  </footer>
-
+<div class="hero">
+  <span class="hero-tag"><i class="fa-solid fa-circle-question"></i> FAQ</span>
+  <h1>Questions <span>fréquentes</span></h1>
+  <p>Tout ce que vous devez savoir sur les 7 statuts juridiques, les charges, la fiscalité, l'ACRE, les dividendes et la création d'entreprise en France en <strong>2026</strong>.</p>
 </div>
+
+<!-- ═══ CHOISIR SON STATUT ═══ -->
+<div class="cat-label"><i class="fa-solid fa-scale-balanced"></i> Choisir son statut</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Combien de statuts existe-t-il vraiment et lequel choisir en 2026 ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Il existe aujourd'hui <strong>7 structures principales</strong> pour exercer en indépendant : Micro-entreprise, EI au réel, EURL, SASU, Portage salarial, Holding et SARL de famille. Le choix dépend de 4 critères : votre <strong>niveau de CA</strong>, vos <strong>frais professionnels</strong>, votre <strong>situation familiale</strong> (quotient familial IR), et si vous <strong>bénéficiez de l'ARE</strong> (chômage). Notre simulateur analyse ces 4 dimensions simultanément pour vous donner le résultat le plus précis possible.
+    <div class="tip">💡 Utilisez le simulateur en mode TJM pour voir le classement des 7 statuts d'un coup selon votre profil exact.</div>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">À quel CA devient-il pertinent de créer une société ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Le seuil dépend de vos frais et de votre situation fiscale, mais en règle générale : <strong>Micro → EI au réel</strong> dès 30 000 € si vous avez des frais importants. <strong>EI → EURL</strong> autour de 50 000 € pour bénéficier des dividendes et d'une meilleure structure. <strong>EURL/SASU → Holding</strong> à partir de 80 000–100 000 € si vous souhaitez capitaliser. Ces seuils varient selon le quotient familial : avec 4 parts fiscales, l'EI reste compétitif jusqu'à ~150 000 € car l'IR est quasi nul.</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Quelle différence entre SASU et EURL en pratique ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">La différence clé est le <strong>régime social</strong>. En SASU, le président est <strong>assimilé-salarié</strong> : charges élevées (~82% du net) mais meilleure protection sociale et accès au chômage en fin de mandat. En EURL, le gérant est <strong>TNS</strong> : charges plus faibles (~44%) mais pas de chômage. La SASU offre aussi plus de flexibilité statutaire. Pour un même CA, l'EURL dégage en général 15–20% de revenu net de plus que la SASU, sauf si vous bénéficiez de l'ARE ou optimisez via les dividendes SASU (PFU 30% sans cotisations sociales).</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Peut-on changer de statut après la création ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Oui, mais les formalités varient selon la direction : <strong>Micro → EI</strong> : simple changement de régime d'imposition. <strong>Micro/EI → EURL/SASU</strong> : création d'une nouvelle structure et radiation de l'ancienne (~500–600 €). <strong>EURL → SASU</strong> : transformation juridique (~300–800 €). <strong>EURL/SASU → Holding</strong> : création d'une holding qui rachète les parts (~1 200 €). Chaque transition est possible mais engendre des frais et délais. Il est préférable d'anticiper la structure cible dès le départ si votre CA va croître.</div>
+</div>
+
+<!-- ═══ MICRO & EI ═══ -->
+<div class="cat-label"><i class="fa-solid fa-rocket"></i> Micro-entreprise & EI au réel</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Quelle est la différence entre la Micro-entreprise et l'EI au réel ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Ce sont deux régimes d'une même forme juridique (l'Entreprise Individuelle), mais avec des règles différentes. En <strong>micro</strong>, vous payez des cotisations forfaitaires sur votre CA (21%) et êtes imposé sur un revenu forfaitaire (CA - abattement). En <strong>EI au réel</strong>, vous déduisez vos <strong>frais professionnels réels</strong>, êtes imposé sur le bénéfice réel, et payez des cotisations TNS sur ce bénéfice (~44%). L'EI au réel est avantageux dès que vos frais dépassent l'abattement forfaitaire de la micro (34% pour services BNC).</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Quels sont les plafonds de CA de la micro-entreprise en 2026 ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">En 2026 : <strong>188 700 €</strong> pour la vente de marchandises, hébergement et restauration, et <strong>77 700 €</strong> pour les prestations de services et professions libérales. Si vous dépassez deux années consécutives, vous basculez automatiquement au régime réel. Au-delà du seuil de franchise TVA (distinct du plafond CA), vous devez facturer la TVA à vos clients.</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">L'EI au réel permet-elle de se verser des dividendes ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Non. L'EI n'a pas de capital social et pas de personnalité morale distincte de son exploitant. Il n'y a donc pas de notion de dividendes : tout le bénéfice de l'EI est imposé directement à l'IR du dirigeant, qu'il soit distribué ou non. C'est la principale limite de l'EI par rapport à l'EURL ou la SASU. Pour bénéficier des dividendes, il faut créer une société (EURL, SASU ou Holding).</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Qu'est-ce que le versement libératoire de l'impôt en micro-entreprise ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">C'est une option permettant de payer votre IR <strong>simultanément aux cotisations sociales</strong>, sous forme d'un taux fixe sur le CA : 1% vente, 1,7% services BIC, 2,2% BNC. Avantageux si votre tranche marginale est à 30% ou plus. Conditions : revenus fiscaux de référence N-2 inférieurs à ~27 000 € (1 part). Vos cotisations sociales restent dues en parallèle (21% pour les services).</div>
+</div>
+
+<!-- ═══ EURL SASU ═══ -->
+<div class="cat-label"><i class="fa-solid fa-building"></i> EURL, SASU & dividendes</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Quelle est la stratégie dividendes optimale en SASU vs EURL ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">En <strong>SASU</strong> : les dividendes sont soumis uniquement au PFU 30% (12,8% IR + 17,2% PS), sans cotisations sociales supplémentaires. La stratégie optimale est de verser un salaire minimal pour maintenir les droits à la retraite, puis de maximiser les dividendes. En <strong>EURL</strong> : les dividendes dépassant 10% du capital social sont soumis aux cotisations TNS, ce qui les pénalise. Il vaut mieux garder un capital élevé (>100 000 €) ou utiliser d'autres leviers d'optimisation.
+    <div class="tip">💡 Le simulateur intègre un curseur "salaire vs dividendes" pour trouver la répartition optimale selon votre TMI.</div>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Comment est calculé l'IS sur les bénéfices en 2026 ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Le taux réduit de <strong>15%</strong> s'applique jusqu'à <strong>42 500 €</strong> de bénéfice imposable, puis le taux normal de <strong>25%</strong> au-delà. Pour bénéficier du taux réduit, la société doit avoir un capital entièrement libéré et le chiffre d'affaires doit être inférieur à 10 millions d'euros. L'IS est dû sur le bénéfice après déduction de la rémunération du dirigeant et de toutes les charges professionnelles.</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Faut-il obligatoirement un expert-comptable pour une SASU ou EURL ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Légalement non (sauf au-delà de certains seuils en SARL), mais <strong>fortement recommandé</strong>. La comptabilité complète (bilan, liasses fiscales, déclarations TVA) est complexe et les erreurs coûtent cher. Un expert-comptable coûte 1 500 à 3 500 €/an selon la taille, mais génère souvent bien plus d'économies en optimisation fiscale. Des logiciels comme Pennylane ou Indy permettent de réduire ce coût en automatisant une partie de la saisie.</div>
+</div>
+
+<!-- ═══ PORTAGE ═══ -->
+<div class="cat-label"><i class="fa-solid fa-handshake"></i> Portage salarial</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Comment fonctionne concrètement le portage salarial ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Le processus est simple : 1/ Vous trouvez vos clients et négociez votre TJM. 2/ La société de portage signe le contrat avec le client et vous embauche. 3/ Elle facture le client, prélève ses frais de gestion (8–12% du CA HT), puis vous verse un salaire. Vous bénéficiez de tous les avantages du salariat : bulletin de paie, mutuelle, prévoyance, droits chômage, retraite. Vous pouvez aussi déclarer des <strong>frais professionnels</strong> (déplacements, matériel) qui réduisent l'assiette de vos cotisations.</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Le portage salarial est-il plus avantageux que la SASU ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Le portage est plus avantageux sur <strong>3 critères</strong> : zéro gestion administrative, droits ARE acquis dès le départ (vs fin de mandat pour SASU), et pas de coût de création/fermeture. Il est moins avantageux sur <strong>2 critères</strong> : les frais de gestion (9% du CA) représentent un coût fixe élevé, et le revenu net est ~15–20% inférieur à une SASU optimisée. La règle pratique : portage idéal pour les <strong>missions ponctuelles et les transitions</strong>, SASU préférable pour une <strong>activité continue à long terme</strong>.</div>
+</div>
+
+<!-- ═══ HOLDING ═══ -->
+<div class="cat-label"><i class="fa-solid fa-building-columns"></i> Holding & structure mère-fille</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">En quoi consiste le régime mère-fille et pourquoi est-il si avantageux ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Le régime mère-fille (art. 216 CGI) permet à une société mère (la holding) de recevoir les dividendes de sa filiale en ne payant l'IS que sur <strong>5% du montant</strong> reçu à titre de quote-part de frais. En pratique : si la filiale distribue 100 000 € de dividendes nets d'IS, la holding paie IS sur 5 000 € seulement → 5 000 × 25% = <strong>1 250 € d'IS</strong> (soit 1,25%). Ces 100 000 € peuvent alors être réinvestis dans des projets (SCI, autres participations, FCPR) sans autre frottement fiscal immédiat. La taxation n'intervient que lors de la sortie personnelle (PFU 30%).</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Comment créer une holding et à partir de quel CA est-ce rentable ? <span class="faq-item">+</span></button>
+  <div class="faq-a">Pour créer une holding : 1/ Créer une SAS ou SARL (holding) qui détiendra les parts de votre société opérationnelle. 2/ Soit créer la filiale simultanément, soit faire racheter vos parts existantes par la holding (apport-cession, avec précautions fiscales). Le coût de mise en place est ~1 200 € (deux immatriculations + JAL). Les frais annuels de double comptabilité sont ~5 000 €. La structure devient rentable dès que le gain fiscal sur les dividendes dépasse ces coûts — généralement à partir de <strong>80 000 € de CA</strong>, et nettement intéressant dès <strong>150 000 €</strong>.</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Peut-on réinvestir les fonds de la holding sans payer d'impôt ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Oui, c'est le principal avantage de la holding. Après avoir payé ~1,25% d'IS sur les dividendes reçus, la holding peut investir librement : <strong>SCI</strong> pour l'immobilier (loyer taxé à l'IS 15/25% au lieu de l'IR), <strong>FCPR/FPCI</strong> (fonds private equity avec exonération sous conditions), <strong>achats de parts</strong> dans d'autres sociétés, <strong>prêts intra-groupe</strong>, compte à terme, etc. L'impôt n'est dû que lorsque vous sortez personnellement de l'argent de la holding (PFU 30%). C'est la stratégie de capitalisation la plus efficace fiscalement.</div>
+</div>
+
+<!-- ═══ SARL FAMILLE ═══ -->
+<div class="cat-label"><i class="fa-solid fa-people-group"></i> SARL de famille</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Qui peut créer une SARL de famille à l'IR ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">La SARL de famille est réservée aux associés liés par des <strong>liens familiaux directs</strong> : époux ou partenaires PACSés, ascendants (parents, grands-parents) et descendants (enfants, petits-enfants). Elle ne peut pas inclure des frères/sœurs ou des associés sans lien familial. Si un associé extérieur à la famille entre dans le capital, l'option IR est perdue définitivement. Cette contrainte est importante à anticiper si vous envisagez des levées de fonds ultérieures.</div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Dans quel cas la SARL de famille à l'IR est-elle vraiment avantageuse ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">L'avantage est maximal quand : 1/ <strong>Le conjoint n'a pas ou peu de revenus</strong> : la répartition 50/50 du bénéfice entre deux foyers avec des revenus très différents réduit fortement la TMI effective. 2/ <strong>Le quotient familial est élevé</strong> (3+ enfants) : l'IR global est déjà faible, ce qui neutralise l'avantage de l'IS. 3/ <strong>Le CA est modéré</strong> (~40–100k€) : en dessous, l'IS 15% n'est pas forcément plus avantageux que l'IR avec quotient familial. Simulez les deux options sur notre outil en changeant la situation familiale pour comparer.</div>
+</div>
+
+<!-- ═══ ACRE ═══ -->
+<div class="cat-label"><i class="fa-solid fa-seedling"></i> ACRE & aides à la création</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Comment fonctionne l'ACRE en 2026 et qui y est éligible ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">L'ACRE (Aide à la Création ou Reprise d'Entreprise) permet une <strong>exonération partielle de cotisations sociales</strong> pendant 12 mois. Pour les TNS (EI, EURL) : exonération totale jusqu'à 75% du PASS (~34 776 €), dégressive de 75% à 100% du PASS (~46 368 €), puis taux plein au-delà. Pour les assimilés-salariés (SASU, portage) : exonération partielle des charges patronales. Sont éligibles : demandeurs d'emploi, bénéficiaires de minima sociaux, jeunes de moins de 26 ans, et toute personne créant ou reprenant une entreprise.
+    <div class="tip">⚠️ À partir de l'année 2, l'avantage ACRE disparaît. Simulez sans ACRE pour voir votre situation réelle à long terme.</div>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Peut-on cumuler ACRE et maintien des allocations chômage (ARE) ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Oui, sous conditions. Si vous percevez l'ARE et créez une SASU, vous pouvez <strong>suspendre vos droits</strong> et les reprendre à la fermeture, ou percevoir une fraction de l'ARE en complément d'un salaire faible (option ARCE ou cumul partiel). La stratégie classique : créer une SASU sans se verser de salaire pendant la phase de démarrage → ARE continue → rentabiliser la société → basculer sur un salaire quand le CA est stabilisé. Consultez Pôle Emploi pour votre situation spécifique car les règles de cumul sont précises.</div>
+</div>
+
+<!-- ═══ FISCALITÉ ═══ -->
+<div class="cat-label"><i class="fa-solid fa-coins"></i> Fiscalité & IR</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Comment le quotient familial influence-t-il le choix du statut ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">Le quotient familial réduit l'IR en divisant le revenu imposable par le nombre de parts. Avec <strong>4 parts ou plus</strong> (marié + 3 enfants), l'IR est quasi nul jusqu'à ~160 000 € de revenu net imposable. Dans ce cas, l'IS (15–25%) devient une charge que vous ne subissez pas en IR, ce qui avantage les statuts sans IS (EI, micro, SARL famille IR). C'est pourquoi notre simulateur affiche parfois l'EI ou l'EI comme optimal pour les familles nombreuses à CA modéré — c'est mathématiquement correct, pas un bug.
+    <div class="tip">💡 Testez différentes situations familiales dans le simulateur pour voir à quel moment la société devient plus avantageuse.</div>
+  </div>
+</div>
+
+<div class="faq-item">
+  <button class="faq-q" onclick="toggle(this)">Quelle est la différence entre IR et IS pour le choix du statut ? <span class="faq-icon">+</span></button>
+  <div class="faq-a">L'<strong>IR (Impôt sur le Revenu)</strong> est progressif : vous payez 0% jusqu'à 11 497 €, 11% de 11 498 à 29 315 €, 30% de 29 316 à 83 823 €, 41% jusqu'à 180 294 €, 45% au-delà. Avec le quotient familial, ces seuils s'appliquent par part. L'<strong>IS (Impôt sur les Sociétés)</strong> est proportionnel : 15% jusqu'à 42 500 € de bénéfice puis 25%. L'IS devient avantageux dès que votre TMI est à 30% ou plus ET que vous n'avez pas besoin de tout sortir en rémunération.</div>
+</div>
+
+<div class="cta-box">
+  <h3>Pas encore décidé ?</h3>
+  <p>Utilisez notre simulateur pour obtenir une recommandation personnalisée sur les 7 statuts en moins de 2 minutes.</p>
+  <a href="index.html" class="btn-cta"><i class="fa-solid fa-calculator"></i> Lancer le simulateur</a>
+</div>
+
+<footer>
+  <p><a href="index.html">Simulateur</a><a href="guide.html">Guide</a><a href="statuts.html">Les statuts</a><a href="a-propos.html">À propos</a></p>
+  <p style="margin-top:8px">© 2026 Simulateur Statut Entrepreneur — Outil d'aide à la décision, non un conseil juridique.</p>
+</footer>
+</div>
+
 <script>
 function toggle(btn) {
   const item = btn.parentElement;

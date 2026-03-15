@@ -3,585 +3,1683 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="description" content="Simulateur 2026 pour comparer Micro-entreprise, SASU et EURL. Calculez votre revenu net selon votre activité, vos frais et votre chiffre d’affaires.">
+    <meta name="description" content="Simulateur 2026 pour comparer Micro-entreprise, SASU et EURL. Calculez votre revenu net APRÈS impôt selon votre CA, vos frais, votre situation familiale et votre stratégie dividendes.">
     <meta property="og:image" content="https://simulateur-statut-entrepreneur.github.io/og-image.png">
     <meta name="apple-mobile-web-app-title" content="Simulateur Entrepreneur">
     <meta property="og:site_name" content="Simulateur Entrepreneur">
-    <meta property="og:title" content="Simulateur Revenu Net : Choisir entre Micro, SASU ou EURL">
-    <meta property="og:image" content="https://simulateur-statut-entrepreneur.github.io/og-image.png">
+    <meta property="og:title" content="Simulateur Revenu Net 2026 : Micro, SASU ou EURL — avec IR et dividendes">
     <meta property="og:url" content="https://simulateur-statut-entrepreneur.github.io/">
-    <title>Simulateur Revenu Net : Choisir entre Micro, SASU ou EURL</title>
+    <title>Simulateur Revenu Net 2026 : Choisir entre Micro, SASU ou EURL</title>
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebApplication",
-  "name": "Simulateur Statut Entrepreneur 2026",
-  "url": "https://simulateur-statut-entrepreneur.github.io/",
-  "applicationCategory": "BusinessApplication",
-  "description": "Simulateur pour comparer Micro-entreprise, SASU et EURL et calculer votre revenu net.",
-  "creator": {
-    "@type": "Person",
-    "name": "simulateur-statut-entrepreneur"
-  }
-}
-</script>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172012578136460"
-     crossorigin="anonymous"></script>
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Simulateur Statut Entrepreneur 2026",
+      "url": "https://simulateur-statut-entrepreneur.github.io/",
+      "applicationCategory": "BusinessApplication",
+      "description": "Simulateur pour comparer Micro-entreprise, SASU et EURL avec calcul de l'impôt sur le revenu et optimisation dividendes.",
+      "creator": { "@type": "Person", "name": "simulateur-statut-entrepreneur" }
+    }
+    </script>
+
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172012578136460" crossorigin="anonymous"></script>
 
     <style>
-        :root { --primary: #4e73df; --success: #1cc88a; --warning: #f6c23e; --danger: #e74a3b; --text-dark: #2d3748; --bg-body: #f8f9fc; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); margin: 0; padding: 0; }
-        .container { max-width: 1000px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px; box-sizing: border-box; }
-        
-        @media (min-width: 600px) { body { padding: 40px 20px; } .container { min-height: auto; border-radius: 24px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); } }
-
-        /* HEADER & INPUTS */
-        .config-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; }
-        .toggle-group { background: #f1f5f9; padding: 4px; border-radius: 12px; display: flex; flex: 1; }
-        .toggle-btn { flex: 1; padding: 10px; border: none; background: none; cursor: pointer; border-radius: 9px; font-weight: 600; color: #718096; font-size: 13px; }
-        .toggle-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-
-        .field-label { display: block; font-size: 11px; font-weight: 800; color: #a0aec0; margin-bottom: 5px; text-transform: uppercase; }
-        input { width: 100%; padding: 16px; border: 2px solid #edf2f7; border-radius: 14px; font-size: 16px; font-weight: 600; box-sizing: border-box; background: #f8fafc; margin-bottom: 12px; }
-        .btn-analyze { background: var(--primary); color: white; border: none; padding: 18px; border-radius: 14px; font-weight: 700; font-size: 16px; cursor: pointer; width: 100%; transition: transform 0.2s; }
-        .btn-analyze:active { transform: scale(0.98); }
-
-        /* RESULTS AREA */
-        #resultats { margin-top: 30px; display: none; }
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 15px; }
-        
-        .result-block { padding: 20px 10px; border-radius: 20px; border: 2px solid #edf2f7; text-align: center; position: relative; }
-        .best-block { background: #4e73df; color: #ffffff; border-color: #2e59d9; box-shadow: 0 8px 20px rgba(78, 115, 223, 0.2); }
-        .tjm-block { background: #ffffff; color: #2c5282; border: 2px solid #ebf8ff; }
-        
-        .recommend-badge { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; padding: 4px 12px; border-radius: 20px; font-size: 10px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(28, 200, 138, 0.3); }
-
-        .tjm-input { width: 45px !important; border: 1px solid var(--primary); border-radius: 6px; text-align: center; font-weight: bold; padding: 2px; font-size: 14px; }
-
-        /* BLOCS INFOS */
-        .costs-card { background: #fff5f5; border-left: 5px solid var(--danger); border-radius: 12px; padding: 15px; margin-bottom: 20px; }
-        .costs-list { list-style: none; padding: 0; margin: 10px 0; font-size: 13px; }
-        .costs-list li { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px dashed rgba(231, 74, 59, 0.2); }
-
-        .impact-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 18px; padding: 20px; margin-bottom: 25px; }
-        .impact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        .impact-item b { display: block; color: #a0aec0; font-size: 9px; text-transform: uppercase; margin-bottom: 2px; }
-        .impact-item span { font-size: 12px; font-weight: 600; color: #4a5568; }
-
-        /* SELECTEUR DE STATUTS MIS EN VALEUR */
-        .status-selector { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; align-items: end; }
-        .stat-card { background: #f8fafc; border: 1px solid #edf2f7; padding: 15px 5px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
-        .stat-card.selected { 
-            border: 3px solid var(--primary); 
-            background: #fff; 
-            transform: translateY(-5px) scale(1.05); 
-            box-shadow: 0 10px 20px rgba(0,0,0,0.08); 
-            z-index: 10;
+        /* ═══════════════════════════════════════════
+           VARIABLES & RESET
+        ═══════════════════════════════════════════ */
+        :root {
+            --primary: #4e73df;
+            --primary-dark: #2e59d9;
+            --primary-light: #ebf8ff;
+            --success: #1cc88a;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --text-dark: #2d3748;
+            --text-mid: #4a5568;
+            --text-light: #718096;
+            --border: #edf2f7;
+            --bg-body: #f8f9fc;
+            --bg-card: #f8fafc;
+            --radius: 14px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-lg: 0 15px 35px rgba(0,0,0,0.1);
         }
-        .stat-card.recommended-outline::after { content: "TOP"; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: var(--success); color: white; font-size: 8px; font-weight: 900; padding: 2px 8px; border-radius: 10px; }
-        .stat-card h5 { margin: 0 0 5px; font-size: 11px; color: #a0aec0; text-transform: uppercase; }
-        .stat-card div { font-weight: 800; font-size: 14px; color: #2d3748; }
-        .stat-card.selected div { color: var(--primary); }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); line-height: 1.5; }
+        @media (min-width: 600px) { body { padding: 40px 20px; } }
 
+        /* ═══════════════════════════════════════════
+           CONTAINER
+        ═══════════════════════════════════════════ */
+        .container { max-width: 1000px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px 40px; box-sizing: border-box; }
+        @media (min-width: 600px) { .container { min-height: auto; border-radius: 24px; box-shadow: var(--shadow-lg); } }
 
+        /* ═══════════════════════════════════════════
+           NAVIGATION
+        ═══════════════════════════════════════════ */
+        nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+        .nav-logo { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-light); text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; }
+        .nav-links a:hover { background: var(--primary-light); color: var(--primary); }
+        .nav-links a.active { background: var(--primary); color: #fff; }
 
-.header-description {
-    max-width: 750px;
-    margin: 0 auto; /* Centre le bloc */
-    line-height: 1.6;
-    color: #4a5568; /* Un gris un peu plus doux que le titre */
-}
+        /* ═══════════════════════════════════════════
+           HEADER
+        ═══════════════════════════════════════════ */
+        .header { text-align: center; margin-bottom: 28px; }
+        .header h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.4rem, 4vw, 2rem); color: var(--text-dark); margin-bottom: 8px; line-height: 1.2; }
+        .header h1 span { color: var(--primary); }
+        .header-desc { color: var(--text-light); font-size: 14px; line-height: 1.7; max-width: 680px; margin: 0 auto 6px; }
+        .header-sub { font-size: 13px; color: var(--text-light); font-style: italic; }
 
-.header-description p {
-    font-size: 16px; /* Taille standard pour la lecture */
-    margin-bottom: 10px;
-}
+        /* Badge nouveautés */
+        .badge-new { display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #ebf8ff, #f0fdf4); border: 1px solid #bee3f8; border-radius: 20px; padding: 4px 12px; font-size: 11px; font-weight: 700; color: var(--primary); margin-bottom: 14px; }
 
-.secondary-text {
-    font-size: 14px;
-    color: #718096; /* Un gris encore plus clair pour montrer que c'est secondaire */
-    font-style: italic; /* Optionnel : pour différencier les deux paragraphes */
-}
+        /* ═══════════════════════════════════════════
+           SIMULATOR CARD
+        ═══════════════════════════════════════════ */
+        .sim-card { background: #fff; border: 1px solid var(--border); border-radius: 20px; padding: 22px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); max-width: 780px; margin: 0 auto; }
 
+        /* ── Tabs activité ── */
+        .toggle-group { background: var(--bg-card); padding: 4px; border-radius: 12px; display: flex; margin-bottom: 18px; }
+        .toggle-btn { flex: 1; padding: 9px; border: none; background: none; cursor: pointer; border-radius: 9px; font-weight: 600; color: var(--text-light); font-size: 13px; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+        .toggle-btn.active { background: #fff; color: var(--primary); box-shadow: 0 2px 6px rgba(0,0,0,0.07); }
 
-.main-simulator-card {
-    background: #ffffff;
-    padding: 20px;
-    border-radius: 24px; /* Coins très arrondis pour le côté moderne */
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08); /* Ombre portée pour décoller l'outil du fond */
-    border: 1px solid #edf2f7;
-    max-width: 750px; /* On resserre pour que ce soit plus compact */
-    margin: 0 auto; /* Centrage horizontal */
-    position: relative;
-    z-index: 10; /* Passe au-dessus des éventuels éléments de fond */
-}
+        /* ── Tabs mode saisie ── */
+        .input-mode-group { display: flex; gap: 8px; flex-wrap: wrap; }
+        .mode-btn { flex: 1; min-width: 100px; padding: 9px 12px; border: 2px solid var(--border); border-radius: 10px; background: var(--bg-card); color: var(--text-light); font-size: 12px; font-weight: 700; font-family: 'Inter', sans-serif; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 6px; }
+        .mode-btn:hover { border-color: var(--primary); color: var(--primary); }
+        .mode-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; box-shadow: 0 3px 10px rgba(78,115,223,0.25); }
 
-/* On donne du peps au bouton Analyser */
-.btn-analyze {
-    background: linear-gradient(135deg, #2563eb, #7c3aed);
-    color: white;
-    padding: 16px;
-    border-radius: 12px;
-    font-weight: 700;
-    width: 100%;
-    border: none;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    margin-top: 15px;
-}
+        /* ── Grille champs ── */
+        .fields-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+        @media (max-width: 550px) { .fields-grid { grid-template-columns: 1fr; } }
+        .field-group { display: flex; flex-direction: column; gap: 5px; }
+        .field-label { font-size: 11px; font-weight: 700; color: #a0aec0; text-transform: uppercase; letter-spacing: 0.05em; }
+        .field-input { padding: 13px 14px; border: 2px solid var(--border); border-radius: 12px; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; background: var(--bg-card); color: var(--text-dark); transition: border-color 0.2s; width: 100%; }
+        .field-input:focus { outline: none; border-color: var(--primary); background: #fff; }
+        select.field-input { cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23718096' d='M6 8L1 3h10z'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px; }
 
-.btn-analyze:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(37, 99, 235, 0.4);
-}
+        /* ── Options avancées ── */
+        .options-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; align-items: center; }
+        .option-chip { display: flex; align-items: center; gap: 7px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--text-mid); }
+        .option-chip input[type="checkbox"] { width: 16px; height: 16px; accent-color: var(--success); cursor: pointer; }
+        .option-chip:has(input:checked) { background: #f0fdf4; border-color: #86efac; color: #166534; }
 
-        .btn-detail {
-    background: none;
-    border: 2px solid var(--primary);
-    color: var(--primary);
-    padding: 10px 20px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    width: 100%;
-    margin: 15px 0;
-    transition: all 0.3s;
-    font-size: 14px;
-}
-.btn-detail:hover { background: #ebf8ff; }
+        /* ── Dividendes slider ── */
+        .divid-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; display: none; }
+        .divid-block.visible { display: block; }
+        .divid-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .divid-title { font-size: 12px; font-weight: 700; color: var(--text-mid); text-transform: uppercase; letter-spacing: 0.05em; }
+        .divid-value { font-size: 13px; font-weight: 700; color: var(--primary); }
+        input[type="range"] { width: 100%; height: 6px; accent-color: var(--primary); cursor: pointer; border-radius: 3px; }
+        .divid-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-light); margin-top: 4px; }
 
-.detail-panel {
-    display: none;
-    background: #fdfdfd;
-    border: 1px solid #edf2f7;
-    border-radius: 16px;
-    padding: 20px;
-    margin-bottom: 20px;
-    animation: fadeIn 0.4s ease;
-}
+        /* ── Bouton ── */
+        .btn-analyze { background: linear-gradient(135deg, #2563eb, #7c3aed); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; font-size: 15px; font-family: 'Inter', sans-serif; cursor: pointer; width: 100%; transition: transform 0.2s, box-shadow 0.2s; letter-spacing: 0.01em; }
+        .btn-analyze:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(37,99,235,0.3); }
+        .btn-analyze:active { transform: scale(0.99); }
 
-.detail-row {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
-    border-bottom: 1px solid #f1f5f9;
-    font-size: 13px;
-}
-.detail-row.total {
-    border-top: 2px solid #edf2f7;
-    border-bottom: none;
-    font-weight: 800;
-    font-size: 15px;
-    color: var(--primary);
-    margin-top: 10px;
-}
+        /* ═══════════════════════════════════════════
+           RÉSULTATS
+        ═══════════════════════════════════════════ */
+        #resultats { display: none; max-width: 780px; margin: 20px auto 0; }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+        /* ── Bannière résumé ── */
+        .result-banner { background: linear-gradient(135deg, var(--primary), #7c3aed); border-radius: 18px; padding: 20px 22px; color: #fff; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+        .result-banner-left h3 { font-size: 11px; opacity: 0.75; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 4px; }
+        .result-banner-left .big-num { font-family: 'Poppins', sans-serif; font-size: 2.2rem; font-weight: 700; line-height: 1; }
+        .result-banner-left .big-num span { font-size: 1rem; opacity: 0.8; }
+        .result-banner-left p { font-size: 12px; opacity: 0.8; margin-top: 4px; }
+        .result-banner-right { text-align: right; }
+        .result-banner-right .statut-badge { background: rgba(255,255,255,0.2); border-radius: 8px; padding: 6px 14px; font-size: 13px; font-weight: 700; display: inline-block; margin-bottom: 4px; }
+        .result-banner-right .conseil-badge { background: var(--success); border-radius: 20px; padding: 3px 10px; font-size: 10px; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; display: inline-block; }
+
+        /* ── Grille KPIs ── */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 14px; }
+        .kpi { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 14px; text-align: center; }
+        .kpi-val { font-size: 1.3rem; font-weight: 800; margin-bottom: 3px; }
+        .kpi-label { font-size: 10px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* ── Sélecteur statuts ── */
+        .statut-selector { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 16px; }
+        @media (max-width: 600px) { .statut-selector { grid-template-columns: repeat(3, 1fr); gap: 6px; } }
+        @media (max-width: 400px) { .statut-selector { grid-template-columns: repeat(2, 1fr); } }
+        .stat-card { background: var(--bg-card); border: 2px solid var(--border); padding: 14px 6px; border-radius: 16px; text-align: center; cursor: pointer; transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; }
+        .stat-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+        .stat-card.selected { border-color: var(--primary); background: #fff; transform: translateY(-4px) scale(1.03); box-shadow: 0 10px 20px rgba(78,115,223,0.12); z-index: 2; }
+        .stat-card.stat-disabled { opacity: 0.5; cursor: default; background: #f1f5f9; }
+        .stat-card.stat-disabled:hover { border-color: var(--border); box-shadow: none; }
+        .stat-card h5 { margin: 0 0 4px; font-size: 10px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; }
+        .stat-card .net-val { font-weight: 800; font-size: 15px; color: var(--text-dark); }
+        .stat-card.selected .net-val { color: var(--primary); }
+        .stat-card .sub-val { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+        .top-badge { position: absolute; top: -9px; left: 50%; transform: translateX(-50%); background: var(--success); color: #fff; font-size: 9px; font-weight: 900; padding: 2px 8px; border-radius: 10px; white-space: nowrap; }
+
+        /* ── Décomposition ── */
+        .decomp-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 18px; margin-bottom: 14px; }
+        .decomp-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-light); margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+        .decomp-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; gap: 10px; }
+        .decomp-row:last-child { border-bottom: none; }
+        .decomp-row.total { border-top: 2px solid var(--border); border-bottom: none; font-weight: 800; font-size: 14px; padding-top: 12px; margin-top: 4px; color: var(--primary); }
+        .decomp-label { color: var(--text-mid); display: flex; align-items: center; gap: 6px; }
+        .decomp-val { font-weight: 600; white-space: nowrap; }
+        .decomp-val.minus { color: var(--danger); }
+        .decomp-val.plus { color: var(--success); }
+        .decomp-val.neutral { color: var(--warning); }
+        .info-tag { font-size: 10px; background: #ebf8ff; color: var(--primary); border-radius: 4px; padding: 2px 6px; font-weight: 700; }
+
+        /* ── Vie du gérant ── */
+        .life-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+        @media (max-width: 480px) { .life-grid { grid-template-columns: 1fr; } }
+        .life-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+        .life-label { font-size: 10px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; font-weight: 700; }
+        .life-val { font-size: 13px; font-weight: 600; color: var(--text-dark); }
+
+        /* ── TJM ── */
+        .tjm-card { background: linear-gradient(135deg, #ebf8ff, #f0fdf4); border: 1px solid #bee3f8; border-radius: 16px; padding: 16px 18px; margin-bottom: 14px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+        .tjm-left h4 { font-size: 11px; font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+        .tjm-left .tjm-big { font-family: 'Poppins', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--primary); }
+        .tjm-left p { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+        .tjm-right label { font-size: 11px; color: var(--text-light); font-weight: 600; display: block; margin-bottom: 4px; }
+        .tjm-input { width: 60px; border: 2px solid var(--border); border-radius: 8px; text-align: center; font-weight: 700; padding: 6px; font-size: 14px; font-family: 'Inter', sans-serif; }
+
+        /* ── Alerte optimisation ── */
+        .optim-alert { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fde68a; border-left: 4px solid var(--warning); border-radius: 12px; padding: 14px 16px; margin-bottom: 14px; }
+        .optim-alert h4 { font-size: 12px; font-weight: 800; color: #92400e; margin-bottom: 5px; display: flex; align-items: center; gap: 6px; }
+        .optim-alert p { font-size: 12px; color: #78350f; line-height: 1.6; }
+        .optim-alert strong { color: #92400e; }
+
+        /* ── Carte recommandation TJM ── */
+        .rec-card { background: linear-gradient(135deg, #f0fdf4, #ebf8ff); border: 1px solid #86efac; border-radius: 18px; overflow: hidden; }
+        .rec-header { background: var(--success); color: #fff; padding: 12px 18px; font-size: 13px; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+        .rec-body { padding: 16px 18px; }
+        .rec-winner { text-align: center; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(0,0,0,0.06); }
+        .rec-winner-name { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--success); margin-bottom: 4px; }
+        .rec-winner-net { font-family: 'Poppins', sans-serif; font-size: 2rem; font-weight: 700; color: var(--text-dark); line-height: 1; }
+        .rec-winner-net span { font-size: 1rem; color: var(--text-light); }
+        .rec-winner-sub { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+        .rec-compare { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        .rec-row { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 10px; background: #fff; font-size: 13px; }
+        .rec-row-best { background: rgba(28,200,138,0.08); border: 1px solid rgba(28,200,138,0.25); }
+        .rec-rank { font-size: 1rem; flex-shrink: 0; }
+        .rec-name { font-weight: 700; color: var(--text-dark); min-width: 50px; }
+        .rec-net { font-weight: 700; color: var(--primary); margin-left: auto; }
+        .rec-badge-top { background: var(--success); color: #fff; font-size: 9px; font-weight: 900; padding: 2px 8px; border-radius: 10px; text-transform: uppercase; margin-left: 6px; }
+        .rec-diff { color: var(--danger); font-size: 12px; font-weight: 600; margin-left: 6px; }
+        .rec-insight { font-size: 12px; color: var(--text-mid); background: rgba(78,115,223,0.06); padding: 10px 12px; border-radius: 8px; line-height: 1.6; }
+        .rec-insight strong { color: var(--primary); }
+
+        /* ── Comparaison 3 ans ── */
+        .projection-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; margin-bottom: 14px; }
+        .proj-title { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-light); margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+        .proj-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .proj-table th { padding: 8px 12px; text-align: center; color: var(--text-light); font-size: 10px; text-transform: uppercase; border-bottom: 2px solid var(--border); }
+        .proj-table th:first-child { text-align: left; }
+        .proj-table td { padding: 9px 12px; text-align: center; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--text-dark); }
+        .proj-table td:first-child { text-align: left; }
+        .proj-table tr:last-child td { border-bottom: none; }
+        .proj-table .best-cell { background: rgba(28,200,138,0.12); color: var(--success); border-radius: 6px; font-weight: 800; }
+
+        /* ── Bouton détail ── */
+        .btn-detail { background: none; border: 2px solid var(--primary); color: var(--primary); padding: 10px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; transition: all 0.2s; display: flex; align-items: center; gap: 7px; margin: 0 auto 14px; }
+        .btn-detail:hover { background: var(--primary-light); }
+
+        /* ═══════════════════════════════════════════
+           SÉPARATEUR
+        ═══════════════════════════════════════════ */
+        .section-sep { border: 0; height: 1px; background: var(--border); margin: 36px 0; }
+
+        /* ═══════════════════════════════════════════
+           GUIDE SECTION
+        ═══════════════════════════════════════════ */
+        .guide-section { line-height: 1.7; color: var(--text-mid); }
+        .guide-section h2 { font-family: 'Poppins', sans-serif; color: var(--text-dark); font-size: 1.3rem; margin-bottom: 20px; }
+        .guide-block { margin-bottom: 24px; }
+        .guide-block h3 { color: var(--primary); font-size: 15px; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .guide-block p { font-size: 14px; margin-bottom: 8px; }
+        .guide-block ul { padding-left: 20px; font-size: 13px; }
+        .guide-block ul li { margin-bottom: 4px; }
+        .info-box { background: var(--primary-light); padding: 16px 18px; border-radius: 12px; border: 1px solid #bee3f8; }
+        .info-box h4 { margin-top: 0; color: #2c5282; font-size: 14px; margin-bottom: 6px; }
+        .info-box p { margin-bottom: 0; font-size: 13px; color: #4a5568; }
+
+        /* ═══════════════════════════════════════════
+           RESSOURCES
+        ═══════════════════════════════════════════ */
+        .resources-section { margin-top: 36px; }
+        .resources-section h2 { font-family: 'Poppins', sans-serif; text-align: center; font-size: 1.3rem; margin-bottom: 8px; color: var(--text-dark); }
+        .resources-section p.sub { text-align: center; color: var(--text-light); font-size: 13px; margin-bottom: 22px; }
+        .res-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+        .res-card { border: 1px solid var(--border); border-radius: 14px; padding: 18px; background: #fff; box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s; }
+        .res-card:hover { transform: translateY(-4px); box-shadow: 0 10px 20px rgba(0,0,0,0.08); }
+        .res-card h3 { font-size: 14px; margin-bottom: 8px; color: var(--text-dark); }
+        .res-card p { color: var(--text-light); font-size: 12px; line-height: 1.55; margin-bottom: 14px; }
+        .res-card a { display: block; text-align: center; padding: 10px; background: #4f46e5; color: white; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 13px; transition: opacity 0.2s; }
+        .res-card a:hover { opacity: 0.85; }
+
+        /* ═══════════════════════════════════════════
+           FOOTER
+        ═══════════════════════════════════════════ */
+        .page-footer { border-top: 1px solid var(--border); padding: 20px 0 0; margin-top: 36px; text-align: center; }
+        .page-footer p { color: #a0aec0; font-size: 12px; }
+        .page-footer a { color: #a0aec0; text-decoration: none; margin: 0 6px; }
+        .page-footer a:hover { color: var(--primary); }
+
+        /* Animations */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+        .anim { animation: fadeUp 0.35s ease forwards; }
     </style>
 </head>
 <body>
-<nav style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;padding:0 0 22px;border-bottom:1px solid #edf2f7;margin-bottom:25px;">
-  <a href="index.html" style="font-family:Poppins;font-size:15px;font-weight:700;color:#4e73df;text-decoration:none;">
-    <i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026
-  </a>
-  <div style="display:flex;gap:4px;flex-wrap:wrap;">
-    <a href="index.html" style="color:#4e73df;background:#ebf8ff;text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;">Simulateur</a>
-    <a href="guide.html" style="color:#718096;text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;">Guide</a>
-    <a href="statuts.html" style="color:#718096;text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;">Les statuts</a>
-    <a href="faq.html" style="color:#718096;text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;">FAQ</a>
-    <a href="a-propos.html" style="color:#718096;text-decoration:none;font-size:13px;font-weight:600;padding:6px 12px;border-radius:8px;">À propos</a>
-  </div>
-</nav>
-
 <div class="container">
-<div style="text-align:center; margin-bottom:30px;">
-    <h1 style="font-family:Poppins; margin-bottom:5px; font-size: 26px; color: #2d3748;">
-        Simulateur de Revenu Net <span style="color:var(--primary);">2026</span>
-    </h1>
 
-      <div class="header-description">
-    <p>
-      Choisir entre <strong>Micro‑entreprise, SASU ou EURL</strong> est une étape essentielle pour votre activité. 
-      Ce simulateur mis à jour pour <strong>2026</strong> vous permet de comparer les <strong>charges sociales</strong>, 
-      la <strong>fiscalité</strong> et le <strong>revenu net</strong> en quelques clics.
-    </p>
-    <p class="secondary-text">
-      Que vous soyez freelance, consultant ou artisan, identifiez le statut le plus avantageux selon votre chiffre d'affaires.
-    </p>
-  </div>
-</div>
+    <!-- ══ NAVIGATION ══ -->
+    <nav>
+        <a href="index.html" class="nav-logo"><i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026</a>
+        <div class="nav-links">
+            <a href="index.html" class="active">Simulateur</a>
+            <a href="guide.html">Guide</a>
+            <a href="statuts.html">Les statuts</a>
+            <a href="faq.html">FAQ</a>
+            <a href="a-propos.html">À propos</a>
+        </div>
+    </nav>
 
-<div class="main-simulator-card">
-    <div class="config-bar">
+    <!-- ══ HEADER ══ -->
+    <div class="header">
+        <div class="badge-new">
+            <i class="fa-solid fa-sparkles"></i>
+            7 statuts : Micro · EI · EURL · SASU · Portage · Holding · SARL Famille
+        </div>
+        <h1>Simulateur de Revenu Net <span>2026</span></h1>
+        <p class="header-desc">
+            Comparez <strong>Micro-entreprise, SASU et EURL</strong> — partez de votre CA, votre revenu cible
+            ou votre <strong>TJM</strong> pour trouver le statut optimal.
+        </p>
+        <p class="header-sub">Résultats en revenu net après charges sociales + IR — pas de mauvaise surprise.</p>
+    </div>
+
+    <!-- ══ SIMULATEUR ══ -->
+    <div class="sim-card">
+
+        <!-- Type activité -->
         <div class="toggle-group">
-            <button class="toggle-btn active" onclick="setType('service')" id="btn-service">Prestation</button>
-            <button class="toggle-btn" onclick="setType('commerce')" id="btn-commerce">Commerce</button>
-        </div>
-        <div style="font-size:12px; font-weight:bold; display:flex; align-items:center; gap:8px;">
-            <span style="color:#718096">ACRE</span>
-            <input type="checkbox" id="acre_check" style="width:20px; height:20px; accent-color:var(--success)">
-        </div>
-    </div>
-
-    <div class="form-container">
-        <label class="field-label">Chiffre d'Affaires HT (€/an)</label>
-        <input type="text" id="ca_display" placeholder="Ex: 100 000" oninput="handleMask(this, 'ca')">
-        <input type="hidden" id="ca">
-
-        <label class="field-label">Revenu Net Cible (€/mois)</label>
-        <input type="text" id="rev_display" placeholder="Ex: 8 000" oninput="handleMask(this, 'rev')">
-        <input type="hidden" id="rev">
-
-        <label class="field-label">Frais Matériel/Logiciels (€/mois)</label>
-        <input type="text" id="frais_display" placeholder="Ex: 300" oninput="handleMask(this, 'frais')">
-        <input type="hidden" id="frais">
-
-        <button class="btn-analyze" onclick="analyser()">Analyser la rentabilité</button>
-    </div>
-
-    <div id="resultats">
-        <div class="res-grid">
-            <div id="bloc_resume" class="result-block best-block"></div>
-            <div id="bloc_tjm" class="result-block tjm-block"></div>
-        </div>
-        
-        <div id="bloc_costs"></div>
-        <div id="bloc_impact"></div>
-
-        <p style="font-size:11px; font-weight:800; color:#a0aec0; text-transform:uppercase; margin:20px 0 10px; text-align:center;">--- Comparaison des statuts ---</p>
-        <div id="liste_statuts" class="status-selector"></div>
-    </div>
-</div>
-    
-    <hr style="border: 0; height: 1px; background: #edf2f7; margin: 40px 0;">
-
-<div class="guide-section" style="line-height: 1.6; color: #4a5568;">
-    <h2 style="font-family: Poppins; color: #2d3748; font-size: 22px;">Guide : Quel statut choisir pour votre entreprise en 2026 ?</h2>
-    <p>Choisir son statut juridique est une étape cruciale qui impacte directement votre <strong>revenu net</strong> et votre protection sociale. Ce simulateur vous aide à comparer les options selon votre chiffre d'affaires (CA).</p>
-
-    <div style="margin-bottom: 30px;">
-        <h3 style="color: var(--primary); font-size: 18px;"><i class="fa-solid fa-rocket"></i> 1. La Micro-Entreprise (Auto-entrepreneur)</h3>
-        <p>C'est le statut le plus prisé pour démarrer. Sa gestion est ultra-simplifiée : vous ne payez des cotisations que si vous encaissez du chiffre d'affaires.</p>
-        <ul style="padding-left: 20px;">
-            <li><strong>Avantages :</strong> Comptabilité minimale, pas de TVA jusqu'à certains seuils, idéal pour tester un projet.</li>
-            <li><strong>Inconvénients :</strong> Vous ne pouvez pas déduire vos frais réels (loyer, matériel, déplacements).</li>
-            <li><strong>Conseil :</strong> Restez en micro tant que vos frais professionnels ne dépassent pas l'abattement forfaitaire de l'administration.</li>
-        </ul>
-    </div>
-
-    <div style="margin-bottom: 30px;">
-        <h3 style="color: var(--primary); font-size: 18px;"><i class="fa-solid fa-shield-halved"></i> 2. La SASU (Société par Actions Simplifiée Unipersonnelle)</h3>
-        <p>La SASU est souvent choisie par les consultants qui bénéficient de l'<strong>ARE (chômage)</strong>. Elle permet de ne pas se verser de salaire pour maintenir ses allocations tout en faisant fructifier la société.</p>
-        <ul style="padding-left: 20px;">
-            <li><strong>Avantages :</strong> Protection sociale de haut niveau (assimilé-salarié), possibilité de se verser des dividendes, crédibilité auprès des banques.</li>
-            <li><strong>Inconvénients :</strong> Cotisations sociales élevées (environ 75% du net), fiches de paie obligatoires.</li>
-        </ul>
-    </div>
-
-    <div style="margin-bottom: 30px;">
-        <h3 style="color: var(--primary); font-size: 18px;"><i class="fa-solid fa-chart-line"></i> 3. L'EURL (Entreprise Unipersonnelle à Responsabilité Limitée)</h3>
-        <p>L'EURL est le compromis idéal pour ceux qui veulent maximiser leur revenu net mensuel immédiat sans passer par le régime de la micro-entreprise.</p>
-        <ul style="padding-left: 20px;">
-            <li><strong>Avantages :</strong> Cotisations sociales plus faibles que la SASU (environ 45%), déduction de tous les frais réels.</li>
-            <li><strong>Inconvénients :</strong> Protection sociale de Travailleur Non-Salarié (TNS), gestion comptable rigoureuse nécessaire.</li>
-        </ul>
-    </div>
-
-    <div style="background: #ebf8ff; padding: 20px; border-radius: 14px; border: 1px solid #bee3f8;">
-        <h4 style="margin-top: 0; color: #2c5282;">💡 Pourquoi utiliser ce simulateur ?</h4>
-        <p style="margin-bottom: 0; font-size: 14px;">Le calcul du <strong>revenu net après impôts et charges</strong> varie selon le secteur (service ou commerce) et l'éligibilité à l'ACRE. Notre outil intègre les barèmes 2026 pour vous donner une estimation fiable en quelques secondes.</p>
-    </div>
-    
-    <p style="text-align: center; margin-top: 30px; font-size: 12px;">
-        Pour plus d'informations officielles, consultez le site de <a href="https://www.urssaf.fr" target="_blank" style="color: var(--primary);">l'URSSAF</a> ou de <a href="https://www.infogreffe.fr" target="_blank" style="color: var(--primary);">l'Infogreffe</a>.
-    </p>
-</div>
-    <section id="ressources" style="max-width:900px;margin:40px auto;padding:20px;font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-    <h2 style="text-align:center;font-size:2rem;margin-bottom:10px;color:#1f2937;">
-        Ressources utiles pour entrepreneurs
-    </h2>
-
-    <p style="text-align:center;margin-bottom:30px;color:#4b5563;font-size:1.1rem;">
-        Optimisez votre activité et réduisez vos impôts en investissant dans du matériel <strong>100% déductible</strong>.
-    </p>
-
-    <div style="
-        display:grid;
-        grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));
-        gap:25px;
-    ">
-        <div class="resource-card" style="border:1px solid #e5e7eb;border-radius:12px;padding:24px;background:white;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);transition: transform 0.2s;">
-            <h3 style="font-size:1.25rem;margin-bottom:12px;color:#111827;">📘 Livres Business</h3>
-            <p style="color:#6b7280;margin-bottom:20px;font-size:0.95rem;line-height:1.5;">
-                Les meilleures lectures pour maîtriser votre fiscalité et booster votre mindset d'entrepreneur.
-            </p>
-            <a href="https://amzn.to/49aPIXQ" target="_blank" style="display:block;text-align:center;padding:12px;background:#4f46e5;color:white;border-radius:8px;text-decoration:none;font-weight:600;">Voir la sélection</a>
-        </div>
-
-        <div class="resource-card" style="border:1px solid #e5e7eb;border-radius:12px;padding:24px;background:white;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);transition: transform 0.2s;">
-            <h3 style="font-size:1.25rem;margin-bottom:12px;color:#111827;">💻 Matériel Tech</h3>
-            <p style="color:#6b7280;margin-bottom:20px;font-size:0.95rem;line-height:1.5;">
-                PC, écrans et accessoires. Renouvelez votre setup avec le budget de votre entreprise.
-            </p>
-            <a href="https://amzn.to/3Nh3i37" target="_blank" style="display:block;text-align:center;padding:12px;background:#4f46e5;color:white;border-radius:8px;text-decoration:none;font-weight:600;">Voir le matériel</a>
-        </div>
-
-        <div class="resource-card" style="border:1px solid #e5e7eb;border-radius:12px;padding:24px;background:white;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);transition: transform 0.2s;">
-            <h3 style="font-size:1.25rem;margin-bottom:12px;color:#111827;">🪑 Confort & Bureau</h3>
-            <p style="color:#6b7280;margin-bottom:20px;font-size:0.95rem;line-height:1.5;">
-                Chaises ergonomiques et bureaux réglables pour travailler sans douleur sur le long terme.
-            </p>
-            <a href="https://amzn.to/4qKbBDi" target="_blank" style="display:block;text-align:center;padding:12px;background:#4f46e5;color:white;border-radius:8px;text-decoration:none;font-weight:600;">Aménager son bureau</a>
-        </div>
-
-        <div class="resource-card" style="border:1px solid #e5e7eb;border-radius:12px;padding:24px;background:white;box-shadow:0 4px 6px -1px rgba(0,0,0,0.1);transition: transform 0.2s;">
-            <h3 style="font-size:1.25rem;margin-bottom:12px;color:#111827;">🚀 Productivité</h3>
-            <p style="color:#6b7280;margin-bottom:20px;font-size:0.95rem;line-height:1.5;">
-                Outils d'organisation et accessoires Kindle pour rester productif même en mission.
-            </p>
-            <a href="https://amzn.to/3Ln6nOw" target="_blank" style="display:block;text-align:center;padding:12px;background:#4f46e5;color:white;border-radius:8px;text-decoration:none;font-weight:600;">Explorer les outils</a>
-        </div>
-    </div>
-</section>
-
-<style>
-    .resource-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1) !important;
-    }
-</style>
-</div>
-<script>
-    // 1. VARIABLES GLOBALES ET CONFIGURATION
-    let typeAct = 'service';
-    let currentMode = 'CA';
-    let globalResults = null;
-    let selectedStatus = "";
-    let recommendedStatus = "";
-
-    const config = {
-        "Micro": { 
-            tx: 0.211, 
-            max: 77700, 
-            structure: 800, 
-            creation: 0, 
-            isSociete: false 
-        },
-        "EURL": { 
-            tx: 0.45, 
-            max: 999999, 
-            structure: 3000, 
-            creation: 500, 
-            isSociete: true 
-        },
-        "SASU": { 
-            tx: 0.75, 
-            max: 999999, 
-            structure: 3500, 
-            creation: 600, 
-            isSociete: true 
-        }
-    };
-
-    // 2. FONCTIONS DE SAISIE
-    function handleMask(el, id) {
-        let v = el.value.replace(/\D/g, '');
-        document.getElementById(id).value = v;
-        el.value = v ? Number(v).toLocaleString('fr-FR') : '';
-        if(id === 'ca') { document.getElementById('rev_display').value = ''; currentMode = 'CA'; }
-        if(id === 'rev') { document.getElementById('ca_display').value = ''; currentMode = 'REV'; }
-    }
-
-    function setType(t) {
-        typeAct = t;
-        document.getElementById('btn-service').classList.toggle('active', t==='service');
-        document.getElementById('btn-commerce').classList.toggle('active', t==='commerce');
-        config.Micro.tx = (t === 'service') ? 0.211 : 0.123;
-        config.Micro.max = (t === 'service') ? 77700 : 188700;
-    }
-
-    // 3. LOGIQUE DE CALCUL
-    function analyser() {
-        const caVal = parseFloat(document.getElementById('ca').value) || 0;
-        const revVal = parseFloat(document.getElementById('rev').value) || 0;
-        const fraisPerso = (parseFloat(document.getElementById('frais').value) || 0) * 12;
-        const acre = document.getElementById('acre_check').checked;
-
-        globalResults = {};
-        let top = "";
-        let bestSc = (currentMode === 'CA') ? -1 : Infinity;
-
-        for(let n in config) {
-            let s = config[n];
-            let res = { ca: 0, net: 0, ok: true };
-            let t = (acre && n === "Micro") ? s.tx / 2 : s.tx;
-            
-            if(currentMode === 'CA') {
-                res.ca = caVal;
-                if(!s.isSociete) {
-                    res.net = (caVal * (1 - t) - s.structure - fraisPerso) / 12;
-                } else {
-                    let base = caVal - s.structure - fraisPerso;
-                    res.net = base > 0 ? (base / (1 + t)) / 12 : 0;
-                }
-                res.ok = caVal <= s.max;
-                if(res.ok && res.net > bestSc) { bestSc = res.net; top = n; }
-            } else {
-                res.net = revVal;
-                if(!s.isSociete) {
-                    res.ca = (revVal * 12 + s.structure + fraisPerso) / (1 - t);
-                } else {
-                    res.ca = (revVal * 12 * (1 + t)) + s.structure + fraisPerso;
-                }
-                res.ok = res.ca <= s.max;
-                if(res.ok && res.ca < bestSc) { bestSc = res.ca; top = n; }
-            }
-            globalResults[n] = res;
-        }
-        recommendedStatus = top;
-        selectedStatus = top;
-        updateUI(18);
-    }
-
-    // 4. MISE À JOUR DE L'INTERFACE
-    function updateUI(jours) {
-        if(!globalResults) return;
-        const data = globalResults[selectedStatus];
-        const s = config[selectedStatus];
-        document.getElementById('resultats').style.display = 'block';
-
-        // Bloc Résumé
-        let badge = (selectedStatus === recommendedStatus) ? `<div class="recommend-badge">Conseillé</div>` : "";
-        document.getElementById('bloc_resume').innerHTML = `
-            ${badge}
-            <span style="font-size:10px; font-weight:800; opacity:0.8;">NET MENSUEL ESTIMÉ</span>
-            <div style="font-size:24px; font-weight:800; margin:5px 0;">${Math.round(data.net).toLocaleString()} €</div>
-            <div style="font-size:11px; font-weight:600;">Statut : ${selectedStatus}</div>`;
-
-        // Bloc TJM (Correction Focus)
-        let tjmValue = Math.round(data.ca / 12 / jours);
-        document.getElementById('bloc_tjm').innerHTML = `
-            <span style="font-size:10px; font-weight:800; color:#a0aec0;">TJM CIBLE</span>
-            <div style="font-size:24px; font-weight:800; margin:5px 0;"><span id="tjm_display">${tjmValue.toLocaleString()}</span> €</div>
-            <div style="font-size:11px;">pour <input type="number" id="input_jours" value="${jours}" class="tjm-input"> j/mois</div>`;
-
-        document.getElementById('input_jours').addEventListener('input', (e) => {
-            const j = parseFloat(e.target.value) || 1;
-            document.getElementById('tjm_display').innerText = Math.round(data.ca / 12 / j).toLocaleString();
-        });
-
-        // Bloc Frais
-        document.getElementById('bloc_costs').innerHTML = `
-            <div class="costs-card">
-                <h4 style="margin:0; font-size:14px; color:var(--danger)"><i class="fa-solid fa-triangle-exclamation"></i> Frais de structure inclus</h4>
-                <ul class="costs-list">
-                    <li><span>Ouverture d'entreprise</span><b>${s.creation > 0 ? s.creation + ' € (1ère fois)' : 'Gratuit'}</b></li>
-                    <li><span>Comptabilité & Paies</span><b>${selectedStatus === "Micro" ? '0 €' : (selectedStatus === "SASU" ? '2300 €/an' : '1800 €/an')}</b></li>
-                    <li><span>Banque, Assurance & CFE</span><b>${selectedStatus === "Micro" ? '800 €/an' : '1200 €/an'}</b></li>
-                </ul>
-            </div>
-            <button class="btn-detail" onclick="toggleDetails()" id="btn-detail-toggle" style="background:none; border:2px solid var(--primary); color:var(--primary); padding:10px; border-radius:12px; width:100%; font-weight:700; cursor:pointer; margin: 10px 0;">
-                <i class="fa-solid fa-circle-info"></i> Voir le détail du calcul
+            <button class="toggle-btn active" onclick="setType('service')" id="btn-service">
+                <i class="fa-solid fa-laptop-code"></i> Prestation de services
             </button>
-            <div id="detail-panel" style="display:none; background:#fff; border:1px solid #edf2f7; border-radius:12px; padding:15px; margin-bottom:20px;">
-                <div id="detail-content"></div>
-            </div>`;
+            <button class="toggle-btn" onclick="setType('commerce')" id="btn-commerce">
+                <i class="fa-solid fa-store"></i> Commerce / Vente
+            </button>
+        </div>
 
-        // Bloc Vie du Gérant (RÉINTÉGRÉ)
-        const impacts = {
-            "Micro": ["TNS (Indépendant)", "Limitée", "Simplifiée", "Complexe (Sans fiche de paie)"],
-            "EURL": ["TNS (Indépendant)", "Moyenne (Prévoyance à prévoir)", "Réelle (Expert-Comptable)", "Standard (Après 2 bilans)"],
-            "SASU": ["Assimilé-Salarié", "Élevée (Cadre)", "Lourde (Fiches de paie)", "Plus facile (Fiches de paie)"]
+        <!-- Mode de saisie : CA / Revenu / TJM -->
+        <div style="margin-bottom:14px;">
+            <div class="field-label" style="margin-bottom:8px;">Je raisonne à partir de</div>
+            <div class="input-mode-group">
+                <button class="mode-btn active" onclick="setMode('CA')" id="mode-ca">
+                    <i class="fa-solid fa-building"></i> CA annuel
+                </button>
+                <button class="mode-btn" onclick="setMode('REV')" id="mode-rev">
+                    <i class="fa-solid fa-wallet"></i> Revenu cible
+                </button>
+                <button class="mode-btn" onclick="setMode('TJM')" id="mode-tjm">
+                    <i class="fa-solid fa-calendar-days"></i> Mon TJM
+                </button>
+            </div>
+        </div>
+
+        <!-- Champs principaux -->
+        <div class="fields-grid">
+            <!-- MODE CA : pleine largeur -->
+            <div class="field-group mode-field mode-CA" style="grid-column:span 2">
+                <label class="field-label">Chiffre d'affaires HT (€/an)</label>
+                <input class="field-input" type="text" id="ca_display" placeholder="Ex : 80 000"
+                       oninput="handleMask(this,'ca')">
+                <input type="hidden" id="ca">
+            </div>
+            <!-- MODE REV : pleine largeur -->
+            <div class="field-group mode-field mode-REV" style="display:none; grid-column:span 2">
+                <label class="field-label">Revenu net cible (€/mois)</label>
+                <input class="field-input" type="text" id="rev_display" placeholder="Ex : 5 000"
+                       oninput="handleMask(this,'rev')">
+                <input type="hidden" id="rev">
+            </div>
+            <!-- MODE TJM : deux colonnes -->
+            <div class="field-group mode-field mode-TJM" style="display:none">
+                <label class="field-label">Mon TJM (€ HT / jour)</label>
+                <input class="field-input" type="text" id="tjm_input_display" placeholder="Ex : 600"
+                       oninput="handleMask(this,'tjm_input')">
+                <input type="hidden" id="tjm_input">
+            </div>
+            <div class="field-group mode-field mode-TJM" style="display:none">
+                <label class="field-label">Jours facturés par mois</label>
+                <input class="field-input" type="number" id="jours_input" placeholder="Ex : 18" min="1" max="22" value="18">
+            </div>
+            <!-- Communs aux 3 modes -->
+            <div class="field-group">
+                <label class="field-label">Frais professionnels (€/mois)</label>
+                <input class="field-input" type="text" id="frais_display" placeholder="Ex : 400"
+                       oninput="handleMask(this,'frais')">
+                <input type="hidden" id="frais">
+            </div>
+            <div class="field-group">
+                <label class="field-label">Situation familiale</label>
+                <select class="field-input" id="situation">
+                    <option value="1">Célibataire (1 part)</option>
+                    <option value="1.5">Marié/Pacsé sans enfant (2 parts)</option>
+                    <option value="2">Marié/Pacsé + 1 enfant (2,5 parts)</option>
+                    <option value="2.5">Marié/Pacsé + 2 enfants (3 parts)</option>
+                    <option value="3">Marié/Pacsé + 3 enfants (4 parts)</option>
+                    <option value="0.5">Parent isolé + 1 enfant (1,5 part)</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Options -->
+        <div class="options-row">
+            <label class="option-chip">
+                <input type="checkbox" id="acre_check" onchange="toggleDivid()">
+                <span><i class="fa-solid fa-seedling"></i> ACRE (1ère année)</span>
+            </label>
+            <label class="option-chip">
+                <input type="checkbox" id="divid_check" onchange="toggleDivid()">
+                <span><i class="fa-solid fa-chart-pie"></i> Optimisation dividendes</span>
+            </label>
+        </div>
+
+        <!-- Bloc dividendes (conditionnel) -->
+        <div class="divid-block" id="divid_block">
+            <div class="divid-header">
+                <span class="divid-title"><i class="fa-solid fa-sliders"></i> Part versée en salaire vs dividendes</span>
+                <span class="divid-value" id="divid_label">100% salaire / 0% dividendes</span>
+            </div>
+            <input type="range" id="divid_slider" min="0" max="100" value="100" step="5"
+                   oninput="updateDividLabel()">
+            <div class="divid-labels">
+                <span>100% salaire</span>
+                <span>50/50</span>
+                <span>100% dividendes</span>
+            </div>
+        </div>
+
+        <button class="btn-analyze" onclick="analyser()">
+            <i class="fa-solid fa-calculator"></i> Analyser ma rentabilité
+        </button>
+    </div>
+
+    <!-- ══ RÉSULTATS ══ -->
+    <div id="resultats">
+
+        <!-- Bannière résumé -->
+        <div class="result-banner anim" id="bloc_banner"></div>
+
+        <!-- Bloc recommandation TJM (affiché uniquement en mode TJM) -->
+        <div id="bloc_recommendation" style="display:none; margin-bottom:14px;"></div>
+
+        <!-- Sélecteur statuts -->
+        <p style="font-size:11px;font-weight:800;color:#a0aec0;text-transform:uppercase;text-align:center;margin:6px 0 10px;letter-spacing:0.06em;">Comparer les statuts</p>
+        <div class="statut-selector" id="liste_statuts"></div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid" id="bloc_kpis"></div>
+
+        <!-- Alerte optimisation -->
+        <div id="bloc_optim"></div>
+
+        <!-- Décomposition -->
+        <div class="decomp-card" id="bloc_decomp"></div>
+
+        <!-- TJM -->
+        <div class="tjm-card" id="bloc_tjm"></div>
+
+        <!-- Vie du gérant -->
+        <div class="life-grid" id="bloc_life"></div>
+
+        <!-- Projection 3 ans -->
+        <div class="projection-card" id="bloc_projection"></div>
+
+        <!-- Bouton détail fiscal -->
+        <button class="btn-detail" onclick="toggleFiscal()" id="btn_fiscal">
+            <i class="fa-solid fa-file-invoice"></i> Détail fiscal complet
+        </button>
+        <div id="bloc_fiscal" style="display:none; margin-bottom:14px;"></div>
+
+    </div>
+
+    <!-- ══ GUIDE ══ -->
+    <hr class="section-sep">
+
+    <div class="guide-section">
+        <h2 style="font-family:Poppins">Guide : Quel statut choisir en 2026 ?</h2>
+
+        <div class="guide-block">
+            <h3><i class="fa-solid fa-rocket"></i> 1. La Micro-Entreprise</h3>
+            <p>Le régime le plus prisé pour démarrer. Cotisations sociales au taux forfaitaire sur le CA, sans déduction des frais réels.</p>
+            <ul>
+                <li><strong>Avantages :</strong> Création gratuite, zéro comptabilité, idéal pour tester un projet ou activité secondaire.</li>
+                <li><strong>Inconvénients :</strong> Plafond 77 700 €/an (services), pas de déduction des frais réels, responsabilité patrimoniale.</li>
+                <li><strong>Conseil :</strong> Pertinent si vos frais annuels sont inférieurs à l'abattement forfaitaire (34% BNC). Au-delà, passez en société.</li>
+            </ul>
+        </div>
+
+        <div class="guide-block">
+            <h3><i class="fa-solid fa-user-tie"></i> 2. L'Entreprise Individuelle au réel (EI)</h3>
+            <p>Depuis la réforme 2022, l'EI dispose d'un patrimoine professionnel séparé sans créer de société. Le régime réel permet de déduire les frais professionnels réels.</p>
+            <ul>
+                <li><strong>Avantages :</strong> Séparation patrimoniale, déduction des frais réels, régime TNS allégé, pas de capital social.</li>
+                <li><strong>Inconvénients :</strong> Pas de dividendes possibles, régime IR uniquement, moins crédible auprès des banques.</li>
+                <li><strong>Conseil :</strong> Excellent entre-deux entre la micro et l'EURL, surtout pour artisans et commerçants avec frais réels importants.</li>
+            </ul>
+        </div>
+
+        <div class="guide-block">
+            <h3><i class="fa-solid fa-shield-halved"></i> 3. La SASU</h3>
+            <p>Privilégiée par les consultants bénéficiant de l'ARE (chômage). Statut assimilé-salarié avec la meilleure protection sociale.</p>
+            <ul>
+                <li><strong>Avantages :</strong> Maintien allocations chômage, dividendes PFU 30%, crédibilité bancaire, flexibilité statutaire.</li>
+                <li><strong>Inconvénients :</strong> Charges sociales très élevées sur le salaire (~82% du net).</li>
+                <li><strong>Conseil :</strong> Optimiser la répartition salaire/dividendes selon votre TMI pour maximiser le net.</li>
+            </ul>
+        </div>
+
+        <div class="guide-block">
+            <h3><i class="fa-solid fa-chart-line"></i> 4. L'EURL</h3>
+            <p>Le meilleur compromis pour maximiser le revenu net immédiat. Statut TNS avec charges allégées et déduction des frais réels.</p>
+            <ul>
+                <li><strong>Avantages :</strong> Cotisations TNS ~45%, déduction des frais réels, option IS ou IR 5 ans.</li>
+                <li><strong>Inconvénients :</strong> Pas d'accès au chômage, dividendes partiellement soumis TNS.</li>
+                <li><strong>Conseil :</strong> Idéal pour les consultants sans ARE qui cherchent à maximiser leur net mensuel.</li>
+            </ul>
+        </div>
+
+        <div class="guide-block">
+            <h3><i class="fa-solid fa-handshake"></i> 5. Le Portage salarial</h3>
+            <p>Vous restez salarié d'une société de portage qui facture vos clients. Zéro gestion administrative, droits chômage préservés.</p>
+            <ul>
+                <li><strong>Avantages :</strong> Statut salarié complet (chômage, retraite, mutuelle), aucune comptabilité, idéal pour tester ou missions courtes.</li>
+                <li><strong>Inconvénients :</strong> Frais de gestion 8-12% du CA, moins rentable à long terme qu'une société.</li>
+                <li><strong>Conseil :</strong> Parfait en transition entre salariat et création de société, ou pour les missions ponctuelles.</li>
+            </ul>
+        </div>
+
+        <div class="guide-block">
+            <h3><i class="fa-solid fa-building-columns"></i> 6. La Holding + Filiale (schéma mère-fille)</h3>
+            <p>La structure ultime pour les CA élevés. La holding détient la filiale opérationnelle et capte les dividendes quasi sans impôt grâce au régime mère-fille.</p>
+            <ul>
+                <li><strong>Avantages :</strong> Fiscalité dividendes 1,25% (vs 30% PFU), réinvestissement sans friction, optimisation patrimoniale.</li>
+                <li><strong>Inconvénients :</strong> Double comptabilité (~5 000 €/an), complexité juridique, pertinent à partir de 80-100k€ CA.</li>
+                <li><strong>Conseil :</strong> Incontournable si vous souhaitez capitaliser et investir (immobilier, autres sociétés). À envisager après 2-3 ans d'activité.</li>
+            </ul>
+        </div>
+
+        <div class="guide-block">
+            <h3><i class="fa-solid fa-people-group"></i> 7. La SARL de Famille à l'IR</h3>
+            <p>Réservée aux familles (époux, PACS, ascendants, descendants). Option IR unique : les bénéfices remontent sur les déclarations personnelles des associés.</p>
+            <ul>
+                <li><strong>Avantages :</strong> Optimisation IR par répartition des bénéfices entre les membres de la famille, déficits reportables sur revenus personnels.</li>
+                <li><strong>Inconvénients :</strong> Réservée aux liens familiaux stricts, régime TNS gérant majoritaire, gestion comptable obligatoire.</li>
+                <li><strong>Conseil :</strong> Très intéressant si votre conjoint(e) n'a pas ou peu de revenus : la répartition 50/50 réduit significativement la TMI effective.</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h4>💡 Pourquoi ce simulateur est plus précis ?</h4>
+            <p>Contrairement aux simulateurs classiques, celui-ci intègre le <strong>calcul réel de l'IR 2026</strong> (barème progressif avec quotient familial), la <strong>stratégie dividendes</strong> pour SASU/EURL, et une <strong>projection sur 3 ans</strong> incluant l'effet ACRE. Les résultats affichés sont votre revenu <em>réellement disponible</em> après tous prélèvements.</p>
+        </div>
+
+        <p style="text-align:center;margin-top:22px;font-size:12px;color:var(--text-light)">
+            Pour les barèmes officiels : <a href="https://www.urssaf.fr" target="_blank" style="color:var(--primary)">URSSAF</a> —
+            <a href="https://www.impots.gouv.fr" target="_blank" style="color:var(--primary)">impots.gouv.fr</a> —
+            <a href="https://www.infogreffe.fr" target="_blank" style="color:var(--primary)">Infogreffe</a>
+        </p>
+    </div>
+
+    <!-- ══ RESSOURCES ══ -->
+    <div class="resources-section">
+        <h2>Ressources utiles pour entrepreneurs</h2>
+        <p class="sub">Optimisez votre activité avec du matériel <strong>100% déductible</strong> de vos charges.</p>
+        <div class="res-grid">
+            <div class="res-card">
+                <h3>📘 Livres Business</h3>
+                <p>Les meilleures lectures pour maîtriser votre fiscalité et booster votre mindset d'entrepreneur.</p>
+                <a href="https://amzn.to/49aPIXQ" target="_blank">Voir la sélection</a>
+            </div>
+            <div class="res-card">
+                <h3>💻 Matériel Tech</h3>
+                <p>PC, écrans et accessoires. Renouvelez votre setup avec le budget de votre entreprise.</p>
+                <a href="https://amzn.to/3Nh3i37" target="_blank">Voir le matériel</a>
+            </div>
+            <div class="res-card">
+                <h3>🪑 Confort & Bureau</h3>
+                <p>Chaises ergonomiques et bureaux réglables pour travailler sans douleur sur le long terme.</p>
+                <a href="https://amzn.to/4qKbBDi" target="_blank">Aménager son bureau</a>
+            </div>
+            <div class="res-card">
+                <h3>🚀 Productivité</h3>
+                <p>Outils d'organisation et accessoires Kindle pour rester productif même en mission.</p>
+                <a href="https://amzn.to/3Ln6nOw" target="_blank">Explorer les outils</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ FOOTER ══ -->
+    <div class="page-footer">
+        <p>
+            <a href="guide.html">Guide</a>
+            <a href="statuts.html">Les statuts</a>
+            <a href="faq.html">FAQ</a>
+            <a href="a-propos.html">À propos & Mentions légales</a>
+        </p>
+        <p style="margin-top:8px;">© 2026 Simulateur Statut Entrepreneur — Estimations indicatives, non un conseil fiscal ou juridique.</p>
+    </div>
+
+</div><!-- /container -->
+
+<!-- ══════════════════════════════════════════════════════════
+     MOTEUR DE CALCUL FISCAL 2026
+     ══════════════════════════════════════════════════════════ -->
+<script>
+'use strict';
+
+/* ─────────────────────────────────────────
+   CONSTANTES FISCALES 2026
+───────────────────────────────────────── */
+
+// Barème IR 2026 (tranches sur revenu net imposable = revenu brut - abattement 10%)
+const BAREME_IR = [
+    { limite: 11497,  taux: 0     },
+    { limite: 29315,  taux: 0.11  },
+    { limite: 83823,  taux: 0.30  },
+    { limite: 180294, taux: 0.41  },
+    { limite: Infinity, taux: 0.45 }
+];
+
+// Cotisations sociales SASU (assimilé-salarié) — taux 2026
+const SASU_TAUX_PATRONAL = 0.45;   // ~45% du brut (assurances sociales + CSG)
+const SASU_TAUX_SALARIAL  = 0.22;  // ~22% du brut → net = brut × (1 - 0.22)
+// Coût total employeur = brut × (1 + 0.45) → brut = coût / 1.45
+// Revenu net = brut × 0.78
+
+// Cotisations TNS EURL/EI — taux progressif réel 2026
+// Intègre : maladie (déplafonnée), retraite (plafonnée au PASS), CSG/CRDS, invalidité
+function tauxTNS(remunAnnuelle) {
+    if (remunAnnuelle < 10000)  return 0.38;
+    if (remunAnnuelle < 20000)  return 0.41;
+    if (remunAnnuelle < 40000)  return 0.44;
+    if (remunAnnuelle < 80000)  return 0.46;
+    if (remunAnnuelle < 150000) return 0.45; // retraite complémentaire plafonnée, maladie remonte
+    return 0.44; // au-delà : retraite complémentaire max atteint, maladie déplafonnée mais taux moyen ~44%
+}
+
+// ACRE 2026 : exonération dégressive sur les cotisations TNS
+// Exonération totale jusqu'à 75% du PASS (~34 776 €), dégressive jusqu'au PASS (~46 368 €), nulle au-delà
+const PASS_2026 = 46368;
+function calcCotisTNS_ACRE(remuNette) {
+    const seuil1 = PASS_2026 * 0.75; // ~34 776 € → exonération 100%
+    const seuil2 = PASS_2026;         // ~46 368 € → exonération 0%
+    const txPlein = tauxTNS(remuNette);
+
+    if (remuNette <= seuil1) {
+        return remuNette * txPlein * 0; // 0 cotisations (exonération ACRE complète)
+    } else if (remuNette <= seuil2) {
+        const fracExo = 1 - (remuNette - seuil1) / (seuil2 - seuil1);
+        const cotisTrancheExo = seuil1 * txPlein * (1 - fracExo);
+        const cotisTrancheNormale = (remuNette - seuil1) * txPlein;
+        return cotisTrancheExo + cotisTrancheNormale;
+    } else {
+        const cotisPartielleSurPASS = seuil2 * txPlein * 0.30;
+        const cotisAuDela = (remuNette - seuil2) * txPlein;
+        return cotisPartielleSurPASS + cotisAuDela;
+    }
+}
+
+// Helper principal : cotisations TNS avec ou sans ACRE
+function cotisationsTNS(remuNette, acre) {
+    if (remuNette <= 0) return 0;
+    if (acre) return calcCotisTNS_ACRE(remuNette);
+    return remuNette * tauxTNS(remuNette);
+}
+
+// Cotisations micro (taux 2026)
+const MICRO_TX = { service: 0.211, commerce: 0.123 };
+
+// IS 2026
+function calcIS(benefice) {
+    if (benefice <= 0) return 0;
+    const tranche1 = Math.min(benefice, 42500);
+    const tranche2 = Math.max(0, benefice - 42500);
+    return tranche1 * 0.15 + tranche2 * 0.25;
+}
+
+// PFU dividendes : 30% flat tax (12.8% IR + 17.2% PS)
+const PFU = 0.30;
+
+// Frais de structure annuels par statut
+const STRUCTURE = {
+    Micro:    800,    // CFE + banque + assurance RC
+    EI:       1200,   // CFE + banque + assurance RC + experts ponctuels
+    EURL:     3000,   // Expert-comptable + banque + assurance + CFE
+    SASU:     3500,   // Expert-comptable + gestionnaire de paie + banque + CFE
+    Portage:  0,      // Inclus dans les frais de gestion de la société de portage
+    Holding:  5000,   // Deux structures : holding + filiale (double compta)
+    SARLFam:  2800    // Expert-comptable + banque + assurance + CFE
+};
+
+// Coût de création (une seule fois)
+const CREATION = { Micro: 0, EI: 0, EURL: 500, SASU: 600, Portage: 0, Holding: 1200, SARLFam: 600 };
+
+/* ─────────────────────────────────────────
+   ÉTAT GLOBAL
+───────────────────────────────────────── */
+let typeAct = 'service';
+let globalResults = {};
+let selectedStatus = '';
+let recommendedStatus = '';
+let currentMode = 'CA'; // 'CA' ou 'REV'
+
+/* ─────────────────────────────────────────
+   CALCUL IR (barème progressif avec quotient familial)
+   parts : nombre de parts fiscales
+───────────────────────────────────────── */
+function calcIR(revenuBrut, parts) {
+    // Abattement 10% plafonné à 14 171 €, plancher 495 €
+    const abattement = Math.min(Math.max(revenuBrut * 0.10, 495), 14171);
+    const rni = Math.max(0, revenuBrut - abattement); // Revenu Net Imposable
+
+    // Calcul sur 1 part
+    const rniParPart = rni / parts;
+    let impot1Part = 0;
+    let precedente = 0;
+
+    for (const tranche of BAREME_IR) {
+        if (rniParPart <= precedente) break;
+        const base = Math.min(rniParPart, tranche.limite) - precedente;
+        impot1Part += base * tranche.taux;
+        precedente = tranche.limite;
+    }
+
+    // Plafonnement quotient familial : max 1 759 € par demi-part supplémentaire (2026)
+    const impotTotal = impot1Part * parts;
+    const impot1Part_seul = calcIR1Part(rni); // IR pour 1 part (célibataire)
+    const economieQF = impot1Part_seul - impotTotal;
+    const plafondEconomie = (parts - 1) * 2 * 1759; // 2 demi-parts par part entière
+    const impotFinal = Math.max(impotTotal, impot1Part_seul - plafondEconomie);
+
+    return Math.max(0, impotFinal);
+}
+
+function calcIR1Part(rni) {
+    let impot = 0;
+    let precedente = 0;
+    for (const tranche of BAREME_IR) {
+        if (rni <= precedente) break;
+        const base = Math.min(rni, tranche.limite) - precedente;
+        impot += base * tranche.taux;
+        precedente = tranche.limite;
+    }
+    return impot;
+}
+
+/* ─────────────────────────────────────────
+   CALCUL MICRO
+───────────────────────────────────────── */
+function calcMicro(caAnnuel, fraisAnnuel, parts, acre, isService) {
+    const txBrut = isService ? MICRO_TX.service : MICRO_TX.commerce;
+    const tx = acre ? txBrut * 0.50 : txBrut; // ACRE : exonération partielle ~50% cotisations
+    // En micro, les frais ne sont pas déductibles du résultat fiscal (seulement les cotisations)
+    const cotisations = caAnnuel * tx;
+    const structure = STRUCTURE.Micro + fraisAnnuel; // frais = dépense réelle non déductible
+
+    // Revenu imposable : CA - abattement forfaitaire (34% BNC ou 50% BIC services, 71% commerce)
+    const abattementForfait = isService ? 0.34 : 0.71;
+    const revenuImposable = caAnnuel * (1 - abattementForfait);
+    const ir = calcIR(revenuImposable, parts);
+
+    const netAnnuel = caAnnuel - cotisations - structure - ir;
+    return {
+        ca: caAnnuel,
+        netAnnuel,
+        netMensuel: netAnnuel / 12,
+        cotisations,
+        ir,
+        structure,
+        revenuImposable,
+        ok: caAnnuel <= (isService ? 77700 : 188700),
+        details: { cotisations, structure, ir, fraisDeductibles: 0 }
+    };
+}
+
+/* ─────────────────────────────────────────
+   CALCUL EURL (gérant TNS, IS)
+   dividPct : % du budget disponible versé en dividendes (0-1)
+───────────────────────────────────────── */
+function calcEURL(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
+    const structure = STRUCTURE.EURL + fraisAnnuel;
+    const baseRevenu = caAnnuel - structure;
+    if (baseRevenu <= 0) return { ca: caAnnuel, netAnnuel: 0, netMensuel: 0, cotisations: 0, ir: 0, is: 0, dividendesNets: 0, beneficeAvantIS: 0, structure, fraisDeductibles: fraisAnnuel, ok: true, details: {} };
+
+    // Budget rémunération TNS = part non distribuée en dividendes
+    const budgetRemu = baseRevenu * (1 - dividPct);
+
+    // Résolution itérative : cotis = f(remuNette), remuNette = budgetRemu - cotis
+    let remuNette = budgetRemu / 1.45;
+    let cotis = 0;
+    for (let i = 0; i < 8; i++) {
+        cotis = cotisationsTNS(remuNette, acre);
+        remuNette = Math.max(0, budgetRemu - cotis);
+    }
+
+    // Dividendes sur la part IS
+    const beneficeAvantIS = Math.max(0, baseRevenu * dividPct);
+    const is = calcIS(beneficeAvantIS);
+    const dividendesNets = beneficeAvantIS > 0 ? (beneficeAvantIS - is) * (1 - PFU) : 0;
+
+    const ir = calcIR(remuNette, parts);
+    const netAnnuel = remuNette - ir + dividendesNets;
+
+    return {
+        ca: caAnnuel, netAnnuel, netMensuel: netAnnuel / 12,
+        remuNette, cotisations: cotis, ir, is,
+        dividendesNets, beneficeAvantIS,
+        structure, fraisDeductibles: fraisAnnuel, ok: true,
+        details: { cotisations: cotis, structure, ir, is, dividendes: beneficeAvantIS, dividendesNets, fraisDeductibles: fraisAnnuel }
+    };
+}
+
+/* ─────────────────────────────────────────
+   CALCUL SASU (assimilé-salarié, IS)
+───────────────────────────────────────── */
+function calcSASU(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
+    const structure = STRUCTURE.SASU + fraisAnnuel;
+    const budgetSalaire = (caAnnuel - structure) * (1 - dividPct);
+
+    // Coût employeur = brut × (1 + taux patronal)
+    // Avec ACRE : exonération partielle 1ère année (~50% des cotisations patronales)
+    const txPatron = acre ? SASU_TAUX_PATRONAL * 0.50 : SASU_TAUX_PATRONAL;
+    const brut = budgetSalaire / (1 + txPatron);
+    const cotisPatronales = brut * txPatron;
+    const cotisalariales = brut * SASU_TAUX_SALARIAL;
+    const salaireNet = brut - cotisalariales;
+    const totalCotis = cotisPatronales + cotisalariales;
+
+    // Dividendes
+    const budgetDivid = (caAnnuel - structure) * dividPct;
+    const beneficeAvantIS = caAnnuel - structure - brut - cotisPatronales;
+    const partDividIS = Math.max(0, beneficeAvantIS); // Dividendes = bénéfice après IS
+    const is = calcIS(Math.max(0, partDividIS));
+    const dividendesNets = partDividIS > 0 ? partDividIS * (1 - PFU) : 0;
+
+    // IR sur salaire net (salaire net = revenu imposable en SASU, après abattement 10%)
+    const ir = calcIR(salaireNet, parts);
+
+    const netAnnuel = salaireNet - ir + dividendesNets;
+
+    return {
+        ca: caAnnuel,
+        netAnnuel,
+        netMensuel: netAnnuel / 12,
+        salaireNet,
+        cotisations: totalCotis,
+        cotisPatronales,
+        cotisalariales,
+        ir,
+        is,
+        dividendesNets,
+        beneficeAvantIS,
+        structure,
+        fraisDeductibles: fraisAnnuel,
+        ok: true,
+        details: { cotisations: totalCotis, structure, ir, is, dividendes: partDividIS, dividendesNets, fraisDeductibles: fraisAnnuel }
+    };
+}
+
+/* ─────────────────────────────────────────
+   CALCUL EN MODE "REVENU CIBLE"
+   On cherche le CA par dichotomie
+───────────────────────────────────────── */
+function trouverCA(targetNetMensuel, fraisAnnuel, parts, acre, dividPct, isService, statut) {
+    let lo = 0, hi = 1500000;
+    for (let i = 0; i < 60; i++) {
+        const mid = (lo + hi) / 2;
+        const r = calcStatut(statut, mid, fraisAnnuel, parts, acre, dividPct, isService);
+        if (r.netMensuel < targetNetMensuel) lo = mid;
+        else hi = mid;
+    }
+    return (lo + hi) / 2;
+}
+
+/* ─────────────────────────────────────────
+   CALCUL EI AU RÉEL (Entreprise Individuelle)
+   Depuis 2022 : patrimoine séparé, option IS
+   Régime TNS comme EURL mais sans capital social
+───────────────────────────────────────── */
+function calcEI(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
+    const structure = STRUCTURE.EI + fraisAnnuel;
+    const baseRevenu = caAnnuel - structure;
+    if (baseRevenu <= 0) return { ca: caAnnuel, netAnnuel: 0, netMensuel: 0, cotisations: 0, ir: 0, is: 0, dividendesNets: 0, beneficeAvantIS: 0, structure, fraisDeductibles: fraisAnnuel, ok: true, details: {} };
+
+    // Résolution itérative : remuNette = baseRevenu - cotis(remuNette)
+    let remuNette = baseRevenu / 1.45;
+    let cotis = 0;
+    for (let i = 0; i < 8; i++) {
+        cotis = cotisationsTNS(remuNette, acre);
+        remuNette = Math.max(0, baseRevenu - cotis);
+    }
+
+    const ir = calcIR(remuNette, parts);
+    const netAnnuel = remuNette - ir;
+
+    return {
+        ca: caAnnuel, netAnnuel, netMensuel: netAnnuel / 12,
+        remuNette, cotisations: cotis, ir, is: 0,
+        dividendesNets: 0, beneficeAvantIS: 0,
+        structure, fraisDeductibles: fraisAnnuel, ok: true,
+        details: { cotisations: cotis, structure, ir, is: 0, dividendes: 0, dividendesNets: 0, fraisDeductibles: fraisAnnuel }
+    };
+}
+
+/* ─────────────────────────────────────────
+   CALCUL PORTAGE SALARIAL
+   Société de portage : frais gestion 8-10% du CA HT
+   Salarié : charges ~47% du brut (patronal + salarial)
+───────────────────────────────────────── */
+function calcPortage(caAnnuel, fraisAnnuel, parts, acre) {
+    // Frais de gestion société de portage : 9% du CA HT en moyenne
+    const fraisGestion = caAnnuel * 0.09;
+    // Frais professionnels refacturés à la société (déductibles du brut imposable)
+    const baseRemuneration = caAnnuel - fraisGestion - fraisAnnuel;
+    // Cotisations patronales ~43% du brut, salariales ~22% → net = brut × 0.78
+    // Coût total employeur = brut × 1.43 → brut = base / 1.43
+    const txPatron = acre ? 0.43 * 0.60 : 0.43; // ACRE portage : 50% exo 1ère année
+    const brut = baseRemuneration / (1 + txPatron);
+    const cotisPatronales = brut * txPatron;
+    const cotisalariales = brut * 0.22;
+    const salaireNet = brut - cotisalariales;
+    const totalCotis = cotisPatronales + cotisalariales;
+    // IR sur salaire net (abattement 10% comme salarié)
+    const ir = calcIR(salaireNet, parts);
+    const netAnnuel = salaireNet - ir;
+
+    return {
+        ca: caAnnuel, netAnnuel, netMensuel: netAnnuel / 12,
+        salaireNet, cotisations: totalCotis, cotisPatronales, cotisalariales,
+        fraisGestion, ir, is: 0,
+        dividendesNets: 0, beneficeAvantIS: 0,
+        structure: 0, fraisDeductibles: fraisAnnuel,
+        ok: true,
+        details: { cotisations: totalCotis, structure: 0, ir, is: 0, dividendes: 0, dividendesNets: 0, fraisDeductibles: fraisAnnuel, fraisGestion }
+    };
+}
+
+/* ─────────────────────────────────────────
+   CALCUL HOLDING + FILIALE (schéma mère-fille)
+   Filiale SASU opérationnelle → dividendes remontent à Holding
+   Régime mère-fille : 95% exonération IS sur dividendes reçus par holding
+   Réinvestissement quasi-sans friction fiscale
+───────────────────────────────────────── */
+function calcHolding(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
+    const structure = STRUCTURE.Holding + fraisAnnuel;
+    const budgetOperationnel = caAnnuel - structure;
+    if (budgetOperationnel <= 0) return { ca: caAnnuel, netAnnuel: 0, netMensuel: 0, cotisations: 0, ir: 0, is: 0, dividendesNets: 0, beneficeAvantIS: 0, structure, fraisDeductibles: fraisAnnuel, ok: false, details: {} };
+
+    // En holding, stratégie optimale : salaire minimal + max dividendes via holding
+    // On force un minimum de 40% en dividendes pour que la structure ait du sens
+    const dividPctEffectif = Math.max(dividPct, 0.40);
+    const partSalaire = 1 - dividPctEffectif;
+    const budgetSalaire = budgetOperationnel * partSalaire;
+
+    const txPatron = acre ? SASU_TAUX_PATRONAL * 0.50 : SASU_TAUX_PATRONAL;
+    const brut = budgetSalaire / (1 + txPatron);
+    const cotisPatronales = brut * txPatron;
+    const cotisalariales = brut * SASU_TAUX_SALARIAL;
+    const salaireNet = brut - cotisalariales;
+
+    // Bénéfice filiale → dividendes → holding
+    const beneficeFiliale = budgetOperationnel * dividPctEffectif;
+    const isFiliale = calcIS(beneficeFiliale);
+    const dividendesFiliale = beneficeFiliale - isFiliale;
+    // Régime mère-fille : IS holding = 5% × 25% = 1.25%
+    const isHolding = dividendesFiliale * 0.05 * 0.25;
+    const dividendesHolding = dividendesFiliale - isHolding;
+    // Sortie personnelle via PFU 30%
+    const dividendesPersonnels = dividendesHolding * (1 - PFU);
+    const ir = calcIR(salaireNet, parts);
+    const netAnnuel = salaireNet - ir + dividendesPersonnels;
+    const totalIS = isFiliale + isHolding;
+
+    return {
+        ca: caAnnuel, netAnnuel, netMensuel: netAnnuel / 12,
+        salaireNet, cotisations: cotisPatronales + cotisalariales,
+        cotisPatronales, cotisalariales,
+        ir, is: totalIS, isFiliale, isHolding,
+        dividendesFiliale, dividendesHolding, dividendesNets: dividendesPersonnels,
+        beneficeAvantIS: beneficeFiliale,
+        structure, fraisDeductibles: fraisAnnuel,
+        ok: caAnnuel >= 80000,
+        details: { cotisations: cotisPatronales + cotisalariales, structure, ir, is: totalIS, dividendes: beneficeFiliale, dividendesNets: dividendesPersonnels, fraisDeductibles: fraisAnnuel }
+    };
+}
+
+/* ─────────────────────────────────────────
+   CALCUL SARL DE FAMILLE À L'IR
+   Réservée aux couples/famille (parts > 1)
+   Option IR : bénéfices imposés au barème progressif du foyer
+   Avantage réel : répartition du bénéfice sur plusieurs associés
+   ATTENTION : le bénéfice distribué est imposé à l'IR du foyer,
+   pas exonéré — l'avantage vient uniquement du quotient familial
+───────────────────────────────────────── */
+function calcSARLFam(caAnnuel, fraisAnnuel, parts, acre) {
+    // Non éligible pour un célibataire (nécessite un associé familial)
+    const estEnCouple = parts >= 1.5;
+    if (!estEnCouple) {
+        return {
+            ca: caAnnuel, netAnnuel: 0, netMensuel: 0,
+            remuNette: 0, cotisations: 0, ir: 0, is: 0,
+            dividendesNets: 0, beneficeAvantIS: 0,
+            structure: 0, fraisDeductibles: fraisAnnuel,
+            ok: false, okMsg: 'Nécessite un associé familial (couple, enfant majeur…)',
+            details: {}
         };
-        const imp = impacts[selectedStatus];
-        document.getElementById('bloc_impact').innerHTML = `
-            <div class="impact-card">
-                <h4 style="margin:0 0 12px; font-size:14px;"><i class="fa-solid fa-user-shield"></i> Vie du gérant en ${selectedStatus}</h4>
-                <div class="impact-grid">
-                    <div class="impact-item"><b>Protection Sociale</b><span>${imp[0]}</span></div>
-                    <div class="impact-item"><b>Retraite</b><span>${imp[1]}</span></div>
-                    <div class="impact-item"><b>Gestion</b><span>${imp[2]}</span></div>
-                    <div class="impact-item"><b>Crédit / Location</b><span>${imp[3]}</span></div>
-                </div>
-            </div>`;
+    }
 
-        // Sélecteur de statuts
-        let htmlStatuts = "";
-        for(let n in globalResults) {
-            let r = globalResults[n];
-            htmlStatuts += `
-                <div class="stat-card ${n===selectedStatus?'selected':''} ${n===recommendedStatus?'recommended-outline':''}" onclick="selectedStatus='${n}'; updateUI(${jours});">
-                    <h5>${n}</h5>
-                    <div>${r.ok ? Math.round(r.net).toLocaleString()+'€' : 'HORS SEUIL'}</div>
-                </div>`;
+    const structure = STRUCTURE.SARLFam + fraisAnnuel;
+    const baseRevenu = caAnnuel - structure;
+
+    // Le gérant majoritaire est TNS — résolution itérative
+    let remuNette = baseRevenu / 1.45;
+    let cotis = 0;
+    for (let i = 0; i < 8; i++) {
+        cotis = cotisationsTNS(remuNette, acre);
+        remuNette = Math.max(0, baseRevenu - cotis);
+    }
+
+    // Bénéfice restant = distribué aux associés et imposé à l'IR du foyer
+    // (option IR SARL famille = PAS d'IS, directement imposé IR associés)
+    const beneficeDistribuable = Math.max(0, baseRevenu - remuNette - cotis);
+
+    // L'avantage réel : le bénéfice distribué est imposé avec les parts du FOYER complet
+    const revenuImposableTotalFoyer = remuNette + beneficeDistribuable;
+    const ir = calcIR(revenuImposableTotalFoyer, parts);
+
+    const netAnnuel = remuNette + beneficeDistribuable - ir;
+
+    return {
+        ca: caAnnuel, netAnnuel, netMensuel: netAnnuel / 12,
+        remuNette, cotisations: cotis, ir, is: 0,
+        dividendesNets: beneficeDistribuable,
+        beneficeAvantIS: beneficeDistribuable,
+        structure, fraisDeductibles: fraisAnnuel,
+        ok: true,
+        details: { cotisations: cotis, structure, ir, is: 0, dividendes: beneficeDistribuable, dividendesNets: beneficeDistribuable, fraisDeductibles: fraisAnnuel }
+    };
+}
+
+/* ─────────────────────────────────────────
+   FONCTION PRINCIPALE
+───────────────────────────────────────── */
+function analyser() {
+    const fraisMens   = parseFloat(document.getElementById('frais').value) || 0;
+    const fraisAnnuel = fraisMens * 12;
+    const parts       = parseFloat(document.getElementById('situation').value);
+    const acre        = document.getElementById('acre_check').checked;
+    const dividOpt    = document.getElementById('divid_check').checked;
+    const dividPct    = dividOpt ? (100 - parseInt(document.getElementById('divid_slider').value)) / 100 : 0;
+    const isService   = typeAct === 'service';
+
+    let caVal  = 0;
+    let revVal = 0;
+    let joursFactures = 18;
+
+    if (currentMode === 'CA') {
+        caVal = parseFloat(document.getElementById('ca').value) || 0;
+    } else if (currentMode === 'REV') {
+        revVal = parseFloat(document.getElementById('rev').value) || 0;
+    } else if (currentMode === 'TJM') {
+        const tjm   = parseFloat(document.getElementById('tjm_input').value) || 0;
+        joursFactures = parseInt(document.getElementById('jours_input').value) || 18;
+        if (tjm === 0) { alert('Veuillez saisir votre TJM.'); return; }
+        // CA annuel = TJM × jours/mois × 12
+        caVal = tjm * joursFactures * 12;
+        // Stocker pour affichage
+        window._tjmSaisi = tjm;
+        window._joursSaisis = joursFactures;
+    }
+
+    if (caVal === 0 && revVal === 0) {
+        alert('Veuillez saisir un chiffre d\'affaires, un revenu cible ou un TJM.');
+        return;
+    }
+
+    globalResults = {};
+    const ALL_STATUTS = ['Micro', 'EI', 'EURL', 'SASU', 'Portage', 'Holding', 'SARLFam'];
+
+    ALL_STATUTS.forEach(statut => {
+        let ca = caVal;
+        if (currentMode === 'REV') {
+            ca = trouverCA(revVal, fraisAnnuel, parts, acre, dividPct, isService, statut);
         }
-        document.getElementById('liste_statuts').innerHTML = htmlStatuts;
+        globalResults[statut] = calcStatut(statut, ca, fraisAnnuel, parts, acre, dividPct, isService);
+    });
+
+    // Trouver le meilleur statut (max net mensuel parmi les statuts valides)
+    recommendedStatus = Object.entries(globalResults)
+        .filter(([, r]) => r.ok && r.netMensuel > 0)
+        .sort((a, b) => b[1].netMensuel - a[1].netMensuel)[0]?.[0] || 'EURL';
+
+    selectedStatus = recommendedStatus;
+
+    document.getElementById('resultats').style.display = 'block';
+    document.getElementById('resultats').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    updateUI(currentMode === 'TJM' ? joursFactures : 18);
+}
+
+/* ─────────────────────────────────────────
+   MISE À JOUR UI
+───────────────────────────────────────── */
+function updateUI(jours) {
+    if (!Object.keys(globalResults).length) return;
+    const data = globalResults[selectedStatus];
+    const parts = parseFloat(document.getElementById('situation').value);
+
+    // ── Bannière ──
+    const isTop = selectedStatus === recommendedStatus;
+    // En mode TJM, afficher le TJM saisi
+    const tjmInfo = currentMode === 'TJM'
+        ? `<p style="opacity:0.85;font-size:12px;margin-top:2px">TJM : ${(window._tjmSaisi||0).toLocaleString('fr-FR')} €/j × ${window._joursSaisis||18} j = ${fmtCA(globalResults[selectedStatus].ca)} € CA/an</p>`
+        : '';
+    document.getElementById('bloc_banner').innerHTML = `
+        <div class="result-banner-left">
+            <h3>Revenu net mensuel estimé</h3>
+            <div class="big-num">${fmt(data.netMensuel)} <span>€/mois</span></div>
+            <p>Après charges sociales + impôt sur le revenu</p>
+            ${tjmInfo}
+        </div>
+        <div class="result-banner-right">
+            <div class="statut-badge">${selectedStatus}</div><br>
+            ${isTop ? '<span class="conseil-badge"><i class="fa-solid fa-star"></i> Conseillé</span>' : ''}
+        </div>`;
+
+    // ── Recommendation card spéciale mode TJM ──
+    const recBloc = document.getElementById('bloc_recommendation');
+    if (currentMode === 'TJM' && recBloc) {
+        const tjm = window._tjmSaisi || 0;
+        const joursRec = window._joursSaisis || 18;
+        const nets = Object.entries(globalResults)
+            .filter(([,r]) => r.ok && r.netMensuel > 0)
+            .sort((a,b) => b[1].netMensuel - a[1].netMensuel);
+        const best = nets[0];
+        const worst = nets[nets.length-1];
+        const diffMaxMin = best && worst ? Math.round((best[1].netMensuel - worst[1].netMensuel) * 12) : 0;
+        const medals = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
+        const LABELS_REC = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Famille' };
+
+        recBloc.innerHTML = `
+        <div class="rec-card">
+            <div class="rec-header">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Meilleur statut pour votre TJM de ${tjm.toLocaleString('fr-FR')} €/j (${joursRec} j/mois)</span>
+            </div>
+            <div class="rec-body">
+                <div class="rec-winner">
+                    <div class="rec-winner-name">${LABELS_REC[recommendedStatus] || recommendedStatus}</div>
+                    <div class="rec-winner-net">${fmt(globalResults[recommendedStatus].netMensuel)} €<span>/mois</span></div>
+                    <div class="rec-winner-sub">net après IR, charges sociales et frais de structure</div>
+                </div>
+                <div class="rec-compare">
+                    ${nets.map(([n,r],i) => {
+                        const diff = fmt(globalResults[recommendedStatus].netMensuel - r.netMensuel);
+                        const badge = i===0
+                            ? '<span class="rec-badge-top">Optimal</span>'
+                            : `<span class="rec-diff">− ${diff} €/mois</span>`;
+                        return `<div class="rec-row ${i===0?'rec-row-best':''}">
+                            <span class="rec-rank">${medals[i]||''}</span>
+                            <span class="rec-name">${LABELS_REC[n]||n}</span>
+                            <span class="rec-net">${fmt(r.netMensuel)} €/mois</span>
+                            ${badge}
+                        </div>`;
+                    }).join('')}
+                </div>
+                ${diffMaxMin > 0 ? `<p class="rec-insight"><i class="fa-solid fa-circle-info"></i> Le choix du statut peut représenter jusqu'à <strong>${diffMaxMin.toLocaleString('fr-FR')} €/an</strong> de différence sur votre revenu net disponible.</p>` : ''}
+            </div>
+        </div>`;
+        recBloc.style.display = 'block';
+    } else if (recBloc) {
+        recBloc.style.display = 'none';
     }
 
-    // 5. FONCTIONS DÉTAILS
-    function toggleDetails() {
-        const panel = document.getElementById('detail-panel');
-        const isVisible = panel.style.display === 'block';
-        panel.style.display = isVisible ? 'none' : 'block';
-        if (!isVisible) generateDetailedBreakdown();
+    // ── Sélecteur statuts ──
+    const joursUI = currentMode === 'TJM' ? (window._joursSaisis || 18) : jours;
+    const LABELS_SHORT = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Fam.' };
+    const ALL_STATUTS_UI = ['Micro', 'EI', 'EURL', 'SASU', 'Portage', 'Holding', 'SARLFam'];
+    let htmlStatuts = '';
+    ALL_STATUTS_UI.forEach(n => {
+        const r = globalResults[n];
+        const sel = n === selectedStatus ? 'selected' : '';
+        const top = n === recommendedStatus ? '<span class="top-badge">⭐ Optimal</span>' : '';
+        let val, sub;
+        if (!r.ok) {
+            if (n === 'SARLFam') {
+                val = '<span style="font-size:9px;color:var(--text-light);line-height:1.3">Couple<br>requis</span>';
+            } else if (n === 'Holding') {
+                val = '<span style="font-size:9px;color:var(--text-light);line-height:1.3">CA<br>>80k€</span>';
+            } else {
+                val = '<span style="font-size:9px;color:var(--danger)">Hors seuil</span>';
+            }
+            sub = '';
+        } else {
+            val = fmt(r.netMensuel) + '€';
+            sub = currentMode === 'TJM' ? `${fmtK(r.netAnnuel)}/an` : `CA: ${fmtK(r.ca)}`;
+        }
+        htmlStatuts += `
+            <div class="stat-card ${sel} ${!r.ok ? 'stat-disabled' : ''}" 
+                 onclick="${r.ok ? `selectedStatus='${n}';updateUI(${joursUI})` : ''}">
+                ${top}
+                <h5>${LABELS_SHORT[n]}</h5>
+                <div class="net-val">${val}</div>
+                <div class="sub-val">${sub}</div>
+            </div>`;
+    });
+    document.getElementById('liste_statuts').innerHTML = htmlStatuts;
+
+    // ── KPIs ──
+    const txEffCharges = data.ca > 0 ? (data.cotisations / data.ca * 100).toFixed(0) : 0;
+    const txEffIR = data.netAnnuel > 0 ? ((data.ir || 0) / (data.netAnnuel + (data.ir || 0)) * 100).toFixed(0) : 0;
+    document.getElementById('bloc_kpis').innerHTML = `
+        <div class="kpi"><div class="kpi-val" style="color:var(--primary)">${fmtCA(data.ca)} €</div><div class="kpi-label">CA annuel</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--danger)">${txEffCharges}%</div><div class="kpi-label">Taux charges sociales</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--warning)">${txEffIR}%</div><div class="kpi-label">Taux effectif IR</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--success)">${fmt(data.netMensuel * 12 / 1000)}k €</div><div class="kpi-label">Net annuel</div></div>`;
+
+    // ── Alerte optimisation ──
+    genOptimAlert(data);
+
+    // ── Décomposition ──
+    genDecomp(data);
+
+    // ── TJM ──
+    const tjm = Math.round(data.ca / 12 / jours);
+    const tjmSaisi = window._tjmSaisi || 0;
+    const isTJMMode = currentMode === 'TJM';
+    const caForTJM = data.ca;
+    document.getElementById('bloc_tjm').innerHTML = `
+        <div class="tjm-left">
+            <h4><i class="fa-solid fa-calendar-days"></i> ${isTJMMode ? 'TJM saisi' : 'TJM cible'}</h4>
+            <div class="tjm-big"><span id="tjm_display">${isTJMMode ? tjmSaisi.toLocaleString('fr-FR') : tjm.toLocaleString('fr-FR')}</span> €<span style="font-size:1rem;opacity:0.6">/jour</span></div>
+            <p>${isTJMMode
+                ? `CA généré : ${fmtCA(data.ca)} €/an — ${jours} j/mois`
+                : `TJM à facturer pour atteindre votre CA`}</p>
+        </div>
+        <div class="tjm-right">
+            <label for="input_jours">Jours facturés/mois</label>
+            <input type="number" id="input_jours" value="${jours}" min="1" max="22" class="tjm-input"
+                   oninput="recalcTJM(this.value, ${caForTJM})">
+        </div>`;
+
+    // ── Vie du gérant ──
+    genLife();
+
+    // ── Projection 3 ans ──
+    genProjection(parts);
+}
+
+/* ─────────────────────────────────────────
+   GÉNÉRATION BLOCS
+───────────────────────────────────────── */
+function genOptimAlert(data) {
+    const bloc = document.getElementById('bloc_optim');
+    const dividOpt = document.getElementById('divid_check').checked;
+    const isEurlSasu = (selectedStatus === 'EURL' || selectedStatus === 'SASU');
+    const acre = document.getElementById('acre_check').checked;
+    const parts = parseFloat(document.getElementById('situation').value);
+    const ca = data.ca;
+    let html = '';
+
+    // Alerte EI recommandé : expliquer pourquoi et ses limites
+    if (recommendedStatus === 'EI') {
+        const raisons = [];
+        if (parts >= 2.5) raisons.push(`votre quotient familial (${parts} parts fiscales) réduit l'IR à quasi zéro, ce qui neutralise l'avantage fiscal des dividendes`);
+        if (acre) raisons.push('l\'ACRE divise vos cotisations TNS par 2 la 1ère année (~22%), effaçant l\'écart de charges avec une société');
+        raisons.push('les frais de structure de l\'EI (1 200 €/an) sont 1 800 à 2 300 € moins chers qu\'une EURL ou SASU');
+        html += `<div class="optim-alert" style="background:linear-gradient(135deg,#f0fdf4,#ebf8ff);border-color:#86efac;border-left-color:var(--success)">
+            <h4 style="color:#166534"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> Pourquoi l'EI au réel est optimal pour votre profil</h4>
+            <p style="color:#14532d;line-height:1.7">${raisons.map((r,i)=>`<strong>${i+1}.</strong> ${r.charAt(0).toUpperCase()+r.slice(1)}.`).join('<br>')}
+            <br><br><i class="fa-solid fa-triangle-exclamation" style="color:var(--warning)"></i> <strong>Limites importantes :</strong> L'EI ne permet <strong>pas les dividendes</strong>, ni la levée de fonds, ni l'accueil d'associés. 
+            Si votre CA croît ou que vous souhaitez capitaliser, basculez vers une <strong>EURL ou Holding</strong>. 
+            Simulez aussi <strong>sans ACRE</strong> pour voir votre situation à partir de l'année 2.</p>
+        </div>`;
     }
 
-    function generateDetailedBreakdown() {
-        const data = globalResults[selectedStatus];
-        const s = config[selectedStatus];
-        const caAnnuel = Math.round(data.ca);
-        const fraisPersoAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
-        
-        let charges = (selectedStatus === "Micro") ? (caAnnuel * (document.getElementById('acre_check').checked ? s.tx/2 : s.tx)) : ((caAnnuel - s.structure - fraisPersoAnnuel) * (s.tx / (1+s.tx)));
-
-        let html = `<h4 style="margin:0 0 10px 0; font-size:14px; color:var(--primary);">Détail annuel (${selectedStatus})</h4>`;
-        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9;"><span>Chiffre d'Affaires HT</span><span>+ ${caAnnuel.toLocaleString()} €</span></div>`;
-        if(s.creation > 0) html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais d'ouverture</span><span>- ${s.creation} €</span></div>`;
-        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Frais de structure & Perso</span><span>- ${(s.structure + fraisPersoAnnuel).toLocaleString()} €</span></div>`;
-        html += `<div style="display:flex; justify-content:space-between; font-size:12px; padding:5px 0; border-bottom:1px solid #f1f5f9; color:#e74a3b;"><span>Cotisations sociales (URSSAF)</span><span>- ${Math.round(charges).toLocaleString()} €</span></div>`;
-        html += `<div style="display:flex; justify-content:space-between; font-weight:800; padding:10px 0; color:var(--primary); font-size:14px;"><span>NET ANNUEL DISPONIBLE</span><span>${Math.round(data.net*12).toLocaleString()} €</span></div>`;
-        
-        document.getElementById('detail-content').innerHTML = html;
+    // Alerte dividendes possible sur EURL/SASU
+    if (isEurlSasu && !dividOpt && ca > 50000) {
+        const econEstim = selectedStatus === 'SASU' ? Math.round(ca * 0.04) : Math.round(ca * 0.02);
+        html += `<div class="optim-alert">
+            <h4><i class="fa-solid fa-lightbulb"></i> Optimisation dividendes disponible</h4>
+            <p>Avec une stratégie <strong>salaire + dividendes</strong>, vous pourriez économiser jusqu'à <strong>${econEstim.toLocaleString('fr-FR')} €/an</strong>.
+            Cochez <em>"Optimisation dividendes"</em> et ajustez le curseur pour simuler.</p>
+        </div>`;
     }
+
+    // Alerte ACRE temporaire
+    if (acre && (recommendedStatus === 'EI' || recommendedStatus === 'Micro')) {
+        const fraisAnn = (parseFloat(document.getElementById('frais').value)||0)*12;
+        const rSansAcre = calcStatut(recommendedStatus, ca, fraisAnn, parts, false, 0, typeAct==='service');
+        const diff = Math.round(globalResults[recommendedStatus].netMensuel - rSansAcre.netMensuel);
+        if (diff > 80) {
+            html += `<div class="optim-alert" style="background:#fffbeb;border-left-color:var(--warning)">
+                <h4 style="color:#92400e"><i class="fa-solid fa-clock"></i> Attention : avantage ACRE temporaire (12 mois)</h4>
+                <p style="color:#78350f">Sans ACRE (dès l'année 2), votre revenu net baisserait de <strong>${diff.toLocaleString('fr-FR')} €/mois</strong>.
+                Désactivez l'ACRE et relancez la simulation pour voir votre situation réelle à long terme — le statut optimal pourrait changer.</p>
+            </div>`;
+        }
+    }
+
+    bloc.innerHTML = html;
+}
+
+function genDecomp(data) {
+    const isService = typeAct === 'service';
+    const acre = document.getElementById('acre_check').checked;
+    const s = selectedStatus;
+    let html = `<div class="decomp-title"><i class="fa-solid fa-receipt"></i> Décomposition annuelle — ${s}</div>`;
+
+    html += row('Chiffre d\'affaires HT', `+ ${fmtCA(data.ca)} €`, 'plus');
+
+    if (s === 'Micro') {
+        const txAffiche = ((data.cotisations / data.ca) * 100).toFixed(1);
+        html += row(`Cotisations sociales (${txAffiche}% du CA)${acre?' <span class="info-tag">ACRE</span>':''}`, `− ${fmtCA(data.cotisations)} €`, 'minus');
+        html += row('Frais de structure (CFE, banque, assurance)', `− ${fmtCA(data.structure)} €`, 'minus');
+        html += row('Impôt sur le revenu (IR)', `− ${fmtCA(data.ir)} €`, 'minus');
+
+    } else if (s === 'EI') {
+        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
+        html += row('Frais de structure (CFE, banque)', `− ${fmtCA(STRUCTURE.EI)} €`, 'minus');
+        const tx = ((data.cotisations / (data.remuNette || 1)) * 100).toFixed(0);
+        html += row(`Cotisations TNS (~${tx}%)${acre?' <span class="info-tag">ACRE</span>':''}`, `− ${fmtCA(data.cotisations)} €`, 'minus');
+        html += row('Revenu net TNS', `= ${fmtCA(data.remuNette)} €`, 'neutral');
+        html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir)} €`, 'minus');
+
+    } else if (s === 'EURL' || s === 'SARLFam') {
+        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
+        html += row(`Frais de structure (compta, banque, CFE)`, `− ${fmtCA(STRUCTURE[s])} €`, 'minus');
+        const tx = ((data.cotisations / (data.remuNette || 1)) * 100).toFixed(0);
+        html += row(`Cotisations TNS (~${tx}%)${acre?' <span class="info-tag">ACRE</span>':''}`, `− ${fmtCA(data.cotisations)} €`, 'minus');
+        html += row('Rémunération nette TNS', `= ${fmtCA(data.remuNette || 0)} €`, 'neutral');
+        if (data.dividendesNets > 0 && s === 'SARLFam') {
+            html += row('Bénéfice distribuable (option IR)', `+ ${fmtCA(data.beneficeAvantIS)} €`, 'plus');
+            html += row('IR total (répartition familiale)', `− ${fmtCA(data.ir)} €`, 'minus');
+        } else {
+            if (data.is > 0) html += row('Impôt sur les Sociétés (IS)', `− ${fmtCA(data.is)} €`, 'minus');
+            html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
+            if (data.dividendesNets > 0) html += row('Dividendes nets (PFU 30%)', `+ ${fmtCA(data.dividendesNets)} €`, 'plus');
+        }
+
+    } else if (s === 'SASU') {
+        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
+        html += row('Frais de structure (compta, paie, banque)', `− ${fmtCA(STRUCTURE.SASU)} €`, 'minus');
+        html += row('Charges patronales', `− ${fmtCA(data.cotisPatronales || 0)} €`, 'minus');
+        html += row('Charges salariales', `− ${fmtCA(data.cotisalariales || 0)} €`, 'minus');
+        html += row('Salaire net perçu', `= ${fmtCA(data.salaireNet || 0)} €`, 'neutral');
+        if (data.is > 0) html += row('Impôt sur les Sociétés (IS)', `− ${fmtCA(data.is)} €`, 'minus');
+        html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
+        if (data.dividendesNets > 0) html += row('Dividendes nets (PFU 30%)', `+ ${fmtCA(data.dividendesNets)} €`, 'plus');
+
+    } else if (s === 'Portage') {
+        html += row('Frais de gestion société de portage (9%)', `− ${fmtCA(data.fraisGestion || 0)} €`, 'minus');
+        html += row('Frais professionnels remboursés', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
+        html += row('Charges patronales', `− ${fmtCA(data.cotisPatronales || 0)} €`, 'minus');
+        html += row('Charges salariales', `− ${fmtCA(data.cotisalariales || 0)} €`, 'minus');
+        html += row('Salaire net perçu', `= ${fmtCA(data.salaireNet || 0)} €`, 'neutral');
+        html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
+
+    } else if (s === 'Holding') {
+        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
+        html += row('Frais de structure (double compta)', `− ${fmtCA(STRUCTURE.Holding)} €`, 'minus');
+        html += row('Charges patronales (filiale)', `− ${fmtCA(data.cotisPatronales || 0)} €`, 'minus');
+        html += row('Charges salariales (filiale)', `− ${fmtCA(data.cotisalariales || 0)} €`, 'minus');
+        html += row('Salaire net perçu (filiale)', `= ${fmtCA(data.salaireNet || 0)} €`, 'neutral');
+        html += row('IS filiale', `− ${fmtCA(data.isFiliale || 0)} €`, 'minus');
+        html += row('Dividendes filiale → holding', `= ${fmtCA(data.dividendesFiliale || 0)} €`, 'neutral');
+        html += row('IS holding (quote-part 5% × 25%)', `− ${fmtCA(data.isHolding || 0)} €`, 'minus');
+        html += row('Dividendes holding → PFU 30%', `− ${fmtCA((data.dividendesHolding || 0) * PFU)} €`, 'minus');
+        html += row('Impôt sur le Revenu (IR sur salaire)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
+    }
+
+    html += `<div class="decomp-row total">
+        <span class="decomp-label"><i class="fa-solid fa-wallet"></i> REVENU NET DISPONIBLE / AN</span>
+        <span class="decomp-val">${fmtCA(data.netAnnuel)} €</span>
+    </div>
+    <div class="decomp-row total" style="font-size:13px;padding-top:6px">
+        <span class="decomp-label">Soit par mois</span>
+        <span class="decomp-val">${fmt(data.netMensuel)} €/mois</span>
+    </div>`;
+
+    document.getElementById('bloc_decomp').innerHTML = html;
+}
+
+function row(label, val, cls) {
+    return `<div class="decomp-row">
+        <span class="decomp-label">${label}</span>
+        <span class="decomp-val ${cls}">${val}</span>
+    </div>`;
+}
+
+function genLife() {
+    const life = {
+        Micro:   { social: 'TNS – Micro-social', retraite: '⭐⭐ Limitée', chomage: '❌ Non', comptabilite: 'Livre de recettes', credit: '⚠️ Difficile (pas de bulletins)' },
+        EI:      { social: 'TNS – Régime réel', retraite: '⭐⭐⭐ Correcte', chomage: '❌ Non', comptabilite: 'Réelle simplifiée', credit: '⚠️ Moyen (liasse fiscale)' },
+        EURL:    { social: 'TNS – Régime général', retraite: '⭐⭐⭐ Correcte', chomage: '❌ Non', comptabilite: 'Complète obligatoire', credit: '⚠️ Moyen (après 2 bilans)' },
+        SASU:    { social: 'Assimilé-salarié', retraite: '⭐⭐⭐⭐ Élevée', chomage: '✅ Possible (fin mandat)', comptabilite: 'Complète + fiches de paie', credit: '✅ Facile (bulletins)' },
+        Portage: { social: 'Salarié (CDI ou CDD)', retraite: '⭐⭐⭐⭐ Élevée', chomage: '✅ Oui (droits acquis)', comptabilite: '✅ Zéro gestion', credit: '✅ Facile (bulletins salarié)' },
+        Holding: { social: 'Assimilé-salarié (filiale)', retraite: '⭐⭐⭐⭐ Élevée', chomage: '✅ Possible (fin mandat)', comptabilite: 'Double comptabilité', credit: '✅ Très bonne (groupe)' },
+        SARLFam: { social: 'TNS – Gérant majoritaire', retraite: '⭐⭐⭐ Correcte', chomage: '❌ Non', comptabilite: 'Complète obligatoire', credit: '⚠️ Moyen (après 2 bilans)' }
+    };
+    const l = life[selectedStatus] || life['SASU'];
+    document.getElementById('bloc_life').innerHTML = `
+        <div class="life-item"><div class="life-label">Régime social</div><div class="life-val">${l.social}</div></div>
+        <div class="life-item"><div class="life-label">Retraite</div><div class="life-val">${l.retraite}</div></div>
+        <div class="life-item"><div class="life-label">Accès chômage</div><div class="life-val">${l.chomage}</div></div>
+        <div class="life-item"><div class="life-label">Comptabilité</div><div class="life-val">${l.comptabilite}</div></div>`;
+}
+
+function genProjection(parts) {
+    const fraisAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
+    const dividPct = document.getElementById('divid_check').checked
+        ? (100 - parseInt(document.getElementById('divid_slider').value)) / 100 : 0;
+    const isService = typeAct === 'service';
+    const acreCheck = document.getElementById('acre_check').checked;
+    const ALL_STATUTS = ['Micro', 'EI', 'EURL', 'SASU', 'Portage', 'Holding', 'SARLFam'];
+    const LABELS = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Fam.' };
+    const ca = globalResults[Object.keys(globalResults)[0]]?.ca || 0;
+
+    let html = `<div class="proj-title"><i class="fa-solid fa-chart-line"></i> Projection cumulative sur 3 ans (net disponible)</div>`;
+    html += `<div style="overflow-x:auto"><table class="proj-table">
+        <thead><tr><th>Statut</th><th>Année 1${acreCheck?'<br><small style="font-weight:400">(ACRE)</small>':''}</th><th>Année 2</th><th>Année 3</th><th>Total 3 ans</th></tr></thead>
+        <tbody>`;
+
+    const totals = {};
+    ALL_STATUTS.forEach(s => {
+        const r1 = calcStatut(s, ca, fraisAnnuel, parts, acreCheck, dividPct, isService);
+        const r2 = calcStatut(s, ca, fraisAnnuel, parts, false, dividPct, isService);
+        totals[s] = r1.netAnnuel + r2.netAnnuel * 2;
+    });
+    const bestTotal = Math.max(...Object.values(totals).filter(v => !isNaN(v)));
+
+    ALL_STATUTS.forEach(s => {
+        const r1 = calcStatut(s, ca, fraisAnnuel, parts, acreCheck, dividPct, isService);
+        const r2 = calcStatut(s, ca, fraisAnnuel, parts, false, dividPct, isService);
+        const total = r1.netAnnuel + r2.netAnnuel * 2;
+        const isBest = Math.abs(total - bestTotal) < 1 && r1.ok;
+        const isSelected = s === selectedStatus;
+
+        if (!r1.ok) {
+            let msg = 'Non éligible';
+            if (s === 'Holding') msg = 'CA insuffisant (min. 80k€)';
+            if (s === 'SARLFam') msg = 'Couple/famille requis';
+            if (s === 'Micro' && r1.ca > 77700) msg = 'Hors plafond CA';
+            html += `<tr style="opacity:0.5">
+                <td style="color:var(--text-light);font-style:italic">${LABELS[s]}</td>
+                <td colspan="4" style="color:var(--text-light);text-align:center;font-size:11px;font-style:italic">${msg}</td>
+            </tr>`;
+        } else {
+            const rowStyle = isBest
+                ? 'background:rgba(28,200,138,0.06);'
+                : isSelected ? 'background:rgba(78,115,223,0.05);' : '';
+            const labelColor = isBest
+                ? 'color:var(--success);font-weight:800'
+                : isSelected ? 'color:var(--primary);font-weight:700' : 'color:var(--text-dark);font-weight:600';
+            const bestIcon = isBest ? ' <span style="font-size:10px;background:var(--success);color:#fff;border-radius:4px;padding:1px 5px;font-weight:900">BEST</span>' : '';
+            const selIcon = isSelected && !isBest ? ' <span style="font-size:10px;background:var(--primary);color:#fff;border-radius:4px;padding:1px 5px;font-weight:700">Sélectionné</span>' : '';
+            html += `<tr style="${rowStyle}">
+                <td style="${labelColor}">${LABELS[s]}${bestIcon}${selIcon}</td>
+                <td>${fmtK(r1.netAnnuel)}</td>
+                <td>${fmtK(r2.netAnnuel)}</td>
+                <td>${fmtK(r2.netAnnuel)}</td>
+                <td class="${isBest ? 'best-cell' : ''}">${fmtK(total)}${isBest ? ' ✓' : ''}</td>
+            </tr>`;
+        }
+    });
+    html += `</tbody></table></div>`;
+    document.getElementById('bloc_projection').innerHTML = html;
+}
+
+function calcStatut(statut, ca, fraisAnnuel, parts, acre, dividPct, isService) {
+    if (statut === 'Micro')    return calcMicro(ca, fraisAnnuel, parts, acre, isService);
+    if (statut === 'EI')       return calcEI(ca, fraisAnnuel, parts, acre, dividPct);
+    if (statut === 'EURL')     return calcEURL(ca, fraisAnnuel, parts, acre, dividPct);
+    if (statut === 'SASU')     return calcSASU(ca, fraisAnnuel, parts, acre, dividPct);
+    if (statut === 'Portage')  return calcPortage(ca, fraisAnnuel, parts, acre);
+    if (statut === 'Holding')  return calcHolding(ca, fraisAnnuel, parts, acre, dividPct);
+    if (statut === 'SARLFam')  return calcSARLFam(ca, fraisAnnuel, parts, acre);
+    return calcSASU(ca, fraisAnnuel, parts, acre, dividPct);
+}
+
+function toggleFiscal() {
+    const bloc = document.getElementById('bloc_fiscal');
+    const btn = document.getElementById('btn_fiscal');
+    if (bloc.style.display === 'none') {
+        bloc.style.display = 'block';
+        bloc.innerHTML = genFiscalDetail();
+        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Masquer le détail fiscal';
+    } else {
+        bloc.style.display = 'none';
+        btn.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Détail fiscal complet';
+    }
+}
+
+function genFiscalDetail() {
+    const data = globalResults[selectedStatus];
+    const parts = parseFloat(document.getElementById('situation').value);
+    const sitLabel = document.getElementById('situation').options[document.getElementById('situation').selectedIndex].text;
+    const s = selectedStatus;
+    let html = `<div class="decomp-card">
+        <div class="decomp-title"><i class="fa-solid fa-calculator"></i> Détail fiscal complet — ${s}</div>`;
+
+    // ── CAS HOLDING : détail spécifique avec explication structurelle ──
+    if (s === 'Holding') {
+        // Partie 1 : salaire filiale
+        const salaireNet = data.salaireNet || 0;
+        const abattSal = Math.min(Math.max(salaireNet * 0.10, 495), 14171);
+        const rniSal = Math.max(0, salaireNet - abattSal);
+        html += `<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--primary);margin:8px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+            <i class="fa-solid fa-building"></i> Filiale SASU — Rémunération dirigeant
+        </div>`;
+        html += row('Coût total employeur (salaire)', `${fmtCA((data.cotisPatronales||0) + (data.cotisalariales||0) + salaireNet + (data.cotisalariales||0))} €`, 'neutral');
+        html += row('Charges patronales', `− ${fmtCA(data.cotisPatronales||0)} €`, 'minus');
+        html += row('Charges salariales', `− ${fmtCA(data.cotisalariales||0)} €`, 'minus');
+        html += row('Salaire brut → net', `= ${fmtCA(salaireNet)} €`, 'neutral');
+        html += row('Abattement IR 10%', `− ${fmtCA(abattSal)} €`, 'minus');
+        html += row('Revenu Net Imposable salaire', `= ${fmtCA(rniSal)} €`, 'neutral');
+        html += row(`Situation fiscale`, sitLabel, 'neutral');
+        html += row('IR sur salaire (barème progressif)', `− ${fmtCA(data.ir||0)} €`, 'minus');
+
+        // Partie 2 : dividendes filiale → holding
+        html += `<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--success);margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+            <i class="fa-solid fa-arrows-up-to-line"></i> Filiale → Holding — Régime mère-fille
+        </div>`;
+        html += row('Bénéfice filiale avant IS', `${fmtCA(data.beneficeAvantIS||0)} €`, 'neutral');
+        const t1 = Math.min(data.beneficeAvantIS||0, 42500);
+        const t2 = Math.max(0, (data.beneficeAvantIS||0) - 42500);
+        html += row('IS filiale tranche 15% (≤42 500€)', `− ${fmtCA(t1*0.15)} €`, 'minus');
+        if (t2 > 0) html += row('IS filiale tranche 25% (>42 500€)', `− ${fmtCA(t2*0.25)} €`, 'minus');
+        html += row('IS filiale total', `− ${fmtCA(data.isFiliale||0)} €`, 'minus');
+        html += row('Dividendes nets filiale → Holding', `= ${fmtCA(data.dividendesFiliale||0)} €`, 'plus');
+        html += row('Quote-part frais (5% × IS 25% = 1,25%)', `− ${fmtCA(data.isHolding||0)} €`, 'minus');
+        html += row('Dividendes disponibles dans la Holding', `= ${fmtCA(data.dividendesHolding||0)} €`, 'plus');
+
+        // Partie 3 : sortie personnelle
+        html += `<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--warning);margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">
+            <i class="fa-solid fa-wallet"></i> Holding → Dirigeant — Sortie personnelle
+        </div>`;
+        html += row('Dividendes distribués depuis Holding', `${fmtCA(data.dividendesHolding||0)} €`, 'neutral');
+        html += row('PFU 30% (12,8% IR + 17,2% PS)', `− ${fmtCA((data.dividendesHolding||0)*0.30)} €`, 'minus');
+        html += row('Dividendes personnels nets', `= ${fmtCA(data.dividendesNets||0)} €`, 'plus');
+
+        // Total
+        html += `<div class="decomp-row total">
+            <span class="decomp-label"><i class="fa-solid fa-wallet"></i> REVENU NET TOTAL (salaire + dividendes)</span>
+            <span class="decomp-val">${fmtCA(data.netAnnuel)} €/an</span>
+        </div>
+        <div class="decomp-row total" style="font-size:13px;padding-top:6px">
+            <span class="decomp-label">Taux IS effectif sur dividendes</span>
+            <span class="decomp-val" style="color:var(--success)">${((data.isFiliale||0)/(data.beneficeAvantIS||1)*100).toFixed(1)}% + 1,25% holding = ~${(((data.isFiliale||0)+(data.isHolding||0))/(data.beneficeAvantIS||1)*100).toFixed(1)}%</span>
+        </div>`;
+
+        // Explication structurelle
+        html += `</div>
+        <div class="decomp-card" style="background:linear-gradient(135deg,#f0fdf4,#ebf8ff);border-color:#86efac;margin-top:14px">
+            <div class="decomp-title" style="color:#166534"><i class="fa-solid fa-diagram-project"></i> Comment structurer votre Holding</div>
+            <div style="font-size:13px;color:#14532d;line-height:1.8">
+                <p style="margin-bottom:12px"><strong>La structure recommandée :</strong> Holding SAS (ou SARL) → détient 100% de la Filiale SASU opérationnelle</p>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
+                    <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:12px;border:1px solid #86efac">
+                        <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--primary);margin-bottom:6px">🏢 Holding (société mère)</div>
+                        <div style="font-size:12px;color:#374151">• Reçoit les dividendes de la filiale<br>• IS sur 5% seulement (1,25% effectif)<br>• Réinvestit librement : immo, autres sociétés, FCPR...<br>• Capital de départ conseillé : 1 000 €</div>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:12px;border:1px solid #86efac">
+                        <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--success);margin-bottom:6px">⚡ Filiale SASU (opérationnelle)</div>
+                        <div style="font-size:12px;color:#374151">• Facture les clients<br>• Verse un salaire optimisé au dirigeant<br>• Remonte le bénéfice en dividendes à la holding<br>• Capital : 1 € minimum</div>
+                    </div>
+                </div>
+
+                <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:12px;border:1px solid #86efac;margin-bottom:10px">
+                    <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--warning);margin-bottom:8px">💡 Stratégie d'optimisation recommandée</div>
+                    <div style="font-size:12px;color:#374151;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                        <div><strong>Salaire :</strong> ~2× le PASS soit ~92 736 €/an — optimise la retraite sans surcharger l'IS</div>
+                        <div><strong>Dividendes holding :</strong> le reste → IS 1,25% seulement au lieu de PFU 30%</div>
+                        <div><strong>Sortie personnelle :</strong> uniquement ce dont vous avez besoin → PFU 30% sur le minimum</div>
+                        <div><strong>Réinvestissement :</strong> immobilier (SCI), FCPR, autres participations via la holding</div>
+                    </div>
+                </div>
+
+                <div style="font-size:11px;color:#6b7280;background:rgba(255,255,255,0.5);border-radius:8px;padding:10px">
+                    <i class="fa-solid fa-circle-info"></i> <strong>Coût de mise en place :</strong> ~1 200 € (deux immatriculations) + ~5 000 €/an (double comptabilité).
+                    <strong>Rentable à partir de ~80 000 € de CA</strong> — plus le CA est élevé, plus l'avantage est massif.
+                    Consultez un expert-comptable pour personnaliser la structure selon votre situation.
+                </div>
+            </div>
+        </div>`;
+        return html;
+    }
+
+    // ── AUTRES STATUTS : détail fiscal standard ──
+    const revImposable = s === 'Micro' ? (data.revenuImposable || 0) :
+                         (s === 'SASU' || s === 'Portage') ? (data.salaireNet || 0) :
+                         (data.remuNette || 0);
+
+    const abatt = Math.min(Math.max(revImposable * 0.10, 495), 14171);
+    const rni = Math.max(0, revImposable - abatt);
+
+    html += row('Revenu imposable brut', `${fmtCA(revImposable)} €`, 'neutral');
+    html += row('Abattement 10% (plaf. 14 171 €)', `− ${fmtCA(abatt)} €`, 'minus');
+    html += row('Revenu Net Imposable (RNI)', `= ${fmtCA(rni)} €`, 'neutral');
+    html += row('Situation fiscale', sitLabel, 'neutral');
+    html += row('IR calculé (barème progressif)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
+
+    if ((data.dividendesNets || 0) > 0 && s !== 'SARLFam') {
+        const brut = data.details?.dividendes || data.beneficeAvantIS || 0;
+        html += row('Dividendes soumis PFU 30%', `${fmtCA(brut)} €`, 'neutral');
+        html += row('PFU prélevé (12,8% IR + 17,2% PS)', `− ${fmtCA(brut * 0.30)} €`, 'minus');
+        html += row('Dividendes nets reçus', `+ ${fmtCA(data.dividendesNets)} €`, 'plus');
+    }
+
+    if (s === 'SARLFam' && (data.dividendesNets || 0) > 0) {
+        html += row('Bénéfice distribué aux associés (option IR)', `${fmtCA(data.dividendesNets)} €`, 'neutral');
+        html += row('Imposé à l\'IR du foyer (déjà inclus ci-dessus)', 'Inclus', 'neutral');
+    }
+
+    if ((data.is || 0) > 0) {
+        const benefIS = data.beneficeAvantIS || 0;
+        const tranche1 = Math.min(benefIS, 42500);
+        const tranche2 = Math.max(0, benefIS - 42500);
+        html += row('Bénéfice imposable IS', `${fmtCA(benefIS)} €`, 'neutral');
+        html += row('IS tranche 15% (≤42 500 €)', `− ${fmtCA(tranche1 * 0.15)} €`, 'minus');
+        if (tranche2 > 0) html += row('IS tranche 25% (>42 500 €)', `− ${fmtCA(tranche2 * 0.25)} €`, 'minus');
+        html += row('IS total', `− ${fmtCA(data.is)} €`, 'minus');
+    }
+
+    html += `</div>`;
+    return html;
+}
+
+/* ─────────────────────────────────────────
+   UTILITAIRES
+───────────────────────────────────────── */
+function fmt(n) {
+    return Math.round(n).toLocaleString('fr-FR');
+}
+function fmtCA(n) {
+    if (Math.abs(n) >= 1000) return Math.round(n).toLocaleString('fr-FR');
+    return Math.round(n).toString();
+}
+function fmtK(n) {
+    return (n / 1000).toFixed(0) + 'k€';
+}
+
+function handleMask(el, id) {
+    let v = el.value.replace(/\D/g, '');
+    document.getElementById(id).value = v;
+    el.value = v ? Number(v).toLocaleString('fr-FR') : '';
+}
+
+function setMode(mode) {
+    currentMode = mode;
+    // Update active tab
+    ['CA','REV','TJM'].forEach(m => {
+        document.getElementById('mode-' + m.toLowerCase()).classList.toggle('active', m === mode);
+    });
+    // Hide all mode-fields first
+    document.querySelectorAll('.mode-field').forEach(el => { el.style.display = 'none'; });
+    // Show fields for active mode
+    document.querySelectorAll('.mode-field.mode-' + mode).forEach(el => {
+        // CA and REV are full-width (span 2), TJM fields are normal columns
+        el.style.display = 'block';
+        if (mode === 'CA' || mode === 'REV') {
+            el.style.gridColumn = 'span 2';
+        } else {
+            el.style.gridColumn = '';
+        }
+    });
+    // Reset values of inactive modes
+    if (mode !== 'CA')  { document.getElementById('ca').value = ''; document.getElementById('ca_display').value = ''; }
+    if (mode !== 'REV') { document.getElementById('rev').value = ''; document.getElementById('rev_display').value = ''; }
+    if (mode !== 'TJM') {
+        const ti = document.getElementById('tjm_input');
+        const td = document.getElementById('tjm_input_display');
+        if (ti) ti.value = '';
+        if (td) td.value = '';
+    }
+}
+
+function setType(t) {
+    typeAct = t;
+    document.getElementById('btn-service').classList.toggle('active', t === 'service');
+    document.getElementById('btn-commerce').classList.toggle('active', t === 'commerce');
+}
+
+function toggleDivid() {
+    const show = document.getElementById('divid_check').checked;
+    document.getElementById('divid_block').classList.toggle('visible', show);
+}
+
+function recalcTJM(jours, ca) {
+    const j = parseInt(jours) || 1;
+    const el = document.getElementById('tjm_display');
+    if (el) el.innerText = Math.round(ca / 12 / j).toLocaleString('fr-FR');
+}
+
+function updateDividLabel() {
+    const sal = parseInt(document.getElementById('divid_slider').value);
+    const div = 100 - sal;
+    document.getElementById('divid_label').textContent = `${sal}% salaire / ${div}% dividendes`;
+}
 </script>
 </body>
-
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

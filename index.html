@@ -1229,7 +1229,154 @@ function updateDividLabel() {
     const div = 100 - sal;
     document.getElementById('divid_label').textContent = `${sal}% salaire / ${div}% dividendes`;
 }
+/* ─────────────────────────────────────────
+   MISE À JOUR UI
+───────────────────────────────────────── */
+function updateUI(jours) {
+    if (!Object.keys(globalResults).length) return;
+    const data = globalResults[selectedStatus];
+    const parts = parseFloat(document.getElementById('situation').value);
 
+    // ── Bannière ──
+    const isTop = selectedStatus === recommendedStatus;
+    // En mode TJM, afficher le TJM saisi
+    const tjmInfo = currentMode === 'TJM'
+        ? `<p style="opacity:0.85;font-size:12px;margin-top:2px">TJM : ${(window._tjmSaisi||0).toLocaleString('fr-FR')} €/j × ${window._joursSaisis||18} j = ${fmtCA(globalResults[selectedStatus].ca)} € CA/an</p>`
+        : '';
+    document.getElementById('bloc_banner').innerHTML = `
+        <div class="result-banner-left">
+            <h3>Revenu net mensuel estimé</h3>
+            <div class="big-num">${fmt(data.netMensuel)} <span>€/mois</span></div>
+            <p>Après charges sociales + impôt sur le revenu</p>
+            ${tjmInfo}
+        </div>
+        <div class="result-banner-right">
+            <div class="statut-badge">${selectedStatus}</div><br>
+            ${isTop ? '<span class="conseil-badge"><i class="fa-solid fa-star"></i> Conseillé</span>' : ''}
+        </div>`;
+
+    // ── Recommendation card spéciale mode TJM ──
+    const recBloc = document.getElementById('bloc_recommendation');
+    if (currentMode === 'TJM' && recBloc) {
+        const tjm = window._tjmSaisi || 0;
+        const joursRec = window._joursSaisis || 18;
+        const nets = Object.entries(globalResults)
+            .filter(([,r]) => r.ok && r.netMensuel > 0)
+            .sort((a,b) => b[1].netMensuel - a[1].netMensuel);
+        const best = nets[0];
+        const worst = nets[nets.length-1];
+        const diffMaxMin = best && worst ? Math.round((best[1].netMensuel - worst[1].netMensuel) * 12) : 0;
+        const medals = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
+        const LABELS_REC = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Famille' };
+
+        recBloc.innerHTML = `
+        <div class="rec-card">
+            <div class="rec-header">
+                <i class="fa-solid fa-trophy"></i>
+                <span>Meilleur statut pour votre TJM de ${tjm.toLocaleString('fr-FR')} €/j (${joursRec} j/mois)</span>
+            </div>
+            <div class="rec-body">
+                <div class="rec-winner">
+                    <div class="rec-winner-name">${LABELS_REC[recommendedStatus] || recommendedStatus}</div>
+                    <div class="rec-winner-net">${fmt(globalResults[recommendedStatus].netMensuel)} €<span>/mois</span></div>
+                    <div class="rec-winner-sub">net après IR, charges sociales et frais de structure</div>
+                </div>
+                <div class="rec-compare">
+                    ${nets.map(([n,r],i) => {
+                        const diff = fmt(globalResults[recommendedStatus].netMensuel - r.netMensuel);
+                        const badge = i===0
+                            ? '<span class="rec-badge-top">Optimal</span>'
+                            : `<span class="rec-diff">− ${diff} €/mois</span>`;
+                        return `<div class="rec-row ${i===0?'rec-row-best':''}">
+                            <span class="rec-rank">${medals[i]||''}</span>
+                            <span class="rec-name">${LABELS_REC[n]||n}</span>
+                            <span class="rec-net">${fmt(r.netMensuel)} €/mois</span>
+                            ${badge}
+                        </div>`;
+                    }).join('')}
+                </div>
+                ${diffMaxMin > 0 ? `<p class="rec-insight"><i class="fa-solid fa-circle-info"></i> Le choix du statut peut représenter jusqu'à <strong>${diffMaxMin.toLocaleString('fr-FR')} €/an</strong> de différence sur votre revenu net disponible.</p>` : ''}
+            </div>
+        </div>`;
+        recBloc.style.display = 'block';
+    } else if (recBloc) {
+        recBloc.style.display = 'none';
+    }
+
+    // ── Sélecteur statuts ──
+    const joursUI = currentMode === 'TJM' ? (window._joursSaisis || 18) : jours;
+    const LABELS_SHORT = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Fam.' };
+    const ALL_STATUTS_UI = ['Micro', 'EI', 'EURL', 'SASU', 'Portage', 'Holding', 'SARLFam'];
+    let htmlStatuts = '';
+    ALL_STATUTS_UI.forEach(n => {
+        const r = globalResults[n];
+        const sel = n === selectedStatus ? 'selected' : '';
+        const top = n === recommendedStatus ? '<span class="top-badge">⭐ Optimal</span>' : '';
+        let val, sub;
+        if (!r.ok) {
+            if (n === 'SARLFam') {
+                val = '<span style="font-size:9px;color:var(--text-light);line-height:1.3">Couple<br>requis</span>';
+            } else if (n === 'Holding') {
+                val = '<span style="font-size:9px;color:var(--text-light);line-height:1.3">CA<br>>80k€</span>';
+            } else {
+                val = '<span style="font-size:9px;color:var(--danger)">Hors seuil</span>';
+            }
+            sub = '';
+        } else {
+            val = fmt(r.netMensuel) + '€';
+            sub = currentMode === 'TJM' ? `${fmtK(r.netAnnuel)}/an` : `CA: ${fmtK(r.ca)}`;
+        }
+        htmlStatuts += `
+            <div class="stat-card ${sel} ${!r.ok ? 'stat-disabled' : ''}" 
+                 onclick="${r.ok ? `selectedStatus='${n}';updateUI(${joursUI})` : ''}">
+                ${top}
+                <h5>${LABELS_SHORT[n]}</h5>
+                <div class="net-val">${val}</div>
+                <div class="sub-val">${sub}</div>
+            </div>`;
+    });
+    document.getElementById('liste_statuts').innerHTML = htmlStatuts;
+
+    // ── KPIs ──
+    const txEffCharges = data.ca > 0 ? (data.cotisations / data.ca * 100).toFixed(0) : 0;
+    const txEffIR = data.netAnnuel > 0 ? ((data.ir || 0) / (data.netAnnuel + (data.ir || 0)) * 100).toFixed(0) : 0;
+    document.getElementById('bloc_kpis').innerHTML = `
+        <div class="kpi"><div class="kpi-val" style="color:var(--primary)">${fmtCA(data.ca)} €</div><div class="kpi-label">CA annuel</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--danger)">${txEffCharges}%</div><div class="kpi-label">Taux charges sociales</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--warning)">${txEffIR}%</div><div class="kpi-label">Taux effectif IR</div></div>
+        <div class="kpi"><div class="kpi-val" style="color:var(--success)">${fmt(data.netMensuel * 12 / 1000)}k €</div><div class="kpi-label">Net annuel</div></div>`;
+
+    // ── Alerte optimisation ──
+    genOptimAlert(data);
+
+    // ── Décomposition ──
+    genDecomp(data);
+
+    // ── TJM ──
+    const tjm = Math.round(data.ca / 12 / jours);
+    const tjmSaisi = window._tjmSaisi || 0;
+    const isTJMMode = currentMode === 'TJM';
+    const caForTJM = data.ca;
+    document.getElementById('bloc_tjm').innerHTML = `
+        <div class="tjm-left">
+            <h4><i class="fa-solid fa-calendar-days"></i> ${isTJMMode ? 'TJM saisi' : 'TJM cible'}</h4>
+            <div class="tjm-big"><span id="tjm_display">${isTJMMode ? tjmSaisi.toLocaleString('fr-FR') : tjm.toLocaleString('fr-FR')}</span> €<span style="font-size:1rem;opacity:0.6">/jour</span></div>
+            <p>${isTJMMode
+                ? `CA généré : ${fmtCA(data.ca)} €/an — ${jours} j/mois`
+                : `TJM à facturer pour atteindre votre CA`}</p>
+        </div>
+        <div class="tjm-right">
+            <label for="input_jours">Jours facturés/mois</label>
+            <input type="number" id="input_jours" value="${jours}" min="1" max="22" class="tjm-input"
+                   oninput="recalcTJM(this.value, ${caForTJM})">
+        </div>`;
+
+    // ── Vie du gérant ──
+    genLife();
+
+    // ── Projection 3 ans ──
+    genProjection(parts);
+}
 /*
 ═══════════════════════════════════════════════════════
   MODIFICATION HTML OBLIGATOIRE : <select id="situation">

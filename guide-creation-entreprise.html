@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Guide complet 2026 pour créer son entreprise en France : toutes les étapes, tous les statuts, démarches administratives, coûts et conseils pratiques pour réussir sa création.">
+    <meta property="og:title" content="Guide Complet : Créer son Entreprise en 2026 — Toutes les Étapes">
+    <meta property="og:url" content="https://simulateur-statut-entrepreneur.github.io/guide-creation-entreprise.html">
+    <title>Guide Complet : Créer son Entreprise en 2026 — Toutes les Étapes</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172012578136460" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary: #4e73df;
+            --primary-dark: #2e59d9;
+            --primary-light: #ebf8ff;
+            --success: #1cc88a;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --text-dark: #2d3748;
+            --text-mid: #4a5568;
+            --text-light: #718096;
+            --border: #edf2f7;
+            --bg-body: #f8f9fc;
+            --radius: 14px;
+            --shadow: 0 2px 8px rgba(0,0,0,0.06);
+            --shadow-lg: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); line-height: 1.7; }
+        @media (min-width: 600px) { body { padding: 40px 20px; } }
+
+        .container { max-width: 900px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px 60px; }
+        @media (min-width: 600px) { .container { min-height: auto; border-radius: 24px; box-shadow: var(--shadow-lg); } }
+
+        nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+        .nav-logo { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-light); text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; }
+        .nav-links a:hover { background: var(--primary-light); color: var(--primary); }
+        .nav-links a.active { background: var(--primary); color: #fff; }
+
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; padding: 40px 30px; color: #fff; margin-bottom: 40px; text-align: center; }
+        .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.5rem, 4vw, 2.2rem); font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
+        .hero p { font-size: 15px; opacity: 0.9; max-width: 600px; margin: 0 auto 20px; line-height: 1.7; }
+        .hero-badges { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+        .hero-badge { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 5px 14px; font-size: 12px; font-weight: 700; }
+
+        /* Sommaire */
+        .toc { background: var(--primary-light); border: 1px solid #bee3f8; border-radius: 16px; padding: 24px; margin-bottom: 40px; }
+        .toc h2 { font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+        .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        @media (max-width: 500px) { .toc-grid { grid-template-columns: 1fr; } }
+        .toc-item { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-mid); font-size: 13px; font-weight: 500; padding: 6px 10px; border-radius: 8px; transition: all 0.2s; }
+        .toc-item:hover { background: #fff; color: var(--primary); }
+        .toc-num { width: 22px; height: 22px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; flex-shrink: 0; }
+
+        /* Sections */
+        .section { margin-bottom: 48px; }
+        .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+        .section-num { width: 40px; height: 40px; background: linear-gradient(135deg, var(--primary), #7c3aed); color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; font-family: 'Poppins', sans-serif; flex-shrink: 0; }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--text-dark); }
+
+        /* Contenu éditorial */
+        .content p { font-size: 15px; color: var(--text-mid); margin-bottom: 16px; line-height: 1.8; }
+        .content h3 { font-size: 16px; font-weight: 700; color: var(--text-dark); margin: 24px 0 10px; }
+        .content h4 { font-size: 14px; font-weight: 700; color: var(--primary); margin: 18px 0 8px; }
+        .content strong { color: var(--text-dark); }
+
+        /* Cards info */
+        .info-card { background: var(--primary-light); border: 1px solid #bee3f8; border-left: 4px solid var(--primary); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+        .info-card h4 { color: #2c5282; font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .info-card p { color: #4a5568; font-size: 13px; margin: 0; line-height: 1.6; }
+
+        .warning-card { background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--warning); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+        .warning-card h4 { color: #92400e; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+        .warning-card p { color: #78350f; font-size: 13px; margin: 0; line-height: 1.6; }
+
+        .success-card { background: #f0fdf4; border: 1px solid #86efac; border-left: 4px solid var(--success); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+        .success-card h4 { color: #166534; font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .success-card p { color: #14532d; font-size: 13px; margin: 0; line-height: 1.6; }
+
+        /* Steps */
+        .steps { display: flex; flex-direction: column; gap: 16px; margin: 20px 0; }
+        .step { display: flex; gap: 16px; align-items: flex-start; }
+        .step-dot { width: 32px; height: 32px; background: var(--primary); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+        .step-content h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .step-content p { font-size: 13px; color: var(--text-mid); margin: 0; line-height: 1.6; }
+
+        /* Tableau comparatif statuts */
+        .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: linear-gradient(135deg, var(--primary), #7c3aed); color: #fff; padding: 12px 14px; text-align: left; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+        td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-mid); vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: #fafbfe; }
+        td:first-child { font-weight: 700; color: var(--text-dark); }
+        .tag { display: inline-block; font-size: 10px; padding: 2px 7px; border-radius: 6px; font-weight: 700; margin: 1px; }
+        .tag-green { background: #dcfce7; color: #166534; }
+        .tag-red { background: #fee2e2; color: #991b1b; }
+        .tag-blue { background: #dbeafe; color: #1e40af; }
+        .tag-orange { background: #fed7aa; color: #9a3412; }
+
+        /* Checklist */
+        .checklist { list-style: none; display: flex; flex-direction: column; gap: 10px; margin: 16px 0; }
+        .checklist li { display: flex; align-items: flex-start; gap: 10px; font-size: 14px; color: var(--text-mid); line-height: 1.5; }
+        .checklist li::before { content: ''; width: 18px; height: 18px; border: 2px solid var(--primary); border-radius: 4px; flex-shrink: 0; margin-top: 1px; }
+
+        /* Coûts */
+        .cost-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin: 20px 0; }
+        .cost-card { background: var(--bg-body); border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; }
+        .cost-card h4 { font-size: 12px; color: var(--text-light); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+        .cost-val { font-size: 1.4rem; font-weight: 800; color: var(--primary); font-family: 'Poppins', sans-serif; }
+        .cost-sub { font-size: 11px; color: var(--text-light); margin-top: 4px; }
+
+        /* Timeline */
+        .timeline { position: relative; padding-left: 24px; margin: 20px 0; }
+        .timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+        .tl-item { position: relative; margin-bottom: 24px; }
+        .tl-item::before { content: ''; position: absolute; left: -20px; top: 4px; width: 12px; height: 12px; background: var(--primary); border-radius: 50%; border: 2px solid #fff; box-shadow: 0 0 0 2px var(--primary); }
+        .tl-week { font-size: 11px; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 4px; }
+        .tl-title { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .tl-desc { font-size: 13px; color: var(--text-mid); line-height: 1.6; }
+
+        /* CTA simulateur */
+        .cta-sim { background: linear-gradient(135deg, var(--primary), #7c3aed); border-radius: 18px; padding: 28px; color: #fff; text-align: center; margin: 40px 0; }
+        .cta-sim h3 { font-family: 'Poppins', sans-serif; font-size: 1.2rem; margin-bottom: 10px; }
+        .cta-sim p { font-size: 13px; opacity: 0.9; margin-bottom: 18px; }
+        .cta-btn { display: inline-block; background: #fff; color: var(--primary); padding: 12px 28px; border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all 0.2s; }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.2); }
+
+        /* AdSense placeholder */
+        .ad-slot { background: #f8f9fc; border: 1px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; color: var(--text-light); font-size: 12px; margin: 30px 0; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+
+        /* Footer */
+        .page-footer { border-top: 1px solid var(--border); padding: 20px 0 0; margin-top: 40px; text-align: center; }
+        .page-footer p { color: #a0aec0; font-size: 12px; }
+        .page-footer a { color: #a0aec0; text-decoration: none; margin: 0 6px; }
+        .page-footer a:hover { color: var(--primary); }
+
+        /* FAQ */
+        .faq-item { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+        .faq-q { padding: 16px 18px; font-size: 14px; font-weight: 700; color: var(--text-dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-q:hover { background: var(--primary-light); }
+        .faq-a { padding: 0 18px 16px; font-size: 13px; color: var(--text-mid); line-height: 1.7; display: none; }
+        .faq-item.open .faq-a { display: block; }
+        .faq-item.open .faq-q { color: var(--primary); }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <nav>
+        <a href="index.html" class="nav-logo"><i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026</a>
+        <div class="nav-links">
+            <a href="index.html">Simulateur</a>
+            <a href="guide.html">Guide</a>
+            <a href="statuts.html">Les statuts</a>
+            <a href="guide-creation-entreprise.html" class="active">Créer son entreprise</a>
+            <a href="holding.html">Holding</a>
+            <a href="faq.html">FAQ</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <h1>Créer son entreprise en 2026 : le guide complet</h1>
+        <p>De l'idée à l'immatriculation, toutes les étapes, tous les statuts et tous les coûts pour lancer votre activité en France cette année.</p>
+        <div class="hero-badges">
+            <span class="hero-badge"><i class="fa-solid fa-clock"></i> 20 min de lecture</span>
+            <span class="hero-badge"><i class="fa-solid fa-calendar"></i> Mis à jour 2026</span>
+            <span class="hero-badge"><i class="fa-solid fa-building"></i> 7 statuts couverts</span>
+        </div>
+    </div>
+
+    <!-- SOMMAIRE -->
+    <div class="toc">
+        <h2><i class="fa-solid fa-list"></i> Sommaire</h2>
+        <div class="toc-grid">
+            <a href="#etape1" class="toc-item"><span class="toc-num">1</span> Valider son idée et son marché</a>
+            <a href="#etape2" class="toc-item"><span class="toc-num">2</span> Choisir son statut juridique</a>
+            <a href="#etape3" class="toc-item"><span class="toc-num">3</span> Rédiger les statuts et pacte</a>
+            <a href="#etape4" class="toc-item"><span class="toc-num">4</span> Les démarches administratives</a>
+            <a href="#etape5" class="toc-item"><span class="toc-num">5</span> Immatriculation et KBIS</a>
+            <a href="#etape6" class="toc-item"><span class="toc-num">6</span> Ouvrir un compte professionnel</a>
+            <a href="#etape7" class="toc-item"><span class="toc-num">7</span> Fiscalité et cotisations sociales</a>
+            <a href="#etape8" class="toc-item"><span class="toc-num">8</span> Aides et financements 2026</a>
+            <a href="#etape9" class="toc-item"><span class="toc-num">9</span> Le calendrier complet</a>
+            <a href="#etape10" class="toc-item"><span class="toc-num">10</span> FAQ et erreurs à éviter</a>
+        </div>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section" id="etape1">
+        <div class="section-header">
+            <div class="section-num">1</div>
+            <h2 class="section-title">Valider son idée et son marché avant de se lancer</h2>
+        </div>
+        <div class="content">
+            <p>Avant même de penser au statut juridique ou aux démarches administratives, la première étape — et souvent la plus négligée — est de valider que votre idée répond à un vrai besoin de marché. En 2026, la France compte plus de 1,1 million de créations d'entreprises par an, mais 50 % des nouvelles structures n'atteignent pas leur cinquième anniversaire. La principale cause d'échec reste l'absence de validation préalable du concept.</p>
+
+            <h3>Qu'est-ce que la validation d'idée ?</h3>
+            <p>Valider une idée, c'est obtenir des preuves concrètes — et non des suppositions — que des clients potentiels sont prêts à payer pour votre produit ou service. Il ne s'agit pas de faire un long business plan théorique, mais d'aller sur le terrain rapidement et à moindre coût.</p>
+
+            <div class="steps">
+                <div class="step">
+                    <div class="step-dot">1</div>
+                    <div class="step-content">
+                        <h4>Définir précisément votre client cible (persona)</h4>
+                        <p>Âge, profession, revenus, problèmes quotidiens, canaux d'information utilisés. Plus votre persona est précis, plus votre offre sera pertinente. Évitez le piège du "tout le monde est ma cible" : une offre pour tous n'est une offre pour personne.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">2</div>
+                    <div class="step-content">
+                        <h4>Analyser la concurrence existante</h4>
+                        <p>L'existence de concurrents est une bonne nouvelle : elle prouve qu'il y a un marché. Étudiez leurs offres, leurs tarifs, leurs avis clients (Google, Trustpilot, Capterra) et identifiez les lacunes que vous pourriez combler.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">3</div>
+                    <div class="step-content">
+                        <h4>Réaliser 10 à 20 entretiens clients</h4>
+                        <p>Rencontrez ou appelez des représentants de votre cible. Posez des questions ouvertes sur leurs problèmes, pas sur votre solution. Ces entretiens valent mieux que n'importe quelle étude de marché commandée.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">4</div>
+                    <div class="step-content">
+                        <h4>Tester avec un MVP (produit minimum viable)</h4>
+                        <p>Créez la version la plus simple possible de votre offre et vendez-la avant de tout construire. Une landing page, un devis, une pré-vente : si personne ne paye, ajustez avant d'investir davantage.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h4><i class="fa-solid fa-lightbulb"></i> Le conseil pratique</h4>
+                <p>Avant de créer votre structure juridique, vous pouvez tester votre activité sous le régime micro-entrepreneur pendant 3 à 6 mois. Les formalités sont quasi-nulles, les coûts minimes, et vous validez votre marché en conditions réelles. Si ça marche, vous basculez vers le statut définitif avec une vraie visibilité sur votre chiffre d'affaires.</p>
+            </div>
+
+            <h3>Étudier la réglementation spécifique à votre activité</h3>
+            <p>Certaines activités sont réglementées et nécessitent des diplômes, des certifications ou des autorisations préalables avant toute immatriculation. C'est le cas notamment des professions de santé, des métiers du bâtiment (qualification RGE, assurance décennale), des activités financières (agrément AMF), des débits de boissons, des taxis et VTC, ou encore de l'enseignement. Vérifiez systématiquement auprès de la Chambre de Commerce ou de la Chambre des Métiers si votre activité est soumise à réglementation.</p>
+        </div>
+    </div>
+
+    <!-- AD SLOT -->
+    <div class="ad-slot">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8172012578136460" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="etape2">
+        <div class="section-header">
+            <div class="section-num">2</div>
+            <h2 class="section-title">Choisir le bon statut juridique</h2>
+        </div>
+        <div class="content">
+            <p>C'est la décision la plus structurante de votre création d'entreprise. Elle détermine votre régime fiscal, vos cotisations sociales, votre protection du patrimoine, vos possibilités de lever des fonds, et votre crédibilité vis-à-vis des banques et des grands clients. En 2026, sept grands statuts s'offrent à vous.</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Statut</th>
+                            <th>Capital minimum</th>
+                            <th>Régime social</th>
+                            <th>Idéal pour</th>
+                            <th>Point fort</th>
+                            <th>Point faible</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Micro-entreprise</td>
+                            <td>0 €</td>
+                            <td>TNS micro-social</td>
+                            <td>Démarrage, activité secondaire</td>
+                            <td><span class="tag tag-green">Simplicité maximale</span></td>
+                            <td><span class="tag tag-red">Plafond 77 700 €</span></td>
+                        </tr>
+                        <tr>
+                            <td>EI au réel</td>
+                            <td>0 €</td>
+                            <td>TNS</td>
+                            <td>Artisans, commerçants avec frais</td>
+                            <td><span class="tag tag-green">Déduction frais réels</span></td>
+                            <td><span class="tag tag-red">Pas de dividendes</span></td>
+                        </tr>
+                        <tr>
+                            <td>EURL</td>
+                            <td>1 €</td>
+                            <td>TNS</td>
+                            <td>Consultants, freelances</td>
+                            <td><span class="tag tag-green">Net mensuel optimal</span></td>
+                            <td><span class="tag tag-red">Pas de chômage</span></td>
+                        </tr>
+                        <tr>
+                            <td>SASU</td>
+                            <td>1 €</td>
+                            <td>Assimilé-salarié</td>
+                            <td>Consultants avec ARE, levée de fonds</td>
+                            <td><span class="tag tag-green">Protection sociale</span></td>
+                            <td><span class="tag tag-red">Charges élevées</span></td>
+                        </tr>
+                        <tr>
+                            <td>SARL</td>
+                            <td>1 €</td>
+                            <td>TNS ou assimilé-salarié</td>
+                            <td>Associés multiples, famille</td>
+                            <td><span class="tag tag-green">Crédibilité bancaire</span></td>
+                            <td><span class="tag tag-orange">Gestion plus lourde</span></td>
+                        </tr>
+                        <tr>
+                            <td>SAS</td>
+                            <td>1 €</td>
+                            <td>Assimilé-salarié</td>
+                            <td>Startups, investisseurs</td>
+                            <td><span class="tag tag-green">Flexibilité statutaire</span></td>
+                            <td><span class="tag tag-red">Charges patronales</span></td>
+                        </tr>
+                        <tr>
+                            <td>Holding</td>
+                            <td>1 €</td>
+                            <td>Assimilé-salarié</td>
+                            <td>CA > 80 000 €, réinvestissement</td>
+                            <td><span class="tag tag-green">Fiscalité dividendes 1,25%</span></td>
+                            <td><span class="tag tag-red">Double comptabilité</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Le critère du chiffre d'affaires prévisionnel</h3>
+            <p>En dessous de 40 000 € de CA annuel, la micro-entreprise est presque toujours le meilleur choix pour démarrer : zéro comptabilité, cotisations proportionnelles aux recettes, création en 24 heures. Entre 40 000 € et 80 000 €, la comparaison entre micro et EURL mérite une simulation précise, car les frais réels commencent à peser. Au-delà de 80 000 €, l'EURL ou la SASU s'imposent, et au-delà de 150 000 €, la structure holding devient pertinente.</p>
+
+            <h3>Le critère de la protection chômage</h3>
+            <p>Si vous quittez un CDI pour vous lancer, la question de l'ARE (allocation chômage) est centrale. En SASU ou SAS, vous pouvez cumuler votre activité avec vos allocations pendant une période déterminée. En EURL ou en micro, vous n'avez pas droit au chômage en cas d'échec. Le portage salarial est une troisième voie : vous restez salarié d'une société de portage, gardez vos droits chômage, et testez votre activité sans risque administratif.</p>
+
+            <div class="warning-card">
+                <h4><i class="fa-solid fa-triangle-exclamation"></i> L'erreur la plus fréquente</h4>
+                <p>Choisir son statut uniquement pour des raisons fiscales, sans tenir compte de sa situation personnelle (conjoint avec revenus, patrimoine immobilier, perspective de levée de fonds, secteur d'activité). Un expert-comptable peut vous éviter de coûteuses erreurs — beaucoup proposent une première consultation gratuite.</p>
+            </div>
+
+            <div class="cta-sim">
+                <h3>Comparez les statuts avec notre simulateur</h3>
+                <p>Entrez votre CA prévisionnel, votre situation familiale et obtenez en 10 secondes le statut qui maximise votre revenu net.</p>
+                <a href="index.html" class="cta-btn"><i class="fa-solid fa-calculator"></i> Lancer la simulation</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="etape3">
+        <div class="section-header">
+            <div class="section-num">3</div>
+            <h2 class="section-title">Rédiger les statuts et le pacte d'associés</h2>
+        </div>
+        <div class="content">
+            <p>Les statuts sont le document fondateur de votre société. Ils définissent les règles de fonctionnement, la répartition des pouvoirs, les modalités de prise de décision et les conditions d'entrée et de sortie des associés. Bien rédigés, ils préviennent les conflits futurs. Mal rédigés ou copiés depuis un modèle générique, ils peuvent être sources de blocages coûteux.</p>
+
+            <h3>Ce que doivent obligatoirement contenir les statuts</h3>
+            <p>Pour toute société (EURL, SASU, SARL, SAS), les statuts doivent mentionner : la forme juridique, la dénomination sociale, l'objet social (description précise de l'activité), le siège social, le montant du capital social, la durée de la société (99 ans en général), les apports de chaque associé, les modalités de direction et de gérance, les règles de cession de parts ou d'actions, et les conditions de dissolution.</p>
+
+            <h3>L'objet social : soyez précis mais pas trop restrictif</h3>
+            <p>L'objet social décrit légalement ce que votre société a le droit de faire. Une rédaction trop étroite vous obligera à modifier vos statuts si votre activité évolue (coûts de 200 à 500 €). Mais une rédaction trop vague peut poser des problèmes pour certains contrats ou financements. La formulation classique "et toutes opérations commerciales, industrielles, mobilières et immobilières se rattachant directement ou indirectement à cet objet" est généralement conseillée pour garder de la flexibilité.</p>
+
+            <h3>Le pacte d'associés : indispensable à plusieurs</h3>
+            <p>Si vous créez une société avec des associés, le pacte d'associés est aussi important que les statuts — parfois même plus. C'est un document confidentiel (contrairement aux statuts, qui sont publics) qui précise les règles entre associés : clauses de préemption (droit de racheter les parts avant un tiers), clauses d'agrément (accord nécessaire pour accueillir un nouvel associé), clauses de sortie conjointe (drag-along, tag-along), valorisation des parts en cas de départ, et gestion des situations de blocage.</p>
+
+            <div class="info-card">
+                <h4><i class="fa-solid fa-euro-sign"></i> Coût de rédaction des statuts</h4>
+                <p>Un notaire facture généralement 800 à 2 000 € pour rédiger des statuts de société. Un avocat spécialisé en droit des sociétés : 600 à 1 500 €. Les plateformes en ligne (Legalstart, Captain Contrat, Fiduciaire) proposent des modèles de 150 à 500 €. Pour une micro-entreprise ou une EI, les statuts ne sont pas nécessaires.</p>
+            </div>
+
+            <h3>Capital social : quel montant choisir ?</h3>
+            <p>En 2026, le capital social minimum est de 1 € pour une EURL, une SASU, une SARL ou une SAS. Mais un capital trop faible peut nuire à votre crédibilité bancaire et votre capacité à obtenir des crédits professionnels. Un capital de 1 000 € à 10 000 € est souvent recommandé pour une TPE. Les apports peuvent être faits en numéraire (argent) ou en nature (matériel, véhicule, brevets). Les apports en numéraire doivent être déposés sur un compte bloqué avant immatriculation et libérés une fois le Kbis obtenu.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section" id="etape4">
+        <div class="section-header">
+            <div class="section-num">4</div>
+            <h2 class="section-title">Les démarches administratives étape par étape</h2>
+        </div>
+        <div class="content">
+            <p>Depuis le 1er janvier 2023, toutes les formalités de création d'entreprise en France se font exclusivement via le Guichet Unique en ligne : <strong>formalites.entreprises.gouv.fr</strong>. Ce portail remplace les anciens CFE (Centre de Formalités des Entreprises) des Chambres de Commerce, des Chambres des Métiers et de l'URSSAF. Il centralise toutes les déclarations et transmet automatiquement vos informations aux organismes concernés (INPI, URSSAF, impôts, INSEE).</p>
+
+            <h3>Documents à préparer avant de commencer</h3>
+            <ul class="checklist">
+                <li>Pièce d'identité en cours de validité (CNI ou passeport)</li>
+                <li>Justificatif de domiciliation de l'entreprise (bail commercial, attestation de domiciliation, ou justificatif personnel si domicile)</li>
+                <li>Attestation de dépôt de capital (pour les sociétés avec apport en numéraire)</li>
+                <li>Statuts signés et datés (pour les sociétés)</li>
+                <li>Déclaration sur l'honneur de non-condamnation du dirigeant</li>
+                <li>Justificatif de qualification professionnelle (si activité réglementée)</li>
+                <li>Déclaration des bénéficiaires effectifs (pour les sociétés)</li>
+            </ul>
+
+            <h3>La domiciliation de votre entreprise</h3>
+            <p>Toute entreprise doit avoir une adresse. Vous avez quatre options en 2026. Premièrement, domicilier chez vous (possible légalement, mais vérifiez votre bail ou règlement de copropriété si vous êtes locataire ou en copropriété). Deuxièmement, louer un bureau ou un local commercial classique. Troisièmement, rejoindre un espace de coworking avec service de domiciliation (de 20 à 80 €/mois). Quatrièmement, passer par une société de domiciliation spécialisée (de 15 à 50 €/mois), qui vous fournit une adresse professionnelle souvent prestigieuse et gère votre courrier.</p>
+
+            <h3>La déclaration des bénéficiaires effectifs</h3>
+            <p>Depuis 2018 et renforcée par la directive anti-blanchiment européenne, toute société est obligée de déclarer ses bénéficiaires effectifs — c'est-à-dire les personnes physiques qui détiennent plus de 25 % du capital ou des droits de vote, ou qui exercent un contrôle effectif sur la société. Cette déclaration est faite en même temps que l'immatriculation et coûte 21,41 € depuis 2024. Elle est consultable par les autorités et certains organismes professionnels.</p>
+
+            <div class="cost-grid">
+                <div class="cost-card">
+                    <h4>Micro / EI</h4>
+                    <div class="cost-val">0 €</div>
+                    <div class="cost-sub">Immatriculation gratuite</div>
+                </div>
+                <div class="cost-card">
+                    <h4>EURL / SARL</h4>
+                    <div class="cost-val">~75 €</div>
+                    <div class="cost-sub">Frais de greffe + annonce légale</div>
+                </div>
+                <div class="cost-card">
+                    <h4>SASU / SAS</h4>
+                    <div class="cost-val">~75 €</div>
+                    <div class="cost-sub">Frais de greffe + annonce légale</div>
+                </div>
+                <div class="cost-card">
+                    <h4>Annonce légale</h4>
+                    <div class="cost-val">~150 €</div>
+                    <div class="cost-sub">Publication obligatoire en JAL</div>
+                </div>
+            </div>
+
+            <h3>La publication au Journal d'Annonces Légales (JAL)</h3>
+            <p>Pour les sociétés (pas pour la micro ou l'EI), vous devez publier un avis de constitution dans un Journal d'Annonces Légales du département de votre siège social. Le coût est encadré par arrêté ministériel et s'élève à environ 138 à 200 € selon les départements. De nombreuses plateformes en ligne permettent de le faire en 10 minutes pour moins de 100 € en trouvant un journal habilité moins cher.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section" id="etape5">
+        <div class="section-header">
+            <div class="section-num">5</div>
+            <h2 class="section-title">Obtenir son Kbis et démarrer officiellement</h2>
+        </div>
+        <div class="content">
+            <p>Le Kbis est l'extrait du Registre du Commerce et des Sociétés (RCS). C'est la "carte d'identité" officielle de votre entreprise. Il atteste de l'existence juridique de votre société, mentionne son numéro SIREN, son numéro SIRET, son code APE/NAF, l'identité du dirigeant et l'adresse du siège. En pratique, il vous est demandé par les banques, les organismes de financement, les clients B2B importants et de nombreux prestataires.</p>
+
+            <h3>Délais d'obtention en 2026</h3>
+            <p>Depuis la dématérialisation totale des formalités via le Guichet Unique, les délais se sont considérablement réduits. Pour une micro-entreprise ou une EI, l'immatriculation est quasi-instantanée et vous recevez votre numéro SIREN en 24 à 48 heures. Pour une société (EURL, SASU, SARL), le délai moyen est de 3 à 7 jours ouvrables après réception du dossier complet. Attention : si votre dossier est incomplet, le Guichet Unique vous demandera des compléments et les délais repartent à zéro.</p>
+
+            <h3>Numéro de TVA intracommunautaire</h3>
+            <p>Une fois votre SIREN attribué, vous pouvez demander votre numéro de TVA intracommunautaire auprès du Service des Impôts des Entreprises (SIE) dont vous dépendez géographiquement. Ce numéro est obligatoire pour facturer des clients européens hors France sans TVA (autoliquidation) et pour déduire la TVA sur vos achats professionnels. Les micro-entreprises bénéficiant de la franchise en base de TVA (moins de 37 500 € de CA pour les services en 2026) n'appliquent pas la TVA sur leurs factures mais mentionnent "TVA non applicable - art. 293 B du CGI".</p>
+
+            <div class="success-card">
+                <h4><i class="fa-solid fa-check-circle"></i> Après le Kbis : les formalités immédiates</h4>
+                <p>Dès réception de votre Kbis, vous devez : ouvrir un compte bancaire professionnel dédié (obligatoire pour les sociétés, fortement conseillé pour les autres), souscrire une assurance RC Pro (responsabilité civile professionnelle), vous inscrire à l'URSSAF si ce n'est pas encore fait automatiquement, et tenir une comptabilité dès le premier euro encaissé.</p>
+            </div>
+
+            <h3>Code APE/NAF : ce que ça change</h3>
+            <p>L'INSEE vous attribue automatiquement un code APE (Activité Principale Exercée) lors de votre immatriculation, en fonction de votre objet social. Ce code à 4 chiffres et une lettre détermine votre convention collective applicable si vous recrutez des salariés, et peut influencer certains taux de cotisations. Si le code qui vous est attribué ne correspond pas fidèlement à votre activité, vous pouvez en demander la modification directement auprès de l'INSEE, gratuitement, via un formulaire en ligne.</p>
+        </div>
+    </div>
+
+    <!-- SECTION 6 -->
+    <div class="section" id="etape6">
+        <div class="section-header">
+            <div class="section-num">6</div>
+            <h2 class="section-title">Ouvrir un compte bancaire professionnel</h2>
+        </div>
+        <div class="content">
+            <p>Le compte bancaire professionnel est obligatoire pour les sociétés (EURL, SASU, SARL, SAS) dès la création, et fortement recommandé pour les auto-entrepreneurs et EI. La séparation des finances personnelles et professionnelles simplifie la comptabilité, protège votre patrimoine personnel et rassure vos partenaires commerciaux.</p>
+
+            <h3>Banques traditionnelles vs néobanques professionnelles</h3>
+            <p>En 2026, les néobanques professionnelles (Qonto, Shine, Blank, Revolut Business) ont largement supplanté les banques traditionnelles pour les créateurs d'entreprise. Elles offrent une ouverture de compte en 24 à 48 heures, entièrement en ligne, sans rendez-vous, avec des tarifs mensuels de 9 à 30 € contre 20 à 60 € en banque traditionnelle. Leurs interfaces mobiles sont nettement plus ergonomiques et s'intègrent directement avec les logiciels de comptabilité.</p>
+            <p>Les banques traditionnelles (BNP, Société Générale, Crédit Agricole, LCL) conservent un avantage pour les entreprises qui ont besoin de lignes de crédit importantes, de financement par découvert ou de prêts professionnels : les néobanques ne proposent généralement pas encore ces services.</p>
+
+            <h3>Documents demandés pour l'ouverture d'un compte professionnel</h3>
+            <ul class="checklist">
+                <li>Kbis de moins de 3 mois (ou numéro SIREN pour les néobanques)</li>
+                <li>Pièce d'identité du ou des dirigeants</li>
+                <li>Statuts de la société</li>
+                <li>Justificatif de domicile du dirigeant</li>
+                <li>Dépôt du capital social (uniquement pour les sociétés lors de la création)</li>
+            </ul>
+
+            <div class="info-card">
+                <h4><i class="fa-solid fa-info-circle"></i> Dépôt du capital social</h4>
+                <p>Pour les sociétés (EURL, SASU, SARL), vous devez déposer le capital social sur un compte bloqué avant l'immatriculation. La plupart des banques et néobanques proposent ce service. L'attestation de dépôt qui vous est remise fait partie des documents obligatoires pour le Guichet Unique. Après réception du Kbis, le capital est automatiquement débloqué et disponible sur votre compte.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 7 -->
+    <div class="section" id="etape7">
+        <div class="section-header">
+            <div class="section-num">7</div>
+            <h2 class="section-title">Comprendre votre fiscalité et vos cotisations sociales</h2>
+        </div>
+        <div class="content">
+            <p>C'est souvent le sujet qui génère le plus d'anxiété chez les créateurs d'entreprise — et pourtant, une fois les mécanismes compris, la fiscalité d'entrepreneur est beaucoup plus prévisible qu'on ne le pense. Voici les fondamentaux en 2026.</p>
+
+            <h3>Impôt sur le Revenu (IR) vs Impôt sur les Sociétés (IS)</h3>
+            <p>Les micro-entreprises et les EI sont soumises à l'IR : les bénéfices sont ajoutés directement à votre revenu personnel imposable et taxés au barème progressif (0 %, 11 %, 30 %, 41 %, 45 % selon les tranches 2026). Les EURL, SASU, SARL et SAS sont en principe soumises à l'IS : la société paye l'impôt sur ses bénéfices (15 % jusqu'à 42 500 €, puis 25 %), et vous êtes ensuite imposé à l'IR sur votre rémunération et vos dividendes. L'EURL et la SARL peuvent opter pour l'IR pendant 5 ans.</p>
+
+            <h3>Les cotisations sociales selon le statut</h3>
+            <p>En micro-entreprise, les cotisations sont calculées en pourcentage du chiffre d'affaires encaissé : 21,1 % pour les prestations de services BNC et 12,3 % pour le commerce en 2026. Si vous ne facturez rien, vous ne payez rien. En EURL (TNS), les cotisations sont calculées sur la rémunération nette et représentent environ 44 à 46 % de cette rémunération. En SASU (assimilé-salarié), les cotisations patronales représentent environ 45 % du salaire brut et les cotisations salariales environ 22 %, soit un coût total employeur d'environ 1,67 fois le salaire net.</p>
+
+            <h3>La TVA : franchise, régime réel simplifié ou normal</h3>
+            <p>En 2026, les seuils de franchise en base de TVA sont de 37 500 € pour les prestations de services et 85 000 € pour le commerce. En dessous de ces seuils, vous facturez sans TVA. Au-dessus, vous collectez la TVA auprès de vos clients et la reversez à l'État après déduction de la TVA sur vos achats. Si vos clients sont des entreprises assujetties à la TVA, le fait de facturer avec TVA ne les pénalise pas (ils la récupèrent) mais vous permet de récupérer la vôtre sur vos investissements.</p>
+
+            <div class="cta-sim">
+                <h3>Calculez votre revenu net après toutes charges</h3>
+                <p>Notre simulateur intègre le barème IR 2026, les taux TNS réels, l'optimisation dividendes et la projection sur 3 ans.</p>
+                <a href="index.html" class="cta-btn"><i class="fa-solid fa-calculator"></i> Simuler maintenant</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 8 -->
+    <div class="section" id="etape8">
+        <div class="section-header">
+            <div class="section-num">8</div>
+            <h2 class="section-title">Aides et financements disponibles en 2026</h2>
+        </div>
+        <div class="content">
+            <p>La France dispose d'un des dispositifs d'aide à la création d'entreprise les plus généreux d'Europe. En 2026, plusieurs mécanismes peuvent significativement réduire vos charges et soutenir votre démarrage.</p>
+
+            <h3>L'ACRE (Aide à la Création et à la Reprise d'Entreprise)</h3>
+            <p>L'ACRE est l'aide la plus importante et la plus accessible. Elle permet une exonération partielle de cotisations sociales pendant les 12 premiers mois d'activité. En 2026, l'exonération est totale pour les rémunérations inférieures à 75 % du PASS (environ 34 776 €) et dégressive jusqu'au PASS (46 368 €). Pour en bénéficier, vous devez en faire la demande dans les 45 jours suivant votre immatriculation via le Guichet Unique. L'ACRE est accessible à tout créateur qui n'a pas déjà bénéficié du dispositif dans les 3 années précédentes.</p>
+
+            <h3>L'ARCE et le cumul ARE</h3>
+            <p>Si vous étiez salarié et que vous percevez des allocations chômage (ARE), deux options s'offrent à vous lors de la création d'entreprise. Le cumul ARE : vous continuez à percevoir une partie de vos allocations tout en développant votre activité (le montant est réduit en proportion de vos revenus d'entrepreneur). L'ARCE : vous pouvez demander à recevoir 60 % de vos droits restants en deux versements (au démarrage puis 6 mois plus tard) pour financer votre projet. L'ARCE est intéressante si vous avez besoin de capital de départ, le cumul si vous préférez étaler la sécurité dans le temps.</p>
+
+            <h3>Les prêts d'honneur et dispositifs BPI France</h3>
+            <p>BPI France propose plusieurs dispositifs pour les créateurs : le prêt d'honneur à taux zéro (de 5 000 à 50 000 €) via les réseaux Initiative France et Réseau Entreprendre, la garantie de prêt bancaire (BPI garantit jusqu'à 70 % du prêt pour faciliter l'obtention de financement), et les subventions sectorielles (industrie, innovation, transition écologique). Les dossiers sont plus complexes à monter mais les montants peuvent être conséquents pour les projets innovants ou industriels.</p>
+
+            <h3>Les dispositifs locaux et régionaux</h3>
+            <p>Chaque région et beaucoup de métropoles disposent de leurs propres aides à la création : subventions directes, prêts bonifiés, mise à disposition d'espaces à tarifs réduits, accompagnement gratuit. Les CCI (Chambres de Commerce et d'Industrie) et les BGE (anciennement Boutiques de Gestion) proposent un accompagnement gratuit ou à faible coût pour monter votre business plan et trouver les aides auxquelles vous êtes éligible.</p>
+
+            <div class="info-card">
+                <h4><i class="fa-solid fa-search"></i> Trouver toutes les aides disponibles</h4>
+                <p>Le portail officiel <strong>aides-entreprises.fr</strong> recense l'ensemble des aides nationales, régionales et locales accessibles selon votre profil, votre secteur et votre localisation. Une recherche prend moins de 5 minutes et peut révéler des dispositifs auxquels vous n'auriez pas pensé.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 9 -->
+    <div class="section" id="etape9">
+        <div class="section-header">
+            <div class="section-num">9</div>
+            <h2 class="section-title">Le calendrier réaliste de création</h2>
+        </div>
+        <div class="content">
+            <p>Voici le calendrier type d'une création de société (EURL ou SASU) en 2026, de la décision initiale à la première facture.</p>
+
+            <div class="timeline">
+                <div class="tl-item">
+                    <div class="tl-week">Semaines 1 et 2</div>
+                    <div class="tl-title">Validation et décision de structure</div>
+                    <div class="tl-desc">Entretiens clients, étude de marché rapide, choix du statut avec simulation, première rencontre avec un expert-comptable si nécessaire.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-week">Semaine 3</div>
+                    <div class="tl-title">Rédaction des statuts et domiciliation</div>
+                    <div class="tl-desc">Rédaction ou commande des statuts (via plateforme en ligne ou avocat), choix de l'adresse de domiciliation, ouverture du compte de dépôt de capital.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-week">Semaine 4</div>
+                    <div class="tl-title">Dépôt de capital et publication légale</div>
+                    <div class="tl-desc">Dépôt du capital sur compte bloqué, réception de l'attestation de dépôt, publication de l'avis de constitution dans un JAL, obtention de l'attestation de parution.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-week">Semaine 5</div>
+                    <div class="tl-title">Dépôt du dossier au Guichet Unique</div>
+                    <div class="tl-desc">Dépôt en ligne sur formalites.entreprises.gouv.fr avec tous les documents. Suivi du dossier en ligne.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-week">Semaine 6</div>
+                    <div class="tl-title">Réception du Kbis</div>
+                    <div class="tl-desc">Réception du Kbis par email (délai moyen 3 à 7 jours ouvrables), déblocage du capital, demande du numéro de TVA intracommunautaire.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-week">Semaine 7</div>
+                    <div class="tl-title">Ouverture du compte bancaire définitif</div>
+                    <div class="tl-desc">Ouverture du compte professionnel opérationnel (néobanque ou banque), demande de l'ACRE, souscription de la RC Pro, référencement auprès des premiers clients.</div>
+                </div>
+                <div class="tl-item">
+                    <div class="tl-week">Semaines 8+</div>
+                    <div class="tl-title">Premières factures et vie de l'entreprise</div>
+                    <div class="tl-desc">Mise en place de la comptabilité (logiciel ou expert-comptable), premières déclarations de TVA, facturation des premiers clients.</div>
+                </div>
+            </div>
+
+            <div class="warning-card">
+                <h4><i class="fa-solid fa-clock"></i> Le délai le plus sous-estimé</h4>
+                <p>L'ouverture d'un compte bancaire professionnel est souvent le goulot d'étranglement. Certaines banques traditionnelles mettent 3 à 6 semaines. Les néobanques (Qonto, Shine) ouvrent un compte en 24 à 48 heures avec un SIREN, même avant le Kbis définitif. Si vous êtes pressé, commencez la démarche bancaire en parallèle du dépôt au Guichet Unique.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 10 -->
+    <div class="section" id="etape10">
+        <div class="section-header">
+            <div class="section-num">10</div>
+            <h2 class="section-title">FAQ : les questions les plus fréquentes</h2>
+        </div>
+        <div class="content">
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Peut-on créer une entreprise quand on est salarié ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Oui, tout à fait. La création d'entreprise en parallèle d'un emploi salarié est légale en France. Vous devez simplement vérifier que votre contrat de travail ne contient pas de clause d'exclusivité ou de non-concurrence qui vous l'interdirait. Il est également conseillé d'exercer l'activité en dehors des heures de travail et de ne pas utiliser les ressources de votre employeur. La micro-entreprise est le statut le plus simple pour démarrer en double activité.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Quelle est la différence entre SIREN, SIRET et Kbis ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Le SIREN est un numéro à 9 chiffres qui identifie l'entreprise en tant qu'entité juridique (unique, même si vous avez plusieurs établissements). Le SIRET est un numéro à 14 chiffres = SIREN + 5 chiffres identifiant un établissement précis. Si vous avez un siège + un entrepôt, vous avez un SIREN et deux SIRET. Le Kbis est l'extrait du registre du commerce qui récapitule toutes les informations officielles de votre entreprise — c'est la "carte d'identité" administrative.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Faut-il obligatoirement un expert-comptable ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Légalement, non — sauf pour les sociétés dépassant certains seuils (commissaire aux comptes). Mais en pratique, un expert-comptable est fortement recommandé pour une EURL ou une SASU : il sécurise vos déclarations, optimise votre rémunération, vous alerte sur les échéances fiscales et sociales, et son coût (1 500 à 4 000 €/an pour une TPE) est souvent inférieur aux économies réalisées. Les micro-entrepreneurs n'en ont généralement pas besoin, sauf si leur CA est proche du plafond ou s'ils envisagent une bascule de statut.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Peut-on changer de statut après la création ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Oui. On peut passer de micro-entreprise à EURL ou SASU (transformation ou création d'une nouvelle structure), ou transformer une EURL en SARL, une SARL en SAS. Ces transformations ont des coûts (frais de greffe, nouvelle publication légale, honoraires si accompagnement) et des implications fiscales à anticiper, notamment sur les plus-values latentes. Il est conseillé de faire ces évolutions en début d'exercice fiscal pour simplifier la comptabilité.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Quelle assurance est obligatoire pour un entrepreneur ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">La RC Pro (Responsabilité Civile Professionnelle) n'est obligatoire que pour certaines professions réglementées (avocat, architecte, agent immobilier, expert-comptable, médecin, etc.). Mais elle est vivement conseillée pour tous : en cas de dommage causé à un client dans le cadre de votre activité, votre patrimoine personnel peut être engagé sans RC Pro dans une EI. Les primes varient de 150 à 600 €/an pour une TPE de services. Pour les métiers du bâtiment, l'assurance décennale est obligatoire.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Comment facturer avant d'avoir son Kbis ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Pour une micro-entreprise ou une EI, vous pouvez théoriquement commencer à exercer dès votre immatriculation (quasi-instantanée). Pour une société, vous pouvez facturer "pour le compte de la société en formation" avant la réception du Kbis, à condition que les actes passés soient ensuite régularisés et repris par la société dans les statuts ou lors d'une assemblée générale constitutive. Cette reprise des actes doit être explicite dans les statuts ou dans un acte séparé.</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AD SLOT -->
+    <div class="ad-slot">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8172012578136460" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <div class="page-footer">
+        <p>
+            <a href="index.html">Simulateur</a>
+            <a href="guide.html">Guide statuts</a>
+            <a href="holding.html">Guide Holding</a>
+            <a href="faq.html">FAQ</a>
+            <a href="a-propos.html">À propos & Mentions légales</a>
+        </p>
+        <p style="margin-top:8px;">© 2026 Simulateur Statut Entrepreneur — Estimations indicatives, non un conseil fiscal ou juridique.</p>
+    </div>
+
+</div>
+
+<script>
+function toggleFaq(el) {
+    el.classList.toggle('open');
+}
+</script>
+</body>
+</html>

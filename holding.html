@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Guide complet 2026 sur la holding : définition, fonctionnement, avantages fiscaux, régime mère-fille, comment créer une holding et pour qui c'est pertinent.">
+    <meta property="og:title" content="Guide Complet : La Holding en 2026 — Fonctionnement, Avantages et Création">
+    <meta property="og:url" content="https://simulateur-statut-entrepreneur.github.io/holding.html">
+    <title>Guide Complet : La Holding en 2026 — Fonctionnement, Fiscalité et Stratégie</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8172012578136460" crossorigin="anonymous"></script>
+
+    <style>
+        :root {
+            --primary: #4e73df;
+            --primary-dark: #2e59d9;
+            --primary-light: #ebf8ff;
+            --success: #1cc88a;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --purple: #7c3aed;
+            --text-dark: #2d3748;
+            --text-mid: #4a5568;
+            --text-light: #718096;
+            --border: #edf2f7;
+            --bg-body: #f8f9fc;
+            --shadow-lg: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-body); color: var(--text-dark); line-height: 1.7; }
+        @media (min-width: 600px) { body { padding: 40px 20px; } }
+        .container { max-width: 900px; margin: auto; background: #fff; min-height: 100vh; padding: 25px 20px 60px; }
+        @media (min-width: 600px) { .container { min-height: auto; border-radius: 24px; box-shadow: var(--shadow-lg); } }
+
+        nav { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 0 0 20px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+        .nav-logo { font-family: 'Poppins', sans-serif; font-size: 15px; font-weight: 700; color: var(--primary); text-decoration: none; }
+        .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+        .nav-links a { color: var(--text-light); text-decoration: none; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 8px; transition: all 0.2s; }
+        .nav-links a:hover { background: var(--primary-light); color: var(--primary); }
+        .nav-links a.active { background: var(--primary); color: #fff; }
+
+        /* Hero */
+        .hero { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); border-radius: 20px; padding: 44px 30px; color: #fff; margin-bottom: 40px; }
+        .hero-tag { display: inline-flex; align-items: center; gap: 6px; background: rgba(124,58,237,0.3); border: 1px solid rgba(124,58,237,0.5); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #c4b5fd; margin-bottom: 16px; }
+        .hero h1 { font-family: 'Poppins', sans-serif; font-size: clamp(1.5rem, 4vw, 2.3rem); font-weight: 700; margin-bottom: 12px; line-height: 1.2; }
+        .hero h1 span { color: #c4b5fd; }
+        .hero p { font-size: 15px; opacity: 0.85; max-width: 620px; margin-bottom: 24px; line-height: 1.7; }
+        .hero-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        @media (max-width: 480px) { .hero-stats { grid-template-columns: 1fr 1fr; } }
+        .hero-stat { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 14px; text-align: center; }
+        .hero-stat-val { font-family: 'Poppins', sans-serif; font-size: 1.4rem; font-weight: 700; color: #c4b5fd; line-height: 1; margin-bottom: 4px; }
+        .hero-stat-label { font-size: 11px; opacity: 0.7; text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* Sommaire */
+        .toc { background: var(--primary-light); border: 1px solid #bee3f8; border-radius: 16px; padding: 24px; margin-bottom: 40px; }
+        .toc h2 { font-size: 14px; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 16px; }
+        .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        @media (max-width: 500px) { .toc-grid { grid-template-columns: 1fr; } }
+        .toc-item { display: flex; align-items: center; gap: 8px; text-decoration: none; color: var(--text-mid); font-size: 13px; font-weight: 500; padding: 6px 10px; border-radius: 8px; transition: all 0.2s; }
+        .toc-item:hover { background: #fff; color: var(--primary); }
+        .toc-num { width: 22px; height: 22px; background: var(--purple); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; flex-shrink: 0; }
+
+        /* Sections */
+        .section { margin-bottom: 52px; }
+        .section-header { display: flex; align-items: center; gap: 14px; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+        .section-num { width: 40px; height: 40px; background: linear-gradient(135deg, #1a1a2e, var(--purple)); color: #fff; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; font-family: 'Poppins', sans-serif; flex-shrink: 0; }
+        .section-title { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: 700; color: var(--text-dark); }
+
+        /* Contenu */
+        .content p { font-size: 15px; color: var(--text-mid); margin-bottom: 16px; line-height: 1.8; }
+        .content h3 { font-size: 16px; font-weight: 700; color: var(--text-dark); margin: 28px 0 10px; }
+        .content h4 { font-size: 14px; font-weight: 700; color: var(--purple); margin: 18px 0 8px; }
+        .content strong { color: var(--text-dark); }
+
+        /* Schéma holding */
+        .schema-holding { background: linear-gradient(135deg, #0f0f1a, #1a1a2e); border-radius: 20px; padding: 30px; margin: 24px 0; color: #fff; }
+        .schema-title { text-align: center; font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #c4b5fd; margin-bottom: 24px; }
+        .schema-boxes { display: flex; flex-direction: column; align-items: center; gap: 0; }
+        .schema-box { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 14px; padding: 16px 24px; text-align: center; width: 100%; max-width: 340px; }
+        .schema-box.holding { background: rgba(124,58,237,0.25); border-color: rgba(124,58,237,0.5); }
+        .schema-box.filiale { background: rgba(78,115,223,0.2); border-color: rgba(78,115,223,0.4); }
+        .schema-box.perso { background: rgba(28,200,138,0.15); border-color: rgba(28,200,138,0.4); }
+        .schema-box-title { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.7; margin-bottom: 6px; }
+        .schema-box-name { font-family: 'Poppins', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+        .schema-box-detail { font-size: 11px; opacity: 0.7; line-height: 1.5; }
+        .schema-arrow { display: flex; flex-direction: column; align-items: center; padding: 6px 0; gap: 2px; }
+        .schema-arrow-line { width: 2px; height: 20px; background: rgba(255,255,255,0.2); }
+        .schema-arrow-label { font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 10px; }
+        .arrow-divid { background: rgba(124,58,237,0.3); color: #c4b5fd; }
+        .arrow-flux { background: rgba(28,200,138,0.2); color: #6ee7b7; }
+        .schema-filiales { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 480px; }
+        @media (max-width: 450px) { .schema-filiales { grid-template-columns: 1fr; } }
+
+        /* Cards */
+        .info-card { background: var(--primary-light); border: 1px solid #bee3f8; border-left: 4px solid var(--primary); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+        .info-card h4 { color: #2c5282; font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .info-card p { color: #4a5568; font-size: 13px; margin: 0; line-height: 1.6; }
+        .warning-card { background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid var(--warning); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+        .warning-card h4 { color: #92400e; font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+        .warning-card p { color: #78350f; font-size: 13px; margin: 0; line-height: 1.6; }
+        .success-card { background: #f0fdf4; border: 1px solid #86efac; border-left: 4px solid var(--success); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+        .success-card h4 { color: #166534; font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .success-card p { color: #14532d; font-size: 13px; margin: 0; line-height: 1.6; }
+        .purple-card { background: #f5f3ff; border: 1px solid #c4b5fd; border-left: 4px solid var(--purple); border-radius: 12px; padding: 16px 18px; margin: 20px 0; }
+        .purple-card h4 { color: #5b21b6; font-size: 13px; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .purple-card p { color: #4c1d95; font-size: 13px; margin: 0; line-height: 1.6; }
+
+        /* Calcul fiscal */
+        .fiscal-demo { background: #0f0f1a; border-radius: 16px; padding: 24px; margin: 20px 0; color: #fff; }
+        .fiscal-demo h4 { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; color: #c4b5fd; margin-bottom: 20px; text-align: center; }
+        .fiscal-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        @media (max-width: 480px) { .fiscal-compare { grid-template-columns: 1fr; } }
+        .fiscal-col h5 { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 12px; text-align: center; padding: 6px; border-radius: 8px; }
+        .col-sans { color: #f87171; background: rgba(248,113,113,0.1); border: 1px solid rgba(248,113,113,0.2); }
+        .col-avec { color: #6ee7b7; background: rgba(110,231,183,0.1); border: 1px solid rgba(110,231,183,0.2); }
+        .fiscal-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.07); font-size: 12px; }
+        .fiscal-row:last-child { border-bottom: none; font-weight: 800; padding-top: 10px; }
+        .fiscal-label { color: rgba(255,255,255,0.6); }
+        .fiscal-val { font-weight: 600; }
+        .val-minus { color: #f87171; }
+        .val-plus { color: #6ee7b7; }
+        .val-white { color: #fff; }
+        .fiscal-gain { text-align: center; margin-top: 16px; background: rgba(124,58,237,0.2); border: 1px solid rgba(124,58,237,0.4); border-radius: 10px; padding: 12px; }
+        .fiscal-gain p { font-size: 12px; color: #c4b5fd; margin: 0; }
+        .fiscal-gain strong { font-size: 1.1rem; color: #fff; display: block; margin-bottom: 2px; }
+
+        /* Avantages / inconvénients */
+        .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 20px 0; }
+        @media (max-width: 500px) { .pros-cons { grid-template-columns: 1fr; } }
+        .pros, .cons { border-radius: 14px; padding: 18px; }
+        .pros { background: #f0fdf4; border: 1px solid #86efac; }
+        .cons { background: #fef2f2; border: 1px solid #fca5a5; }
+        .pros h4 { color: #166534; font-size: 13px; font-weight: 800; margin-bottom: 12px; }
+        .cons h4 { color: #991b1b; font-size: 13px; font-weight: 800; margin-bottom: 12px; }
+        .pc-list { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+        .pc-list li { font-size: 13px; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+        .pros .pc-list li { color: #14532d; }
+        .cons .pc-list li { color: #7f1d1d; }
+        .pros .pc-list li::before { content: '✓'; color: var(--success); font-weight: 900; flex-shrink: 0; }
+        .cons .pc-list li::before { content: '✗'; color: var(--danger); font-weight: 900; flex-shrink: 0; }
+
+        /* Étapes création */
+        .steps { display: flex; flex-direction: column; gap: 16px; margin: 20px 0; }
+        .step { display: flex; gap: 16px; align-items: flex-start; }
+        .step-dot { width: 34px; height: 34px; background: linear-gradient(135deg, #1a1a2e, var(--purple)); color: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; flex-shrink: 0; margin-top: 2px; }
+        .step-content h4 { font-size: 14px; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+        .step-content p { font-size: 13px; color: var(--text-mid); margin: 0; line-height: 1.6; }
+
+        /* Tableau */
+        .table-wrap { overflow-x: auto; margin: 20px 0; border-radius: 12px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        th { background: linear-gradient(135deg, #1a1a2e, var(--purple)); color: #fff; padding: 12px 14px; text-align: left; font-weight: 700; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+        td { padding: 11px 14px; border-bottom: 1px solid var(--border); color: var(--text-mid); vertical-align: top; }
+        tr:last-child td { border-bottom: none; }
+        tr:nth-child(even) { background: #fafbfe; }
+        td:first-child { font-weight: 700; color: var(--text-dark); }
+
+        /* CTA simulateur */
+        .cta-sim { background: linear-gradient(135deg, #1a1a2e, var(--purple)); border-radius: 18px; padding: 28px; color: #fff; text-align: center; margin: 40px 0; }
+        .cta-sim h3 { font-family: 'Poppins', sans-serif; font-size: 1.2rem; margin-bottom: 10px; }
+        .cta-sim p { font-size: 13px; opacity: 0.9; margin-bottom: 18px; }
+        .cta-btn { display: inline-block; background: #fff; color: var(--purple); padding: 12px 28px; border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; transition: all 0.2s; }
+        .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.3); }
+
+        /* FAQ */
+        .faq-item { border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; overflow: hidden; }
+        .faq-q { padding: 16px 18px; font-size: 14px; font-weight: 700; color: var(--text-dark); cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .faq-q:hover { background: #f5f3ff; }
+        .faq-a { padding: 0 18px 16px; font-size: 13px; color: var(--text-mid); line-height: 1.7; display: none; }
+        .faq-item.open .faq-a { display: block; }
+        .faq-item.open .faq-q { color: var(--purple); }
+
+        /* Ad slot */
+        .ad-slot { background: #f8f9fc; border: 1px dashed var(--border); border-radius: 12px; padding: 20px; text-align: center; color: var(--text-light); font-size: 12px; margin: 30px 0; min-height: 90px; display: flex; align-items: center; justify-content: center; }
+
+        /* Footer */
+        .page-footer { border-top: 1px solid var(--border); padding: 20px 0 0; margin-top: 40px; text-align: center; }
+        .page-footer p { color: #a0aec0; font-size: 12px; }
+        .page-footer a { color: #a0aec0; text-decoration: none; margin: 0 6px; }
+        .page-footer a:hover { color: var(--primary); }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <nav>
+        <a href="index.html" class="nav-logo"><i class="fa-solid fa-chart-pie"></i> Simulateur Statut 2026</a>
+        <div class="nav-links">
+            <a href="index.html">Simulateur</a>
+            <a href="guide.html">Guide</a>
+            <a href="statuts.html">Les statuts</a>
+            <a href="guide-creation-entreprise.html">Créer son entreprise</a>
+            <a href="holding.html" class="active">Holding</a>
+            <a href="faq.html">FAQ</a>
+        </div>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+        <div class="hero-tag"><i class="fa-solid fa-building-columns"></i> Stratégie avancée</div>
+        <h1>La <span>Holding</span> en 2026 :<br>guide complet</h1>
+        <p>Comprendre le schéma mère-fille, ses avantages fiscaux considérables, comment en créer une et à partir de quel niveau de revenus elle devient vraiment intéressante.</p>
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <div class="hero-stat-val">1,25%</div>
+                <div class="hero-stat-label">IS effectif sur dividendes</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-val">80k€</div>
+                <div class="hero-stat-label">CA minimum conseillé</div>
+            </div>
+            <div class="hero-stat">
+                <div class="hero-stat-val">~5k€</div>
+                <div class="hero-stat-label">Coût annuel structure</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SOMMAIRE -->
+    <div class="toc">
+        <h2><i class="fa-solid fa-list"></i> Sommaire</h2>
+        <div class="toc-grid">
+            <a href="#def" class="toc-item"><span class="toc-num">1</span> Qu'est-ce qu'une holding ?</a>
+            <a href="#schema" class="toc-item"><span class="toc-num">2</span> Le schéma mère-fille expliqué</a>
+            <a href="#fiscal" class="toc-item"><span class="toc-num">3</span> L'avantage fiscal en chiffres</a>
+            <a href="#avantages" class="toc-item"><span class="toc-num">4</span> Avantages et inconvénients</a>
+            <a href="#pourqui" class="toc-item"><span class="toc-num">5</span> Pour qui est-ce pertinent ?</a>
+            <a href="#creation" class="toc-item"><span class="toc-num">6</span> Comment créer sa holding</a>
+            <a href="#strategies" class="toc-item"><span class="toc-num">7</span> Stratégies d'optimisation</a>
+            <a href="#faq" class="toc-item"><span class="toc-num">8</span> FAQ holding 2026</a>
+        </div>
+    </div>
+
+    <!-- SECTION 1 -->
+    <div class="section" id="def">
+        <div class="section-header">
+            <div class="section-num">1</div>
+            <h2 class="section-title">Qu'est-ce qu'une holding ?</h2>
+        </div>
+        <div class="content">
+            <p>Une holding est une société dont l'objet principal est de détenir des participations dans d'autres sociétés — ses filiales. Le terme vient de l'anglais "to hold" (détenir). Contrairement à une société opérationnelle qui facture des clients et produit des biens ou services, la holding ne fait généralement pas d'activité commerciale directe : elle gère un portefeuille de participations.</p>
+
+            <p>En France, la structure la plus courante pour un entrepreneur individuel est la holding dite "animatrice" : la société mère détient 100 % (ou la majorité) d'une filiale opérationnelle dans laquelle l'entrepreneur exerce son activité. C'est ce qu'on appelle le schéma mère-fille. Cette structure n'est pas réservée aux grands groupes : des milliers de TPE et d'indépendants l'utilisent dès 80 000 à 100 000 € de chiffre d'affaires annuel.</p>
+
+            <h3>Les différents types de holdings</h3>
+            <p>On distingue plusieurs types de holdings selon leur rôle. La holding pure (ou passive) se limite à détenir des participations et à percevoir des dividendes de ses filiales, sans aucune activité opérationnelle propre. La holding mixte exerce à la fois un rôle de détention de participations et une activité opérationnelle directe (par exemple, une activité de conseil ou de services administratifs facturée aux filiales). La holding animatrice, reconnue par la jurisprudence française, participe activement à la politique du groupe et fournit des services à ses filiales — cette reconnaissance a des implications importantes pour certains régimes fiscaux privilégiés (pacte Dutreil, ISF/IFI, PEA-PME).</p>
+
+            <div class="info-card">
+                <h4><i class="fa-solid fa-balance-scale"></i> Holding animatrice vs passive : une distinction importante</h4>
+                <p>La qualification de "holding animatrice" permet de bénéficier de régimes fiscaux avantageux comme le pacte Dutreil (exonération de 75 % des droits de succession sur les parts de la holding) et l'exonération d'IFI. Pour être qualifiée d'animatrice, la holding doit rendre des services effectifs à ses filiales (gestion administrative, financière, stratégique) et en percevoir une rémunération. Une convention de prestations de services entre la holding et la filiale est donc recommandée, encadrée par un avocat.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 2 -->
+    <div class="section" id="schema">
+        <div class="section-header">
+            <div class="section-num">2</div>
+            <h2 class="section-title">Le schéma mère-fille expliqué</h2>
+        </div>
+        <div class="content">
+            <p>Voici comment fonctionne concrètement la structure holding pour un entrepreneur en 2026.</p>
+
+            <!-- SCHÉMA VISUEL -->
+            <div class="schema-holding">
+                <div class="schema-title"><i class="fa-solid fa-diagram-project"></i> Structure Holding — schéma mère-fille</div>
+                <div class="schema-boxes">
+                    <div class="schema-box perso">
+                        <div class="schema-box-title">Vous — personne physique</div>
+                        <div class="schema-box-name">Dirigeant & associé unique</div>
+                        <div class="schema-box-detail">Percevez un salaire + dividendes personnels depuis la holding</div>
+                    </div>
+                    <div class="schema-arrow">
+                        <div class="schema-arrow-line"></div>
+                        <div class="schema-arrow-label arrow-divid">Détient 100% des parts</div>
+                        <div class="schema-arrow-line"></div>
+                    </div>
+                    <div class="schema-box holding">
+                        <div class="schema-box-title">Société mère (holding)</div>
+                        <div class="schema-box-name">SAS Holding</div>
+                        <div class="schema-box-detail">Reçoit les dividendes des filiales<br>IS sur 5% seulement → taux effectif 1,25%<br>Réinvestit librement dans d'autres actifs</div>
+                    </div>
+                    <div class="schema-arrow">
+                        <div class="schema-arrow-line"></div>
+                        <div class="schema-arrow-label arrow-divid">Dividendes remontent</div>
+                        <div class="schema-arrow-line"></div>
+                    </div>
+                    <div class="schema-filiales">
+                        <div class="schema-box filiale">
+                            <div class="schema-box-title">Filiale opérationnelle</div>
+                            <div class="schema-box-name">SASU principale</div>
+                            <div class="schema-box-detail">Facture les clients<br>Verse salaire au dirigeant<br>Remonte bénéfice à la holding</div>
+                        </div>
+                        <div class="schema-box filiale">
+                            <div class="schema-box-title">Filiale investissement</div>
+                            <div class="schema-box-name">SCI ou autre société</div>
+                            <div class="schema-box-detail">Investissement immo, autre activité, placement financier via la holding</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Le flux des fonds en pratique</h3>
+            <p>Le fonctionnement est simple une fois compris. Votre filiale SASU (ou EURL) exerce votre activité normale : elle facture vos clients et vous verse un salaire ou une rémunération en tant que dirigeant. En fin d'exercice, le bénéfice réalisé après IS dans la filiale est distribué à la holding sous forme de dividendes. C'est ici que la magie fiscale opère : grâce au régime mère-fille, la holding est exonérée d'IS sur ces dividendes à hauteur de 95 %. Les 5 % restants sont soumis à l'IS au taux normal (25 %) — soit un IS effectif de 1,25 % seulement.</p>
+
+            <p>Une fois dans la holding, les fonds peuvent être réinvestis sans friction fiscale dans ce que vous souhaitez : immobilier via une SCI détenue par la holding, placements financiers, création d'une nouvelle activité, rachat d'une autre entreprise. Vous ne sortez personnellement de la holding que ce dont vous avez besoin pour votre train de vie, soumis à PFU 30 %. Cette stratégie de "capitalisation en holding" est l'un des leviers les plus puissants de construction de patrimoine pour un entrepreneur.</p>
+
+            <div class="purple-card">
+                <h4><i class="fa-solid fa-gavel"></i> Condition légale du régime mère-fille</h4>
+                <p>Pour bénéficier du régime mère-fille et de l'exonération à 95 %, la société mère (holding) doit détenir au moins 5 % du capital de la filiale et conserver ces titres pendant au minimum 2 ans. Pour une holding détenant 100 % d'une filiale créée simultanément, ces conditions sont automatiquement remplies dès la deuxième année d'existence de la structure.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- AD SLOT -->
+    <div class="ad-slot">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8172012578136460" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <!-- SECTION 3 -->
+    <div class="section" id="fiscal">
+        <div class="section-header">
+            <div class="section-num">3</div>
+            <h2 class="section-title">L'avantage fiscal en chiffres réels</h2>
+        </div>
+        <div class="content">
+            <p>Pour illustrer concrètement l'avantage de la structure holding, prenons l'exemple d'un consultant qui génère 150 000 € de CA annuel, célibataire, avec 500 € de frais mensuels. Il veut maximiser son patrimoine à long terme en réinvestissant une partie de ses revenus.</p>
+
+            <div class="fiscal-demo">
+                <h4>Comparaison SASU classique vs Holding — 150 000 € CA, célibataire</h4>
+                <div class="fiscal-compare">
+                    <div class="fiscal-col">
+                        <h5 class="col-sans">SASU classique (sans holding)</h5>
+                        <div class="fiscal-row"><span class="fiscal-label">CA annuel</span><span class="fiscal-val val-white">150 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Frais de structure</span><span class="fiscal-val val-minus">– 9 500 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Salaire net perçu</span><span class="fiscal-val val-white">~55 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">IS sur bénéfice</span><span class="fiscal-val val-minus">– 16 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Dividendes bruts</span><span class="fiscal-val val-white">~37 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">PFU 30% sur divid.</span><span class="fiscal-val val-minus">– 11 100 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">IR sur salaire</span><span class="fiscal-val val-minus">– 8 200 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Revenu net total</span><span class="fiscal-val val-plus">~72 700 €/an</span></div>
+                    </div>
+                    <div class="fiscal-col">
+                        <h5 class="col-avec">Holding + filiale SASU</h5>
+                        <div class="fiscal-row"><span class="fiscal-label">CA annuel</span><span class="fiscal-val val-white">150 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Frais de structure</span><span class="fiscal-val val-minus">– 11 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Salaire net perçu</span><span class="fiscal-val val-white">~55 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">IS filiale</span><span class="fiscal-val val-minus">– 14 700 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Divid. dans holding</span><span class="fiscal-val val-white">~42 000 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">IS holding (1,25%)</span><span class="fiscal-val val-minus">– 525 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">IR sur salaire</span><span class="fiscal-val val-minus">– 8 200 €</span></div>
+                        <div class="fiscal-row"><span class="fiscal-label">Net + holding</span><span class="fiscal-val val-plus">~73 500 € + 41 475 € en holding</span></div>
+                    </div>
+                </div>
+                <div class="fiscal-gain">
+                    <strong>41 475 € capitalisés dans la holding chaque année</strong>
+                    <p>Au lieu d'être taxés à 30 % (PFU), vos dividendes non consommés s'accumulent dans la holding avec seulement 1,25 % d'IS — soit 12 600 € d'économie sur cet exemple par rapport à une SASU classique où vous sortiriez tout.</p>
+                </div>
+            </div>
+
+            <div class="success-card">
+                <h4><i class="fa-solid fa-chart-line"></i> L'effet cumulatif sur 10 ans</h4>
+                <p>En capitalisant 40 000 € par an dans une holding pendant 10 ans à un rendement moyen de 5 % (placements diversifiés), vous accumulez environ <strong>503 000 €</strong> dans la holding. Avec une SASU classique où vous auriez sorti ces 40 000 € en dividendes PFU 30 %, vous n'auriez eu que 28 000 € nets à investir chaque année — soit une différence patrimoniale de 150 000 € sur 10 ans, hors rendements composés.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 4 -->
+    <div class="section" id="avantages">
+        <div class="section-header">
+            <div class="section-num">4</div>
+            <h2 class="section-title">Avantages et inconvénients</h2>
+        </div>
+        <div class="content">
+            <div class="pros-cons">
+                <div class="pros">
+                    <h4><i class="fa-solid fa-circle-check"></i> Avantages</h4>
+                    <ul class="pc-list">
+                        <li>IS effectif de 1,25 % sur les dividendes inter-sociétés (vs 30 % PFU en sortie personnelle)</li>
+                        <li>Réinvestissement quasi sans friction fiscale dans l'immobilier, d'autres sociétés ou des placements</li>
+                        <li>Protection du patrimoine : les actifs dans la holding sont isolés des risques opérationnels de la filiale</li>
+                        <li>Pacte Dutreil : exonération de 75 % des droits de succession sur les parts de holding animatrice</li>
+                        <li>Flexibilité pour accueillir des investisseurs ou créer de nouvelles filiales</li>
+                        <li>Optimisation de la transmission patrimoniale et de l'organisation familiale</li>
+                        <li>Possibilité de déduire les intérêts d'emprunt de la holding (acquisition à effet de levier)</li>
+                    </ul>
+                </div>
+                <div class="cons">
+                    <h4><i class="fa-solid fa-circle-xmark"></i> Inconvénients</h4>
+                    <ul class="pc-list">
+                        <li>Double comptabilité obligatoire : deux bilans, deux liasses fiscales (~5 000 €/an minimum)</li>
+                        <li>Complexité administrative accrue : deux AG, deux déclarations fiscales, deux comptes bancaires</li>
+                        <li>Délai de 2 ans pour bénéficier du régime mère-fille (détention minimum des titres)</li>
+                        <li>Pas d'intérêt si vous consommez la totalité de vos revenus (pas de capitalisation possible)</li>
+                        <li>Coût de mise en place : 1 200 € minimum pour immatriculer les deux structures</li>
+                        <li>Les dividendes sortis personnellement depuis la holding restent soumis au PFU 30 %</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 5 -->
+    <div class="section" id="pourqui">
+        <div class="section-header">
+            <div class="section-num">5</div>
+            <h2 class="section-title">Pour qui la holding est-elle pertinente ?</h2>
+        </div>
+        <div class="content">
+            <p>La holding n'est pas une solution universelle. Elle devient pertinente dans des situations spécifiques que voici.</p>
+
+            <h3>Le critère numéro un : vous ne consommez pas tout votre revenu</h3>
+            <p>Si vous dépensez intégralement votre revenu chaque mois et ne souhaitez pas investir, la holding ne présente aucun intérêt : vous paierez de toute façon le PFU 30 % en sortant l'argent. L'avantage fiscal de la holding n'existe que si vous avez de l'argent à laisser dans la structure pour le réinvestir. En règle générale, si vous pouvez vous permettre de laisser 30 000 € ou plus par an dans une structure capitalisante, la holding commence à être intéressante.</p>
+
+            <h3>Le seuil de CA recommandé : 80 000 € minimum</h3>
+            <p>En dessous de 80 000 € de CA, le coût fixe de la double structure (environ 5 000 €/an) représente une part trop importante du bénéfice pour que l'économie fiscale compense. Entre 80 000 € et 120 000 €, la holding peut être pertinente si vous avez des projets d'investissement clairs. Au-delà de 120 000 €, elle devient quasi-systématiquement recommandée pour quiconque a un horizon de construction patrimoniale.</p>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Profil</th><th>CA annuel</th><th>Holding pertinente ?</th><th>Raison</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Consultant débutant</td><td>40 000 €</td><td>Non</td><td>Coûts de structure trop élevés vs bénéfice</td></tr>
+                        <tr><td>Consultant établi</td><td>80 000 €</td><td>À étudier</td><td>Dépend des projets d'investissement</td></tr>
+                        <tr><td>Consultant senior</td><td>120 000 €</td><td>Oui</td><td>Économie annuelle significative</td></tr>
+                        <tr><td>Expert / dirigeant</td><td>200 000 €+</td><td>Fortement recommandé</td><td>Économie annuelle majeure</td></tr>
+                        <tr><td>Investisseur immobilier</td><td>Tout niveau</td><td>Oui (avec SCI)</td><td>Capitalisation inter-structures optimale</td></tr>
+                        <tr><td>Multi-activités</td><td>Tout niveau</td><td>Oui</td><td>Centralisation et protection des actifs</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="warning-card">
+                <h4><i class="fa-solid fa-triangle-exclamation"></i> L'abus de droit fiscal</h4>
+                <p>La holding est un outil légal et reconnu par l'administration fiscale française. Mais elle doit répondre à une réalité économique : la filiale doit véritablement exercer une activité, et la holding doit jouer un rôle réel (gestion, animation, stratégie). Une holding créée uniquement pour éviter l'impôt sans activité réelle peut être requalifiée par l'administration fiscale. Faites-vous accompagner par un expert-comptable ou un avocat fiscaliste pour sécuriser votre montage.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- CTA SIMULATEUR -->
+    <div class="cta-sim">
+        <h3>Simulez la holding vs votre statut actuel</h3>
+        <p>Notre simulateur intègre le calcul détaillé de la Holding avec le régime mère-fille, l'IS filiale et la sortie PFU. Comparez en temps réel avec votre profil.</p>
+        <a href="index.html" class="cta-btn"><i class="fa-solid fa-calculator"></i> Lancer la simulation holding</a>
+    </div>
+
+    <!-- SECTION 6 -->
+    <div class="section" id="creation">
+        <div class="section-header">
+            <div class="section-num">6</div>
+            <h2 class="section-title">Comment créer sa holding en pratique</h2>
+        </div>
+        <div class="content">
+            <p>La création d'une structure holding nécessite d'immatriculer deux sociétés distinctes : la société mère (holding) et la filiale opérationnelle. Si vous avez déjà une SASU ou une EURL existante, vous pouvez soit créer la holding en la faisant racheter votre filiale existante (apport de titres), soit créer une nouvelle structure from scratch.</p>
+
+            <h3>Option 1 : création simultanée des deux structures (recommandée pour un démarrage)</h3>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-dot">1</div>
+                    <div class="step-content">
+                        <h4>Choisir la forme juridique de la holding</h4>
+                        <p>La SAS (Société par Actions Simplifiée) est la forme la plus utilisée pour les holdings en France : grande flexibilité statutaire, facilité pour accueillir des investisseurs ou associés futurs. Une SARL peut également convenir pour les structures plus simples ou familiales. La holding est soumise à l'IS.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">2</div>
+                    <div class="step-content">
+                        <h4>Rédiger les statuts des deux sociétés</h4>
+                        <p>Les statuts de la holding doivent mentionner explicitement dans l'objet social la "prise de participation dans toutes sociétés, gestion et animation de filiales". Prévoyez également une convention de prestations de services entre la holding et la filiale (pour qualifier la holding d'animatrice), rédigée par un avocat ou un expert-comptable.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">3</div>
+                    <div class="step-content">
+                        <h4>Déterminer la répartition du capital</h4>
+                        <p>Vous détenez 100 % de la holding. La holding détient 100 % de la filiale. Si vous envisagez d'intégrer des associés dans la filiale (pas dans la holding), c'est possible : la holding restera majoritaire. Pour certains dispositifs fiscaux, la holding doit détenir au moins 5 % de la filiale — 100 % remplit largement cette condition.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">4</div>
+                    <div class="step-content">
+                        <h4>Immatriculer les deux structures</h4>
+                        <p>Deux dossiers séparés via le Guichet Unique (formalites.entreprises.gouv.fr). Deux dépôts de capital (même 1 € symbolique pour chaque), deux publications au JAL, deux Kbis. Comptez 1 200 à 2 000 € de frais au total, et 4 à 6 semaines si vous faites appel à un professionnel pour rédiger les statuts.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">5</div>
+                    <div class="step-content">
+                        <h4>Ouvrir deux comptes bancaires professionnels</h4>
+                        <p>Un compte pour la holding, un pour la filiale. Les flux financiers entre les deux (remontée de dividendes, refacturation de services) doivent être tracés séparément. Ne mélangez jamais les comptes des deux entités.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <div class="step-dot">6</div>
+                    <div class="step-content">
+                        <h4>Mettre en place la convention de management fees</h4>
+                        <p>La holding peut facturer des prestations de services (management fees) à la filiale : gestion administrative, comptabilité, conseil stratégique, mise à disposition de ressources. Ces honoraires sont déductibles du bénéfice imposable de la filiale et constituent une source de revenus pour la holding. Attention : les management fees doivent correspondre à des prestations réelles, documentées et à un prix de marché — sinon risque de requalification par l'administration.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Option 2 : apport de titres d'une société existante (OBO)</h3>
+            <p>Si vous avez déjà une SASU ou une EURL en activité, vous pouvez créer la holding et lui apporter vos titres existants. Cette opération s'appelle un OBO (Owner Buy-Out) ou apport de titres. Elle est fiscalement neutre si certaines conditions sont respectées (régime du sursis d'imposition de l'article 150-0 B du CGI) : vous n'êtes pas imposé sur la plus-value lors de l'apport, l'imposition étant différée au moment de la cession future des titres. C'est une opération plus complexe qui nécessite obligatoirement l'accompagnement d'un avocat fiscaliste ou d'un expert-comptable spécialisé.</p>
+
+            <div class="info-card">
+                <h4><i class="fa-solid fa-euro-sign"></i> Budget total pour créer une structure holding</h4>
+                <p>Immatriculations (x2) : 200 à 400 € de frais de greffe et JAL. Rédaction des statuts et conventions : 1 500 à 4 000 € si vous passez par un avocat (recommandé). Comptabilité annuelle pour deux structures : 3 500 à 6 000 €/an. Total première année : environ 5 000 à 10 000 €. À partir de la deuxième année : 4 000 à 6 000 €/an en frais de structure récurrents.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 7 -->
+    <div class="section" id="strategies">
+        <div class="section-header">
+            <div class="section-num">7</div>
+            <h2 class="section-title">Stratégies d'optimisation avec une holding</h2>
+        </div>
+        <div class="content">
+            <p>Une fois la structure en place, plusieurs stratégies permettent d'optimiser davantage votre situation fiscale et patrimoniale.</p>
+
+            <h3>La stratégie de rémunération optimale en holding</h3>
+            <p>La question clé est : quel salaire vous verser depuis la filiale, et que laisser remonter à la holding ? En pratique, la stratégie la plus courante consiste à se verser depuis la filiale un salaire couvrant vos besoins courants (en général entre 2 et 3 fois le PASS, soit 92 000 à 140 000 € bruts) pour optimiser votre retraite, et à laisser l'excédent remonter à la holding sous forme de dividendes. Le calcul exact dépend de votre tranche marginale d'imposition, de vos droits à la retraite cumulés et de vos projets d'investissement.</p>
+
+            <h3>La holding comme outil d'investissement immobilier</h3>
+            <p>La holding peut détenir une SCI (Société Civile Immobilière) à l'IS, qui achète et gère un patrimoine immobilier locatif. Cette structure permet de financer l'immobilier avec des fonds sortis de la holding à 1,25 % d'IS, plutôt qu'avec des fonds personnels taxés à 30 % de PFU. Sur un investissement immobilier de 300 000 €, l'économie à l'entrée peut dépasser 40 000 €. C'est le montage favori des entrepreneurs qui souhaitent diversifier leur patrimoine sans l'alourdir fiscalement.</p>
+
+            <h3>Le pacte Dutreil : transmettre avec 75 % d'exonération</h3>
+            <p>Si vous souhaitez transmettre votre patrimoine professionnel à vos enfants, le pacte Dutreil permet d'exonérer 75 % de la valeur des titres de la holding animatrice des droits de succession. Sur une holding valorisée à 1 million d'euros, les droits de succession passeraient d'environ 200 000 € à environ 50 000 € grâce à ce dispositif. L'engagement collectif de conservation des titres dure 2 ans, suivi d'un engagement individuel de 4 ans. C'est l'un des outils de transmission patrimoniale les plus puissants du droit français.</p>
+
+            <h3>La trésorerie de holding : placements financiers</h3>
+            <p>Les liquidités accumulées dans la holding peuvent être placées en contrat de capitalisation, en obligations, en OPCVM, en fonds de private equity ou en direct lending. Ces placements génèrent des rendements imposés à l'IS dans la holding (15 % ou 25 % selon le montant), bien inférieurs au PFU personnel de 30 %. De plus, les plus-values réalisées dans la holding bénéficient d'une fiscalité réduite par rapport aux plus-values personnelles sur valeurs mobilières.</p>
+
+            <div class="success-card">
+                <h4><i class="fa-solid fa-star"></i> Le conseil clé pour bien démarrer</h4>
+                <p>Ne créez pas une holding "dans le vide" sans stratégie claire. Définissez d'abord vos objectifs : investissement immobilier, transmission familiale, multi-activités, protection du patrimoine ? Chaque objectif correspond à un montage légèrement différent. Un rendez-vous avec un expert-comptable ou un conseiller en gestion de patrimoine (CGP) spécialisé vous permettra de valider votre projet et d'éviter les erreurs coûteuses à corriger plus tard.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SECTION 8 -->
+    <div class="section" id="faq">
+        <div class="section-header">
+            <div class="section-num">8</div>
+            <h2 class="section-title">FAQ holding 2026</h2>
+        </div>
+        <div class="content">
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Peut-on créer une holding seul, sans associé ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Oui, absolument. La grande majorité des holdings d'entrepreneurs individuels sont des SAS ou des SASU unipersonnelles — c'est-à-dire avec un seul associé, vous. Il n'y a aucune obligation d'avoir des associés. La holding sera alors une SAS unipersonnelle (SASU), et la filiale une SASU également. C'est la structure la plus simple et la plus répandue pour un entrepreneur solo.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Quelle différence entre une holding SAS et une holding SARL ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">La SAS offre une flexibilité statutaire maximale : vous pouvez définir librement les règles de gouvernance, les droits de vote et les conditions d'entrée/sortie d'associés. C'est ideal si vous envisagez d'accueillir des investisseurs ou de structurer un groupe complexe. La SARL est plus rigide (règles légales plus contraignantes) mais peut convenir pour une structure familiale simple. En pratique, la SAS (ou SASU pour une seule personne) est recommandée pour les holdings d'entrepreneurs actifs.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Peut-on transformer sa SASU existante en holding ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">On ne transforme pas une SASU opérationnelle en holding au sens strict. Ce qu'on fait en pratique : on crée une nouvelle SAS holding, puis on lui apporte les titres de la SASU existante (opération d'apport de titres). La SASU devient alors la filiale de la nouvelle holding. Cette opération est fiscalement neutre sous conditions (article 150-0 B du CGI) mais nécessite l'accompagnement d'un expert. Autre option : laisser la SASU existante continuer et créer la holding pour les nouvelles activités et investissements futurs.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Les dividendes de la filiale vers la holding sont-ils automatiquement exonérés ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Non, pas automatiquement. Pour bénéficier du régime mère-fille et de l'exonération à 95 %, vous devez remplir deux conditions : la holding doit détenir au moins 5 % du capital de la filiale (condition facile à remplir avec 100 % de détention), et elle doit avoir conservé ces titres pendant au moins 2 ans. La première année après création, vous ne bénéficiez donc pas encore pleinement du régime mère-fille. En pratique, on crée souvent la structure holding dès le départ pour que le délai de 2 ans commence à courir le plus tôt possible.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Faut-il obligatoirement un avocat pour créer une holding ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Légalement non, mais en pratique c'est fortement recommandé pour au moins la rédaction des statuts et de la convention inter-sociétés. Une holding mal structurée peut coûter très cher à corriger (requalification fiscale, problèmes de gouvernance). Comptez 1 500 à 3 000 € pour un avocat spécialisé en droit des sociétés ou un expert-comptable. C'est un investissement rentabilisé en quelques mois d'économies fiscales si votre CA est suffisant.</div>
+            </div>
+
+            <div class="faq-item" onclick="toggleFaq(this)">
+                <div class="faq-q">Comment sont imposés les dividendes quand je les sors de la holding pour ma consommation personnelle ? <i class="fa-solid fa-chevron-down"></i></div>
+                <div class="faq-a">Quand vous distribuez des dividendes depuis la holding vers vous en tant que personne physique, ils sont soumis au PFU (Prélèvement Forfaitaire Unique) de 30 % : 12,8 % d'IR et 17,2 % de prélèvements sociaux. C'est la même imposition que pour les dividendes d'une SASU classique. L'avantage de la holding n'est pas d'éliminer cette imposition finale, mais de vous permettre de choisir quand et combien vous sortez — tout ce qui reste dans la holding n'est taxé qu'à 1,25 % et continue de croître.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- AD SLOT -->
+    <div class="ad-slot">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8172012578136460" data-ad-slot="auto" data-ad-format="auto" data-full-width-responsive="true"></ins>
+    </div>
+
+    <div class="page-footer">
+        <p>
+            <a href="index.html">Simulateur</a>
+            <a href="guide.html">Guide statuts</a>
+            <a href="guide-creation-entreprise.html">Créer son entreprise</a>
+            <a href="faq.html">FAQ</a>
+            <a href="a-propos.html">À propos & Mentions légales</a>
+        </p>
+        <p style="margin-top:8px;">© 2026 Simulateur Statut Entrepreneur — Estimations indicatives, non un conseil fiscal ou juridique.</p>
+    </div>
+
+</div>
+
+<script>
+function toggleFaq(el) {
+    el.classList.toggle('open');
+}
+</script>
+</body>
+</html>

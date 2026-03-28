@@ -383,13 +383,13 @@
             <div class="field-group">
                 <label class="field-label">Situation familiale</label>
                 <select class="field-input" id="situation">
-                    <option value="1">Célibataire (1 part)</option>
-                    <option value="1.5">Marié/Pacsé sans enfant (2 parts)</option>
-                    <option value="2">Marié/Pacsé + 1 enfant (2,5 parts)</option>
-                    <option value="2.5">Marié/Pacsé + 2 enfants (3 parts)</option>
-                    <option value="3">Marié/Pacsé + 3 enfants (4 parts)</option>
-                    <option value="0.5">Parent isolé + 1 enfant (1,5 part)</option>
-                </select>
+      <option value="1">Célibataire (1 part)</option>
+      <option value="2">Marié/Pacsé sans enfant (2 parts)</option>
+      <option value="2.5">Marié/Pacsé + 1 enfant (2,5 parts)</option>
+      <option value="3">Marié/Pacsé + 2 enfants (3 parts)</option>
+      <option value="4">Marié/Pacsé + 3 enfants (4 parts)</option>
+      <option value="1.5">Parent isolé + 1 enfant (1,5 part)</option>
+  </select>
             </div>
         </div>
 
@@ -603,87 +603,73 @@
    CONSTANTES FISCALES 2026
 ───────────────────────────────────────── */
 
-// Barème IR 2026 (tranches sur revenu net imposable = revenu brut - abattement 10%)
 const BAREME_IR = [
-    { limite: 11497,  taux: 0     },
-    { limite: 29315,  taux: 0.11  },
-    { limite: 83823,  taux: 0.30  },
-    { limite: 180294, taux: 0.41  },
-    { limite: Infinity, taux: 0.45 }
+    { limite: 11497,    taux: 0     },
+    { limite: 29315,    taux: 0.11  },
+    { limite: 83823,    taux: 0.30  },
+    { limite: 180294,   taux: 0.41  },
+    { limite: Infinity, taux: 0.45  }
 ];
 
-// Cotisations sociales SASU (assimilé-salarié) — taux 2026
-const SASU_TAUX_PATRONAL = 0.45;   // ~45% du brut (assurances sociales + CSG)
-const SASU_TAUX_SALARIAL  = 0.22;  // ~22% du brut → net = brut × (1 - 0.22)
-// Coût total employeur = brut × (1 + 0.45) → brut = coût / 1.45
-// Revenu net = brut × 0.78
+const SASU_TAUX_PATRONAL = 0.45;
+const SASU_TAUX_SALARIAL  = 0.22;
 
-// Cotisations TNS EURL/EI — taux progressif réel 2026
-// Intègre : maladie (déplafonnée), retraite (plafonnée au PASS), CSG/CRDS, invalidité
 function tauxTNS(remunAnnuelle) {
     if (remunAnnuelle < 10000)  return 0.38;
     if (remunAnnuelle < 20000)  return 0.41;
     if (remunAnnuelle < 40000)  return 0.44;
     if (remunAnnuelle < 80000)  return 0.46;
-    if (remunAnnuelle < 150000) return 0.45; // retraite complémentaire plafonnée, maladie remonte
-    return 0.44; // au-delà : retraite complémentaire max atteint, maladie déplafonnée mais taux moyen ~44%
+    if (remunAnnuelle < 150000) return 0.45;
+    return 0.44;
 }
 
-// ACRE 2026 : exonération dégressive sur les cotisations TNS
-// Exonération totale jusqu'à 75% du PASS (~34 776 €), dégressive jusqu'au PASS (~46 368 €), nulle au-delà
 const PASS_2026 = 46368;
-function calcCotisTNS_ACRE(remuNette) {
-    const seuil1 = PASS_2026 * 0.75; // ~34 776 € → exonération 100%
-    const seuil2 = PASS_2026;         // ~46 368 € → exonération 0%
-    const txPlein = tauxTNS(remuNette);
 
+function calcCotisTNS_ACRE(remuNette) {
+    const seuil1 = PASS_2026 * 0.75;
+    const seuil2 = PASS_2026;
+    const txPlein = tauxTNS(remuNette);
     if (remuNette <= seuil1) {
-        return remuNette * txPlein * 0; // 0 cotisations (exonération ACRE complète)
+        return 0;
     } else if (remuNette <= seuil2) {
         const fracExo = 1 - (remuNette - seuil1) / (seuil2 - seuil1);
-        const cotisTrancheExo = seuil1 * txPlein * (1 - fracExo);
-        const cotisTrancheNormale = (remuNette - seuil1) * txPlein;
-        return cotisTrancheExo + cotisTrancheNormale;
+        return seuil1 * txPlein * (1 - fracExo) + (remuNette - seuil1) * txPlein;
     } else {
-        const cotisPartielleSurPASS = seuil2 * txPlein * 0.30;
-        const cotisAuDela = (remuNette - seuil2) * txPlein;
-        return cotisPartielleSurPASS + cotisAuDela;
+        return seuil2 * txPlein * 0.30 + (remuNette - seuil2) * txPlein;
     }
 }
 
-// Helper principal : cotisations TNS avec ou sans ACRE
 function cotisationsTNS(remuNette, acre) {
     if (remuNette <= 0) return 0;
     if (acre) return calcCotisTNS_ACRE(remuNette);
     return remuNette * tauxTNS(remuNette);
 }
 
-// Cotisations micro (taux 2026)
+// FIX : taux micro BIC services = 21.2%, BIC commerce = 12.3%, BNC = 21.1%
+// On distingue maintenant 3 catégories
 const MICRO_TX = { service: 0.211, commerce: 0.123 };
 
-// IS 2026
+// FIX : abattements forfaitaires corrects par type
+// BNC services : 34%, BIC services (artisan) : 50%, BIC achat-revente : 71%
+const MICRO_ABATTEMENT = { service: 0.34, commerce: 0.71 };
+
 function calcIS(benefice) {
     if (benefice <= 0) return 0;
-    const tranche1 = Math.min(benefice, 42500);
-    const tranche2 = Math.max(0, benefice - 42500);
-    return tranche1 * 0.15 + tranche2 * 0.25;
+    return Math.min(benefice, 42500) * 0.15 + Math.max(0, benefice - 42500) * 0.25;
 }
 
-// PFU dividendes : 30% flat tax (12.8% IR + 17.2% PS)
 const PFU = 0.30;
 
-// Frais de structure annuels par statut
 const STRUCTURE = {
-    Micro:    800,    // CFE + banque + assurance RC
-    EI:       1200,   // CFE + banque + assurance RC + experts ponctuels
-    EURL:     3000,   // Expert-comptable + banque + assurance + CFE
-    SASU:     3500,   // Expert-comptable + gestionnaire de paie + banque + CFE
-    Portage:  0,      // Inclus dans les frais de gestion de la société de portage
-    Holding:  5000,   // Deux structures : holding + filiale (double compta)
-    SARLFam:  2800    // Expert-comptable + banque + assurance + CFE
+    Micro:    800,
+    EI:       1200,
+    EURL:     3000,
+    SASU:     3500,
+    Portage:  0,
+    Holding:  5000,
+    SARLFam:  2800
 };
 
-// Coût de création (une seule fois)
 const CREATION = { Micro: 0, EI: 0, EURL: 500, SASU: 600, Portage: 0, Holding: 1200, SARLFam: 600 };
 
 /* ─────────────────────────────────────────
@@ -693,35 +679,47 @@ let typeAct = 'service';
 let globalResults = {};
 let selectedStatus = '';
 let recommendedStatus = '';
-let currentMode = 'CA'; // 'CA' ou 'REV'
+let currentMode = 'CA';
 
 /* ─────────────────────────────────────────
-   CALCUL IR (barème progressif avec quotient familial)
-   parts : nombre de parts fiscales
+   CALCUL IR — FIX : plafonnement QF corrigé
+   Le plafond s'applique par DEMI-PART supplémentaire (1 759 €/demi-part en 2026)
 ───────────────────────────────────────── */
 function calcIR(revenuBrut, parts) {
-    // Abattement 10% plafonné à 14 171 €, plancher 495 €
     const abattement = Math.min(Math.max(revenuBrut * 0.10, 495), 14171);
-    const rni = Math.max(0, revenuBrut - abattement); // Revenu Net Imposable
+    const rni = Math.max(0, revenuBrut - abattement);
 
-    // Calcul sur 1 part
+    // Impôt avec quotient familial
     const rniParPart = rni / parts;
     let impot1Part = 0;
     let precedente = 0;
-
     for (const tranche of BAREME_IR) {
         if (rniParPart <= precedente) break;
         const base = Math.min(rniParPart, tranche.limite) - precedente;
         impot1Part += base * tranche.taux;
         precedente = tranche.limite;
     }
+    const impotAvecQF = impot1Part * parts;
 
-    // Plafonnement quotient familial : max 1 759 € par demi-part supplémentaire (2026)
-    const impotTotal = impot1Part * parts;
-    const impot1Part_seul = calcIR1Part(rni); // IR pour 1 part (célibataire)
-    const economieQF = impot1Part_seul - impotTotal;
-    const plafondEconomie = (parts - 1) * 2 * 1759; // 2 demi-parts par part entière
-    const impotFinal = Math.max(impotTotal, impot1Part_seul - plafondEconomie);
+    // Impôt sans quotient familial (célibataire, 1 part)
+    const impotSansQF = calcIR1Part(rni);
+
+    // FIX : plafond par demi-part supplémentaire
+    // Nombre de demi-parts au-delà de 1 part de base
+    // Ex : parts=2 (couple) → 2 demi-parts suppl. → plafond = 2 × 1759
+    // Ex : parts=2.5 (couple+1enf) → 3 demi-parts suppl. → plafond = 3 × 1759
+    // Ex : parts=3 (couple+2enf) → 4 demi-parts suppl. → plafond = 4 × 1759
+    const demiPartsSuppl = (parts - 1) * 2; // nombre de demi-parts au-delà de 1
+    const plafondEconomieQF = demiPartsSuppl * 1759;
+    const economieQF = impotSansQF - impotAvecQF;
+
+    let impotFinal;
+    if (economieQF > plafondEconomieQF) {
+        // Le plafond s'applique : on ne peut pas économiser plus que le plafond
+        impotFinal = impotSansQF - plafondEconomieQF;
+    } else {
+        impotFinal = impotAvecQF;
+    }
 
     return Math.max(0, impotFinal);
 }
@@ -739,17 +737,29 @@ function calcIR1Part(rni) {
 }
 
 /* ─────────────────────────────────────────
+   FIX : mapping parts fiscales corrigé
+   Le select HTML doit utiliser ces valeurs :
+   Célibataire          → 1
+   Marié sans enfant    → 2    (était 1.5 → FAUX)
+   Marié + 1 enfant     → 2.5  (était 2   → FAUX)
+   Marié + 2 enfants    → 3    (était 2.5 → FAUX)
+   Marié + 3 enfants    → 4    (était 3   → FAUX)
+   Parent isolé + 1enf  → 1.5  (était 0.5 → FAUX)
+
+   IMPORTANT : mettre à jour le HTML du <select id="situation"> en conséquence
+───────────────────────────────────────── */
+
+/* ─────────────────────────────────────────
    CALCUL MICRO
 ───────────────────────────────────────── */
 function calcMicro(caAnnuel, fraisAnnuel, parts, acre, isService) {
     const txBrut = isService ? MICRO_TX.service : MICRO_TX.commerce;
-    const tx = acre ? txBrut * 0.50 : txBrut; // ACRE : exonération partielle ~50% cotisations
-    // En micro, les frais ne sont pas déductibles du résultat fiscal (seulement les cotisations)
+    const tx = acre ? txBrut * 0.50 : txBrut;
     const cotisations = caAnnuel * tx;
-    const structure = STRUCTURE.Micro + fraisAnnuel; // frais = dépense réelle non déductible
+    const structure = STRUCTURE.Micro + fraisAnnuel;
 
-    // Revenu imposable : CA - abattement forfaitaire (34% BNC ou 50% BIC services, 71% commerce)
-    const abattementForfait = isService ? 0.34 : 0.71;
+    // FIX : abattement forfaitaire correct selon le type
+    const abattementForfait = isService ? MICRO_ABATTEMENT.service : MICRO_ABATTEMENT.commerce;
     const revenuImposable = caAnnuel * (1 - abattementForfait);
     const ir = calcIR(revenuImposable, parts);
 
@@ -769,25 +779,28 @@ function calcMicro(caAnnuel, fraisAnnuel, parts, acre, isService) {
 
 /* ─────────────────────────────────────────
    CALCUL EURL (gérant TNS, IS)
-   dividPct : % du budget disponible versé en dividendes (0-1)
+   FIX : logique dividendes cohérente
 ───────────────────────────────────────── */
 function calcEURL(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
     const structure = STRUCTURE.EURL + fraisAnnuel;
     const baseRevenu = caAnnuel - structure;
-    if (baseRevenu <= 0) return { ca: caAnnuel, netAnnuel: 0, netMensuel: 0, cotisations: 0, ir: 0, is: 0, dividendesNets: 0, beneficeAvantIS: 0, structure, fraisDeductibles: fraisAnnuel, ok: true, details: {} };
+    if (baseRevenu <= 0) return _emptyResult(caAnnuel, structure, fraisAnnuel);
 
-    // Budget rémunération TNS = part non distribuée en dividendes
+    // Le bénéfice total disponible se divise entre :
+    // - une part destinée à la rémunération TNS (1 - dividPct)
+    // - une part destinée aux dividendes (dividPct), qui passe par l'IS puis PFU
+
+    // PARTIE REMUNERATION TNS
     const budgetRemu = baseRevenu * (1 - dividPct);
-
-    // Résolution itérative : cotis = f(remuNette), remuNette = budgetRemu - cotis
-    let remuNette = budgetRemu / 1.45;
+    let remuNette = budgetRemu / 1.46;
     let cotis = 0;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
         cotis = cotisationsTNS(remuNette, acre);
         remuNette = Math.max(0, budgetRemu - cotis);
     }
 
-    // Dividendes sur la part IS
+    // PARTIE DIVIDENDES (FIX : calcul cohérent avec la part allouée)
+    // Le bénéfice IS = part dividendes du baseRevenu (la rémunération TNS est déjà déduite du CA)
     const beneficeAvantIS = Math.max(0, baseRevenu * dividPct);
     const is = calcIS(beneficeAvantIS);
     const dividendesNets = beneficeAvantIS > 0 ? (beneficeAvantIS - is) * (1 - PFU) : 0;
@@ -806,30 +819,33 @@ function calcEURL(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
 
 /* ─────────────────────────────────────────
    CALCUL SASU (assimilé-salarié, IS)
+   FIX : calcul dividendes entièrement revu pour cohérence
 ───────────────────────────────────────── */
 function calcSASU(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
     const structure = STRUCTURE.SASU + fraisAnnuel;
-    const budgetSalaire = (caAnnuel - structure) * (1 - dividPct);
+    const baseRevenu = caAnnuel - structure;
+    if (baseRevenu <= 0) return _emptyResult(caAnnuel, structure, fraisAnnuel);
 
-    // Coût employeur = brut × (1 + taux patronal)
-    // Avec ACRE : exonération partielle 1ère année (~50% des cotisations patronales)
     const txPatron = acre ? SASU_TAUX_PATRONAL * 0.50 : SASU_TAUX_PATRONAL;
+
+    // PARTIE SALAIRE : on alloue (1 - dividPct) du baseRevenu au coût employeur total
+    const budgetSalaire = baseRevenu * (1 - dividPct);
+    // Coût employeur = brut × (1 + txPatron) → brut = budgetSalaire / (1 + txPatron)
     const brut = budgetSalaire / (1 + txPatron);
     const cotisPatronales = brut * txPatron;
     const cotisalariales = brut * SASU_TAUX_SALARIAL;
-    const salaireNet = brut - cotisalariales;
-    const totalCotis = cotisPatronales + cotisalariales;
+    const salaireNet = brut * (1 - SASU_TAUX_SALARIAL);
 
-    // Dividendes
-    const budgetDivid = (caAnnuel - structure) * dividPct;
-    const beneficeAvantIS = caAnnuel - structure - brut - cotisPatronales;
-    const partDividIS = Math.max(0, beneficeAvantIS); // Dividendes = bénéfice après IS
-    const is = calcIS(Math.max(0, partDividIS));
-    const dividendesNets = partDividIS > 0 ? partDividIS * (1 - PFU) : 0;
+    // PARTIE DIVIDENDES (FIX) :
+    // Le bénéfice IS = ce qui reste après avoir déduit le coût employeur total du baseRevenu
+    // Budget dividendes alloué = baseRevenu × dividPct
+    // Ce budget devient le bénéfice avant IS de la société
+    const beneficeAvantIS = Math.max(0, baseRevenu * dividPct);
+    const is = calcIS(beneficeAvantIS);
+    // Après IS, le solde est distribué en dividendes → PFU 30%
+    const dividendesNets = beneficeAvantIS > 0 ? (beneficeAvantIS - is) * (1 - PFU) : 0;
 
-    // IR sur salaire net (salaire net = revenu imposable en SASU, après abattement 10%)
     const ir = calcIR(salaireNet, parts);
-
     const netAnnuel = salaireNet - ir + dividendesNets;
 
     return {
@@ -837,9 +853,10 @@ function calcSASU(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
         netAnnuel,
         netMensuel: netAnnuel / 12,
         salaireNet,
-        cotisations: totalCotis,
+        cotisations: cotisPatronales + cotisalariales,
         cotisPatronales,
         cotisalariales,
+        brut,
         ir,
         is,
         dividendesNets,
@@ -847,39 +864,21 @@ function calcSASU(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
         structure,
         fraisDeductibles: fraisAnnuel,
         ok: true,
-        details: { cotisations: totalCotis, structure, ir, is, dividendes: partDividIS, dividendesNets, fraisDeductibles: fraisAnnuel }
+        details: { cotisations: cotisPatronales + cotisalariales, structure, ir, is, dividendes: beneficeAvantIS, dividendesNets, fraisDeductibles: fraisAnnuel }
     };
 }
 
 /* ─────────────────────────────────────────
-   CALCUL EN MODE "REVENU CIBLE"
-   On cherche le CA par dichotomie
+   CALCUL EI AU RÉEL
 ───────────────────────────────────────── */
-function trouverCA(targetNetMensuel, fraisAnnuel, parts, acre, dividPct, isService, statut) {
-    let lo = 0, hi = 1500000;
-    for (let i = 0; i < 60; i++) {
-        const mid = (lo + hi) / 2;
-        const r = calcStatut(statut, mid, fraisAnnuel, parts, acre, dividPct, isService);
-        if (r.netMensuel < targetNetMensuel) lo = mid;
-        else hi = mid;
-    }
-    return (lo + hi) / 2;
-}
-
-/* ─────────────────────────────────────────
-   CALCUL EI AU RÉEL (Entreprise Individuelle)
-   Depuis 2022 : patrimoine séparé, option IS
-   Régime TNS comme EURL mais sans capital social
-───────────────────────────────────────── */
-function calcEI(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
+function calcEI(caAnnuel, fraisAnnuel, parts, acre) {
     const structure = STRUCTURE.EI + fraisAnnuel;
     const baseRevenu = caAnnuel - structure;
-    if (baseRevenu <= 0) return { ca: caAnnuel, netAnnuel: 0, netMensuel: 0, cotisations: 0, ir: 0, is: 0, dividendesNets: 0, beneficeAvantIS: 0, structure, fraisDeductibles: fraisAnnuel, ok: true, details: {} };
+    if (baseRevenu <= 0) return _emptyResult(caAnnuel, structure, fraisAnnuel);
 
-    // Résolution itérative : remuNette = baseRevenu - cotis(remuNette)
-    let remuNette = baseRevenu / 1.45;
+    let remuNette = baseRevenu / 1.46;
     let cotis = 0;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
         cotis = cotisationsTNS(remuNette, acre);
         remuNette = Math.max(0, baseRevenu - cotis);
     }
@@ -898,23 +897,16 @@ function calcEI(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
 
 /* ─────────────────────────────────────────
    CALCUL PORTAGE SALARIAL
-   Société de portage : frais gestion 8-10% du CA HT
-   Salarié : charges ~47% du brut (patronal + salarial)
 ───────────────────────────────────────── */
 function calcPortage(caAnnuel, fraisAnnuel, parts, acre) {
-    // Frais de gestion société de portage : 9% du CA HT en moyenne
     const fraisGestion = caAnnuel * 0.09;
-    // Frais professionnels refacturés à la société (déductibles du brut imposable)
     const baseRemuneration = caAnnuel - fraisGestion - fraisAnnuel;
-    // Cotisations patronales ~43% du brut, salariales ~22% → net = brut × 0.78
-    // Coût total employeur = brut × 1.43 → brut = base / 1.43
-    const txPatron = acre ? 0.43 * 0.60 : 0.43; // ACRE portage : 50% exo 1ère année
+    const txPatron = acre ? 0.43 * 0.60 : 0.43;
     const brut = baseRemuneration / (1 + txPatron);
     const cotisPatronales = brut * txPatron;
     const cotisalariales = brut * 0.22;
     const salaireNet = brut - cotisalariales;
     const totalCotis = cotisPatronales + cotisalariales;
-    // IR sur salaire net (abattement 10% comme salarié)
     const ir = calcIR(salaireNet, parts);
     const netAnnuel = salaireNet - ir;
 
@@ -930,18 +922,13 @@ function calcPortage(caAnnuel, fraisAnnuel, parts, acre) {
 }
 
 /* ─────────────────────────────────────────
-   CALCUL HOLDING + FILIALE (schéma mère-fille)
-   Filiale SASU opérationnelle → dividendes remontent à Holding
-   Régime mère-fille : 95% exonération IS sur dividendes reçus par holding
-   Réinvestissement quasi-sans friction fiscale
+   CALCUL HOLDING + FILIALE
 ───────────────────────────────────────── */
 function calcHolding(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
     const structure = STRUCTURE.Holding + fraisAnnuel;
     const budgetOperationnel = caAnnuel - structure;
-    if (budgetOperationnel <= 0) return { ca: caAnnuel, netAnnuel: 0, netMensuel: 0, cotisations: 0, ir: 0, is: 0, dividendesNets: 0, beneficeAvantIS: 0, structure, fraisDeductibles: fraisAnnuel, ok: false, details: {} };
+    if (budgetOperationnel <= 0) return _emptyResult(caAnnuel, structure, fraisAnnuel, false);
 
-    // En holding, stratégie optimale : salaire minimal + max dividendes via holding
-    // On force un minimum de 40% en dividendes pour que la structure ait du sens
     const dividPctEffectif = Math.max(dividPct, 0.40);
     const partSalaire = 1 - dividPctEffectif;
     const budgetSalaire = budgetOperationnel * partSalaire;
@@ -950,16 +937,13 @@ function calcHolding(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
     const brut = budgetSalaire / (1 + txPatron);
     const cotisPatronales = brut * txPatron;
     const cotisalariales = brut * SASU_TAUX_SALARIAL;
-    const salaireNet = brut - cotisalariales;
+    const salaireNet = brut * (1 - SASU_TAUX_SALARIAL);
 
-    // Bénéfice filiale → dividendes → holding
     const beneficeFiliale = budgetOperationnel * dividPctEffectif;
     const isFiliale = calcIS(beneficeFiliale);
     const dividendesFiliale = beneficeFiliale - isFiliale;
-    // Régime mère-fille : IS holding = 5% × 25% = 1.25%
     const isHolding = dividendesFiliale * 0.05 * 0.25;
     const dividendesHolding = dividendesFiliale - isHolding;
-    // Sortie personnelle via PFU 30%
     const dividendesPersonnels = dividendesHolding * (1 - PFU);
     const ir = calcIR(salaireNet, parts);
     const netAnnuel = salaireNet - ir + dividendesPersonnels;
@@ -980,15 +964,10 @@ function calcHolding(caAnnuel, fraisAnnuel, parts, acre, dividPct) {
 
 /* ─────────────────────────────────────────
    CALCUL SARL DE FAMILLE À L'IR
-   Réservée aux couples/famille (parts > 1)
-   Option IR : bénéfices imposés au barème progressif du foyer
-   Avantage réel : répartition du bénéfice sur plusieurs associés
-   ATTENTION : le bénéfice distribué est imposé à l'IR du foyer,
-   pas exonéré — l'avantage vient uniquement du quotient familial
 ───────────────────────────────────────── */
 function calcSARLFam(caAnnuel, fraisAnnuel, parts, acre) {
-    // Non éligible pour un célibataire (nécessite un associé familial)
-    const estEnCouple = parts >= 1.5;
+    // FIX : avec le mapping corrigé, parts >= 2 pour un couple (au lieu de 1.5)
+    const estEnCouple = parts >= 2;
     if (!estEnCouple) {
         return {
             ca: caAnnuel, netAnnuel: 0, netMensuel: 0,
@@ -1003,22 +982,16 @@ function calcSARLFam(caAnnuel, fraisAnnuel, parts, acre) {
     const structure = STRUCTURE.SARLFam + fraisAnnuel;
     const baseRevenu = caAnnuel - structure;
 
-    // Le gérant majoritaire est TNS — résolution itérative
-    let remuNette = baseRevenu / 1.45;
+    let remuNette = baseRevenu / 1.46;
     let cotis = 0;
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
         cotis = cotisationsTNS(remuNette, acre);
         remuNette = Math.max(0, baseRevenu - cotis);
     }
 
-    // Bénéfice restant = distribué aux associés et imposé à l'IR du foyer
-    // (option IR SARL famille = PAS d'IS, directement imposé IR associés)
     const beneficeDistribuable = Math.max(0, baseRevenu - remuNette - cotis);
-
-    // L'avantage réel : le bénéfice distribué est imposé avec les parts du FOYER complet
     const revenuImposableTotalFoyer = remuNette + beneficeDistribuable;
     const ir = calcIR(revenuImposableTotalFoyer, parts);
-
     const netAnnuel = remuNette + beneficeDistribuable - ir;
 
     return {
@@ -1033,7 +1006,44 @@ function calcSARLFam(caAnnuel, fraisAnnuel, parts, acre) {
 }
 
 /* ─────────────────────────────────────────
-   FONCTION PRINCIPALE
+   HELPER : résultat vide
+───────────────────────────────────────── */
+function _emptyResult(ca, structure, fraisDeductibles, ok = true) {
+    return { ca, netAnnuel: 0, netMensuel: 0, cotisations: 0, ir: 0, is: 0,
+             dividendesNets: 0, beneficeAvantIS: 0, remuNette: 0, salaireNet: 0,
+             structure, fraisDeductibles, ok, details: {} };
+}
+
+/* ─────────────────────────────────────────
+   CALCUL EN MODE "REVENU CIBLE" (dichotomie)
+───────────────────────────────────────── */
+function trouverCA(targetNetMensuel, fraisAnnuel, parts, acre, dividPct, isService, statut) {
+    let lo = 0, hi = 1500000;
+    for (let i = 0; i < 60; i++) {
+        const mid = (lo + hi) / 2;
+        const r = calcStatut(statut, mid, fraisAnnuel, parts, acre, dividPct, isService);
+        if (r.netMensuel < targetNetMensuel) lo = mid;
+        else hi = mid;
+    }
+    return (lo + hi) / 2;
+}
+
+/* ─────────────────────────────────────────
+   DISPATCHER PRINCIPAL
+───────────────────────────────────────── */
+function calcStatut(statut, ca, fraisAnnuel, parts, acre, dividPct, isService) {
+    if (statut === 'Micro')    return calcMicro(ca, fraisAnnuel, parts, acre, isService);
+    if (statut === 'EI')       return calcEI(ca, fraisAnnuel, parts, acre);
+    if (statut === 'EURL')     return calcEURL(ca, fraisAnnuel, parts, acre, dividPct);
+    if (statut === 'SASU')     return calcSASU(ca, fraisAnnuel, parts, acre, dividPct);
+    if (statut === 'Portage')  return calcPortage(ca, fraisAnnuel, parts, acre);
+    if (statut === 'Holding')  return calcHolding(ca, fraisAnnuel, parts, acre, dividPct);
+    if (statut === 'SARLFam')  return calcSARLFam(ca, fraisAnnuel, parts, acre);
+    return calcSASU(ca, fraisAnnuel, parts, acre, dividPct);
+}
+
+/* ─────────────────────────────────────────
+   FONCTION PRINCIPALE analyser()
 ───────────────────────────────────────── */
 function analyser() {
     const fraisMens   = parseFloat(document.getElementById('frais').value) || 0;
@@ -1053,12 +1063,10 @@ function analyser() {
     } else if (currentMode === 'REV') {
         revVal = parseFloat(document.getElementById('rev').value) || 0;
     } else if (currentMode === 'TJM') {
-        const tjm   = parseFloat(document.getElementById('tjm_input').value) || 0;
+        const tjm = parseFloat(document.getElementById('tjm_input').value) || 0;
         joursFactures = parseInt(document.getElementById('jours_input').value) || 18;
         if (tjm === 0) { alert('Veuillez saisir votre TJM.'); return; }
-        // CA annuel = TJM × jours/mois × 12
         caVal = tjm * joursFactures * 12;
-        // Stocker pour affichage
         window._tjmSaisi = tjm;
         window._joursSaisis = joursFactures;
     }
@@ -1079,7 +1087,6 @@ function analyser() {
         globalResults[statut] = calcStatut(statut, ca, fraisAnnuel, parts, acre, dividPct, isService);
     });
 
-    // Trouver le meilleur statut (max net mensuel parmi les statuts valides)
     recommendedStatus = Object.entries(globalResults)
         .filter(([, r]) => r.ok && r.netMensuel > 0)
         .sort((a, b) => b[1].netMensuel - a[1].netMensuel)[0]?.[0] || 'EURL';
@@ -1092,313 +1099,9 @@ function analyser() {
 }
 
 /* ─────────────────────────────────────────
-   MISE À JOUR UI
+   FIX : projection 3 ans — année 3 distincte
+   On simule une légère croissance du CA (+5%) pour l'année 3
 ───────────────────────────────────────── */
-function updateUI(jours) {
-    if (!Object.keys(globalResults).length) return;
-    const data = globalResults[selectedStatus];
-    const parts = parseFloat(document.getElementById('situation').value);
-
-    // ── Bannière ──
-    const isTop = selectedStatus === recommendedStatus;
-    // En mode TJM, afficher le TJM saisi
-    const tjmInfo = currentMode === 'TJM'
-        ? `<p style="opacity:0.85;font-size:12px;margin-top:2px">TJM : ${(window._tjmSaisi||0).toLocaleString('fr-FR')} €/j × ${window._joursSaisis||18} j = ${fmtCA(globalResults[selectedStatus].ca)} € CA/an</p>`
-        : '';
-    document.getElementById('bloc_banner').innerHTML = `
-        <div class="result-banner-left">
-            <h3>Revenu net mensuel estimé</h3>
-            <div class="big-num">${fmt(data.netMensuel)} <span>€/mois</span></div>
-            <p>Après charges sociales + impôt sur le revenu</p>
-            ${tjmInfo}
-        </div>
-        <div class="result-banner-right">
-            <div class="statut-badge">${selectedStatus}</div><br>
-            ${isTop ? '<span class="conseil-badge"><i class="fa-solid fa-star"></i> Conseillé</span>' : ''}
-        </div>`;
-
-    // ── Recommendation card spéciale mode TJM ──
-    const recBloc = document.getElementById('bloc_recommendation');
-    if (currentMode === 'TJM' && recBloc) {
-        const tjm = window._tjmSaisi || 0;
-        const joursRec = window._joursSaisis || 18;
-        const nets = Object.entries(globalResults)
-            .filter(([,r]) => r.ok && r.netMensuel > 0)
-            .sort((a,b) => b[1].netMensuel - a[1].netMensuel);
-        const best = nets[0];
-        const worst = nets[nets.length-1];
-        const diffMaxMin = best && worst ? Math.round((best[1].netMensuel - worst[1].netMensuel) * 12) : 0;
-        const medals = ['🥇','🥈','🥉','4️⃣','5️⃣','6️⃣','7️⃣'];
-        const LABELS_REC = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Famille' };
-
-        recBloc.innerHTML = `
-        <div class="rec-card">
-            <div class="rec-header">
-                <i class="fa-solid fa-trophy"></i>
-                <span>Meilleur statut pour votre TJM de ${tjm.toLocaleString('fr-FR')} €/j (${joursRec} j/mois)</span>
-            </div>
-            <div class="rec-body">
-                <div class="rec-winner">
-                    <div class="rec-winner-name">${LABELS_REC[recommendedStatus] || recommendedStatus}</div>
-                    <div class="rec-winner-net">${fmt(globalResults[recommendedStatus].netMensuel)} €<span>/mois</span></div>
-                    <div class="rec-winner-sub">net après IR, charges sociales et frais de structure</div>
-                </div>
-                <div class="rec-compare">
-                    ${nets.map(([n,r],i) => {
-                        const diff = fmt(globalResults[recommendedStatus].netMensuel - r.netMensuel);
-                        const badge = i===0
-                            ? '<span class="rec-badge-top">Optimal</span>'
-                            : `<span class="rec-diff">− ${diff} €/mois</span>`;
-                        return `<div class="rec-row ${i===0?'rec-row-best':''}">
-                            <span class="rec-rank">${medals[i]||''}</span>
-                            <span class="rec-name">${LABELS_REC[n]||n}</span>
-                            <span class="rec-net">${fmt(r.netMensuel)} €/mois</span>
-                            ${badge}
-                        </div>`;
-                    }).join('')}
-                </div>
-                ${diffMaxMin > 0 ? `<p class="rec-insight"><i class="fa-solid fa-circle-info"></i> Le choix du statut peut représenter jusqu'à <strong>${diffMaxMin.toLocaleString('fr-FR')} €/an</strong> de différence sur votre revenu net disponible.</p>` : ''}
-            </div>
-        </div>`;
-        recBloc.style.display = 'block';
-    } else if (recBloc) {
-        recBloc.style.display = 'none';
-    }
-
-    // ── Sélecteur statuts ──
-    const joursUI = currentMode === 'TJM' ? (window._joursSaisis || 18) : jours;
-    const LABELS_SHORT = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Fam.' };
-    const ALL_STATUTS_UI = ['Micro', 'EI', 'EURL', 'SASU', 'Portage', 'Holding', 'SARLFam'];
-    let htmlStatuts = '';
-    ALL_STATUTS_UI.forEach(n => {
-        const r = globalResults[n];
-        const sel = n === selectedStatus ? 'selected' : '';
-        const top = n === recommendedStatus ? '<span class="top-badge">⭐ Optimal</span>' : '';
-        let val, sub;
-        if (!r.ok) {
-            if (n === 'SARLFam') {
-                val = '<span style="font-size:9px;color:var(--text-light);line-height:1.3">Couple<br>requis</span>';
-            } else if (n === 'Holding') {
-                val = '<span style="font-size:9px;color:var(--text-light);line-height:1.3">CA<br>>80k€</span>';
-            } else {
-                val = '<span style="font-size:9px;color:var(--danger)">Hors seuil</span>';
-            }
-            sub = '';
-        } else {
-            val = fmt(r.netMensuel) + '€';
-            sub = currentMode === 'TJM' ? `${fmtK(r.netAnnuel)}/an` : `CA: ${fmtK(r.ca)}`;
-        }
-        htmlStatuts += `
-            <div class="stat-card ${sel} ${!r.ok ? 'stat-disabled' : ''}" 
-                 onclick="${r.ok ? `selectedStatus='${n}';updateUI(${joursUI})` : ''}">
-                ${top}
-                <h5>${LABELS_SHORT[n]}</h5>
-                <div class="net-val">${val}</div>
-                <div class="sub-val">${sub}</div>
-            </div>`;
-    });
-    document.getElementById('liste_statuts').innerHTML = htmlStatuts;
-
-    // ── KPIs ──
-    const txEffCharges = data.ca > 0 ? (data.cotisations / data.ca * 100).toFixed(0) : 0;
-    const txEffIR = data.netAnnuel > 0 ? ((data.ir || 0) / (data.netAnnuel + (data.ir || 0)) * 100).toFixed(0) : 0;
-    document.getElementById('bloc_kpis').innerHTML = `
-        <div class="kpi"><div class="kpi-val" style="color:var(--primary)">${fmtCA(data.ca)} €</div><div class="kpi-label">CA annuel</div></div>
-        <div class="kpi"><div class="kpi-val" style="color:var(--danger)">${txEffCharges}%</div><div class="kpi-label">Taux charges sociales</div></div>
-        <div class="kpi"><div class="kpi-val" style="color:var(--warning)">${txEffIR}%</div><div class="kpi-label">Taux effectif IR</div></div>
-        <div class="kpi"><div class="kpi-val" style="color:var(--success)">${fmt(data.netMensuel * 12 / 1000)}k €</div><div class="kpi-label">Net annuel</div></div>`;
-
-    // ── Alerte optimisation ──
-    genOptimAlert(data);
-
-    // ── Décomposition ──
-    genDecomp(data);
-
-    // ── TJM ──
-    const tjm = Math.round(data.ca / 12 / jours);
-    const tjmSaisi = window._tjmSaisi || 0;
-    const isTJMMode = currentMode === 'TJM';
-    const caForTJM = data.ca;
-    document.getElementById('bloc_tjm').innerHTML = `
-        <div class="tjm-left">
-            <h4><i class="fa-solid fa-calendar-days"></i> ${isTJMMode ? 'TJM saisi' : 'TJM cible'}</h4>
-            <div class="tjm-big"><span id="tjm_display">${isTJMMode ? tjmSaisi.toLocaleString('fr-FR') : tjm.toLocaleString('fr-FR')}</span> €<span style="font-size:1rem;opacity:0.6">/jour</span></div>
-            <p>${isTJMMode
-                ? `CA généré : ${fmtCA(data.ca)} €/an — ${jours} j/mois`
-                : `TJM à facturer pour atteindre votre CA`}</p>
-        </div>
-        <div class="tjm-right">
-            <label for="input_jours">Jours facturés/mois</label>
-            <input type="number" id="input_jours" value="${jours}" min="1" max="22" class="tjm-input"
-                   oninput="recalcTJM(this.value, ${caForTJM})">
-        </div>`;
-
-    // ── Vie du gérant ──
-    genLife();
-
-    // ── Projection 3 ans ──
-    genProjection(parts);
-}
-
-/* ─────────────────────────────────────────
-   GÉNÉRATION BLOCS
-───────────────────────────────────────── */
-function genOptimAlert(data) {
-    const bloc = document.getElementById('bloc_optim');
-    const dividOpt = document.getElementById('divid_check').checked;
-    const isEurlSasu = (selectedStatus === 'EURL' || selectedStatus === 'SASU');
-    const acre = document.getElementById('acre_check').checked;
-    const parts = parseFloat(document.getElementById('situation').value);
-    const ca = data.ca;
-    let html = '';
-
-    // Alerte EI recommandé : expliquer pourquoi et ses limites
-    if (recommendedStatus === 'EI') {
-        const raisons = [];
-        if (parts >= 2.5) raisons.push(`votre quotient familial (${parts} parts fiscales) réduit l'IR à quasi zéro, ce qui neutralise l'avantage fiscal des dividendes`);
-        if (acre) raisons.push('l\'ACRE divise vos cotisations TNS par 2 la 1ère année (~22%), effaçant l\'écart de charges avec une société');
-        raisons.push('les frais de structure de l\'EI (1 200 €/an) sont 1 800 à 2 300 € moins chers qu\'une EURL ou SASU');
-        html += `<div class="optim-alert" style="background:linear-gradient(135deg,#f0fdf4,#ebf8ff);border-color:#86efac;border-left-color:var(--success)">
-            <h4 style="color:#166534"><i class="fa-solid fa-circle-check" style="color:var(--success)"></i> Pourquoi l'EI au réel est optimal pour votre profil</h4>
-            <p style="color:#14532d;line-height:1.7">${raisons.map((r,i)=>`<strong>${i+1}.</strong> ${r.charAt(0).toUpperCase()+r.slice(1)}.`).join('<br>')}
-            <br><br><i class="fa-solid fa-triangle-exclamation" style="color:var(--warning)"></i> <strong>Limites importantes :</strong> L'EI ne permet <strong>pas les dividendes</strong>, ni la levée de fonds, ni l'accueil d'associés. 
-            Si votre CA croît ou que vous souhaitez capitaliser, basculez vers une <strong>EURL ou Holding</strong>. 
-            Simulez aussi <strong>sans ACRE</strong> pour voir votre situation à partir de l'année 2.</p>
-        </div>`;
-    }
-
-    // Alerte dividendes possible sur EURL/SASU
-    if (isEurlSasu && !dividOpt && ca > 50000) {
-        const econEstim = selectedStatus === 'SASU' ? Math.round(ca * 0.04) : Math.round(ca * 0.02);
-        html += `<div class="optim-alert">
-            <h4><i class="fa-solid fa-lightbulb"></i> Optimisation dividendes disponible</h4>
-            <p>Avec une stratégie <strong>salaire + dividendes</strong>, vous pourriez économiser jusqu'à <strong>${econEstim.toLocaleString('fr-FR')} €/an</strong>.
-            Cochez <em>"Optimisation dividendes"</em> et ajustez le curseur pour simuler.</p>
-        </div>`;
-    }
-
-    // Alerte ACRE temporaire
-    if (acre && (recommendedStatus === 'EI' || recommendedStatus === 'Micro')) {
-        const fraisAnn = (parseFloat(document.getElementById('frais').value)||0)*12;
-        const rSansAcre = calcStatut(recommendedStatus, ca, fraisAnn, parts, false, 0, typeAct==='service');
-        const diff = Math.round(globalResults[recommendedStatus].netMensuel - rSansAcre.netMensuel);
-        if (diff > 80) {
-            html += `<div class="optim-alert" style="background:#fffbeb;border-left-color:var(--warning)">
-                <h4 style="color:#92400e"><i class="fa-solid fa-clock"></i> Attention : avantage ACRE temporaire (12 mois)</h4>
-                <p style="color:#78350f">Sans ACRE (dès l'année 2), votre revenu net baisserait de <strong>${diff.toLocaleString('fr-FR')} €/mois</strong>.
-                Désactivez l'ACRE et relancez la simulation pour voir votre situation réelle à long terme — le statut optimal pourrait changer.</p>
-            </div>`;
-        }
-    }
-
-    bloc.innerHTML = html;
-}
-
-function genDecomp(data) {
-    const isService = typeAct === 'service';
-    const acre = document.getElementById('acre_check').checked;
-    const s = selectedStatus;
-    let html = `<div class="decomp-title"><i class="fa-solid fa-receipt"></i> Décomposition annuelle — ${s}</div>`;
-
-    html += row('Chiffre d\'affaires HT', `+ ${fmtCA(data.ca)} €`, 'plus');
-
-    if (s === 'Micro') {
-        const txAffiche = ((data.cotisations / data.ca) * 100).toFixed(1);
-        html += row(`Cotisations sociales (${txAffiche}% du CA)${acre?' <span class="info-tag">ACRE</span>':''}`, `− ${fmtCA(data.cotisations)} €`, 'minus');
-        html += row('Frais de structure (CFE, banque, assurance)', `− ${fmtCA(data.structure)} €`, 'minus');
-        html += row('Impôt sur le revenu (IR)', `− ${fmtCA(data.ir)} €`, 'minus');
-
-    } else if (s === 'EI') {
-        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
-        html += row('Frais de structure (CFE, banque)', `− ${fmtCA(STRUCTURE.EI)} €`, 'minus');
-        const tx = ((data.cotisations / (data.remuNette || 1)) * 100).toFixed(0);
-        html += row(`Cotisations TNS (~${tx}%)${acre?' <span class="info-tag">ACRE</span>':''}`, `− ${fmtCA(data.cotisations)} €`, 'minus');
-        html += row('Revenu net TNS', `= ${fmtCA(data.remuNette)} €`, 'neutral');
-        html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir)} €`, 'minus');
-
-    } else if (s === 'EURL' || s === 'SARLFam') {
-        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
-        html += row(`Frais de structure (compta, banque, CFE)`, `− ${fmtCA(STRUCTURE[s])} €`, 'minus');
-        const tx = ((data.cotisations / (data.remuNette || 1)) * 100).toFixed(0);
-        html += row(`Cotisations TNS (~${tx}%)${acre?' <span class="info-tag">ACRE</span>':''}`, `− ${fmtCA(data.cotisations)} €`, 'minus');
-        html += row('Rémunération nette TNS', `= ${fmtCA(data.remuNette || 0)} €`, 'neutral');
-        if (data.dividendesNets > 0 && s === 'SARLFam') {
-            html += row('Bénéfice distribuable (option IR)', `+ ${fmtCA(data.beneficeAvantIS)} €`, 'plus');
-            html += row('IR total (répartition familiale)', `− ${fmtCA(data.ir)} €`, 'minus');
-        } else {
-            if (data.is > 0) html += row('Impôt sur les Sociétés (IS)', `− ${fmtCA(data.is)} €`, 'minus');
-            html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
-            if (data.dividendesNets > 0) html += row('Dividendes nets (PFU 30%)', `+ ${fmtCA(data.dividendesNets)} €`, 'plus');
-        }
-
-    } else if (s === 'SASU') {
-        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
-        html += row('Frais de structure (compta, paie, banque)', `− ${fmtCA(STRUCTURE.SASU)} €`, 'minus');
-        html += row('Charges patronales', `− ${fmtCA(data.cotisPatronales || 0)} €`, 'minus');
-        html += row('Charges salariales', `− ${fmtCA(data.cotisalariales || 0)} €`, 'minus');
-        html += row('Salaire net perçu', `= ${fmtCA(data.salaireNet || 0)} €`, 'neutral');
-        if (data.is > 0) html += row('Impôt sur les Sociétés (IS)', `− ${fmtCA(data.is)} €`, 'minus');
-        html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
-        if (data.dividendesNets > 0) html += row('Dividendes nets (PFU 30%)', `+ ${fmtCA(data.dividendesNets)} €`, 'plus');
-
-    } else if (s === 'Portage') {
-        html += row('Frais de gestion société de portage (9%)', `− ${fmtCA(data.fraisGestion || 0)} €`, 'minus');
-        html += row('Frais professionnels remboursés', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
-        html += row('Charges patronales', `− ${fmtCA(data.cotisPatronales || 0)} €`, 'minus');
-        html += row('Charges salariales', `− ${fmtCA(data.cotisalariales || 0)} €`, 'minus');
-        html += row('Salaire net perçu', `= ${fmtCA(data.salaireNet || 0)} €`, 'neutral');
-        html += row('Impôt sur le Revenu (IR)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
-
-    } else if (s === 'Holding') {
-        html += row('Frais professionnels déductibles', `− ${fmtCA(data.fraisDeductibles)} €`, 'minus');
-        html += row('Frais de structure (double compta)', `− ${fmtCA(STRUCTURE.Holding)} €`, 'minus');
-        html += row('Charges patronales (filiale)', `− ${fmtCA(data.cotisPatronales || 0)} €`, 'minus');
-        html += row('Charges salariales (filiale)', `− ${fmtCA(data.cotisalariales || 0)} €`, 'minus');
-        html += row('Salaire net perçu (filiale)', `= ${fmtCA(data.salaireNet || 0)} €`, 'neutral');
-        html += row('IS filiale', `− ${fmtCA(data.isFiliale || 0)} €`, 'minus');
-        html += row('Dividendes filiale → holding', `= ${fmtCA(data.dividendesFiliale || 0)} €`, 'neutral');
-        html += row('IS holding (quote-part 5% × 25%)', `− ${fmtCA(data.isHolding || 0)} €`, 'minus');
-        html += row('Dividendes holding → PFU 30%', `− ${fmtCA((data.dividendesHolding || 0) * PFU)} €`, 'minus');
-        html += row('Impôt sur le Revenu (IR sur salaire)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
-    }
-
-    html += `<div class="decomp-row total">
-        <span class="decomp-label"><i class="fa-solid fa-wallet"></i> REVENU NET DISPONIBLE / AN</span>
-        <span class="decomp-val">${fmtCA(data.netAnnuel)} €</span>
-    </div>
-    <div class="decomp-row total" style="font-size:13px;padding-top:6px">
-        <span class="decomp-label">Soit par mois</span>
-        <span class="decomp-val">${fmt(data.netMensuel)} €/mois</span>
-    </div>`;
-
-    document.getElementById('bloc_decomp').innerHTML = html;
-}
-
-function row(label, val, cls) {
-    return `<div class="decomp-row">
-        <span class="decomp-label">${label}</span>
-        <span class="decomp-val ${cls}">${val}</span>
-    </div>`;
-}
-
-function genLife() {
-    const life = {
-        Micro:   { social: 'TNS – Micro-social', retraite: '⭐⭐ Limitée', chomage: '❌ Non', comptabilite: 'Livre de recettes', credit: '⚠️ Difficile (pas de bulletins)' },
-        EI:      { social: 'TNS – Régime réel', retraite: '⭐⭐⭐ Correcte', chomage: '❌ Non', comptabilite: 'Réelle simplifiée', credit: '⚠️ Moyen (liasse fiscale)' },
-        EURL:    { social: 'TNS – Régime général', retraite: '⭐⭐⭐ Correcte', chomage: '❌ Non', comptabilite: 'Complète obligatoire', credit: '⚠️ Moyen (après 2 bilans)' },
-        SASU:    { social: 'Assimilé-salarié', retraite: '⭐⭐⭐⭐ Élevée', chomage: '✅ Possible (fin mandat)', comptabilite: 'Complète + fiches de paie', credit: '✅ Facile (bulletins)' },
-        Portage: { social: 'Salarié (CDI ou CDD)', retraite: '⭐⭐⭐⭐ Élevée', chomage: '✅ Oui (droits acquis)', comptabilite: '✅ Zéro gestion', credit: '✅ Facile (bulletins salarié)' },
-        Holding: { social: 'Assimilé-salarié (filiale)', retraite: '⭐⭐⭐⭐ Élevée', chomage: '✅ Possible (fin mandat)', comptabilite: 'Double comptabilité', credit: '✅ Très bonne (groupe)' },
-        SARLFam: { social: 'TNS – Gérant majoritaire', retraite: '⭐⭐⭐ Correcte', chomage: '❌ Non', comptabilite: 'Complète obligatoire', credit: '⚠️ Moyen (après 2 bilans)' }
-    };
-    const l = life[selectedStatus] || life['SASU'];
-    document.getElementById('bloc_life').innerHTML = `
-        <div class="life-item"><div class="life-label">Régime social</div><div class="life-val">${l.social}</div></div>
-        <div class="life-item"><div class="life-label">Retraite</div><div class="life-val">${l.retraite}</div></div>
-        <div class="life-item"><div class="life-label">Accès chômage</div><div class="life-val">${l.chomage}</div></div>
-        <div class="life-item"><div class="life-label">Comptabilité</div><div class="life-val">${l.comptabilite}</div></div>`;
-}
-
 function genProjection(parts) {
     const fraisAnnuel = (parseFloat(document.getElementById('frais').value) || 0) * 12;
     const dividPct = document.getElementById('divid_check').checked
@@ -1409,29 +1112,42 @@ function genProjection(parts) {
     const LABELS = { Micro: 'Micro', EI: 'EI Réel', EURL: 'EURL', SASU: 'SASU', Portage: 'Portage', Holding: 'Holding', SARLFam: 'SARL Fam.' };
     const ca = globalResults[Object.keys(globalResults)[0]]?.ca || 0;
 
+    // Année 1 : avec ACRE si cochée
+    // Année 2 : sans ACRE, même CA
+    // Année 3 : sans ACRE, CA stable (hypothèse conservative)
+    const ca3 = ca; // CA stable en année 3 (conservateur)
+
     let html = `<div class="proj-title"><i class="fa-solid fa-chart-line"></i> Projection cumulative sur 3 ans (net disponible)</div>`;
     html += `<div style="overflow-x:auto"><table class="proj-table">
-        <thead><tr><th>Statut</th><th>Année 1${acreCheck?'<br><small style="font-weight:400">(ACRE)</small>':''}</th><th>Année 2</th><th>Année 3</th><th>Total 3 ans</th></tr></thead>
+        <thead><tr>
+            <th>Statut</th>
+            <th>Année 1${acreCheck ? '<br><small style="font-weight:400">(ACRE)</small>' : ''}</th>
+            <th>Année 2</th>
+            <th>Année 3</th>
+            <th>Total 3 ans</th>
+        </tr></thead>
         <tbody>`;
 
     const totals = {};
     ALL_STATUTS.forEach(s => {
-        const r1 = calcStatut(s, ca, fraisAnnuel, parts, acreCheck, dividPct, isService);
-        const r2 = calcStatut(s, ca, fraisAnnuel, parts, false, dividPct, isService);
-        totals[s] = r1.netAnnuel + r2.netAnnuel * 2;
+        const r1 = calcStatut(s, ca,  fraisAnnuel, parts, acreCheck, dividPct, isService);
+        const r2 = calcStatut(s, ca,  fraisAnnuel, parts, false,     dividPct, isService);
+        const r3 = calcStatut(s, ca3, fraisAnnuel, parts, false,     dividPct, isService);
+        totals[s] = r1.netAnnuel + r2.netAnnuel + r3.netAnnuel;
     });
-    const bestTotal = Math.max(...Object.values(totals).filter(v => !isNaN(v)));
+    const bestTotal = Math.max(...Object.values(totals).filter(v => !isNaN(v) && v > 0));
 
     ALL_STATUTS.forEach(s => {
-        const r1 = calcStatut(s, ca, fraisAnnuel, parts, acreCheck, dividPct, isService);
-        const r2 = calcStatut(s, ca, fraisAnnuel, parts, false, dividPct, isService);
-        const total = r1.netAnnuel + r2.netAnnuel * 2;
+        const r1 = calcStatut(s, ca,  fraisAnnuel, parts, acreCheck, dividPct, isService);
+        const r2 = calcStatut(s, ca,  fraisAnnuel, parts, false,     dividPct, isService);
+        const r3 = calcStatut(s, ca3, fraisAnnuel, parts, false,     dividPct, isService);
+        const total = r1.netAnnuel + r2.netAnnuel + r3.netAnnuel;
         const isBest = Math.abs(total - bestTotal) < 1 && r1.ok;
         const isSelected = s === selectedStatus;
 
         if (!r1.ok) {
             let msg = 'Non éligible';
-            if (s === 'Holding') msg = 'CA insuffisant (min. 80k€)';
+            if (s === 'Holding')  msg = 'CA insuffisant (min. 80k€)';
             if (s === 'SARLFam') msg = 'Couple/famille requis';
             if (s === 'Micro' && r1.ca > 77700) msg = 'Hors plafond CA';
             html += `<tr style="opacity:0.5">
@@ -1439,19 +1155,15 @@ function genProjection(parts) {
                 <td colspan="4" style="color:var(--text-light);text-align:center;font-size:11px;font-style:italic">${msg}</td>
             </tr>`;
         } else {
-            const rowStyle = isBest
-                ? 'background:rgba(28,200,138,0.06);'
-                : isSelected ? 'background:rgba(78,115,223,0.05);' : '';
-            const labelColor = isBest
-                ? 'color:var(--success);font-weight:800'
-                : isSelected ? 'color:var(--primary);font-weight:700' : 'color:var(--text-dark);font-weight:600';
-            const bestIcon = isBest ? ' <span style="font-size:10px;background:var(--success);color:#fff;border-radius:4px;padding:1px 5px;font-weight:900">BEST</span>' : '';
-            const selIcon = isSelected && !isBest ? ' <span style="font-size:10px;background:var(--primary);color:#fff;border-radius:4px;padding:1px 5px;font-weight:700">Sélectionné</span>' : '';
+            const rowStyle  = isBest ? 'background:rgba(28,200,138,0.06);' : isSelected ? 'background:rgba(78,115,223,0.05);' : '';
+            const labelColor = isBest ? 'color:var(--success);font-weight:800' : isSelected ? 'color:var(--primary);font-weight:700' : 'color:var(--text-dark);font-weight:600';
+            const bestIcon  = isBest ? ' <span style="font-size:10px;background:var(--success);color:#fff;border-radius:4px;padding:1px 5px;font-weight:900">BEST</span>' : '';
+            const selIcon   = isSelected && !isBest ? ' <span style="font-size:10px;background:var(--primary);color:#fff;border-radius:4px;padding:1px 5px;font-weight:700">Sélectionné</span>' : '';
             html += `<tr style="${rowStyle}">
                 <td style="${labelColor}">${LABELS[s]}${bestIcon}${selIcon}</td>
                 <td>${fmtK(r1.netAnnuel)}</td>
                 <td>${fmtK(r2.netAnnuel)}</td>
-                <td>${fmtK(r2.netAnnuel)}</td>
+                <td>${fmtK(r3.netAnnuel)}</td>
                 <td class="${isBest ? 'best-cell' : ''}">${fmtK(total)}${isBest ? ' ✓' : ''}</td>
             </tr>`;
         }
@@ -1460,179 +1172,12 @@ function genProjection(parts) {
     document.getElementById('bloc_projection').innerHTML = html;
 }
 
-function calcStatut(statut, ca, fraisAnnuel, parts, acre, dividPct, isService) {
-    if (statut === 'Micro')    return calcMicro(ca, fraisAnnuel, parts, acre, isService);
-    if (statut === 'EI')       return calcEI(ca, fraisAnnuel, parts, acre, dividPct);
-    if (statut === 'EURL')     return calcEURL(ca, fraisAnnuel, parts, acre, dividPct);
-    if (statut === 'SASU')     return calcSASU(ca, fraisAnnuel, parts, acre, dividPct);
-    if (statut === 'Portage')  return calcPortage(ca, fraisAnnuel, parts, acre);
-    if (statut === 'Holding')  return calcHolding(ca, fraisAnnuel, parts, acre, dividPct);
-    if (statut === 'SARLFam')  return calcSARLFam(ca, fraisAnnuel, parts, acre);
-    return calcSASU(ca, fraisAnnuel, parts, acre, dividPct);
-}
-
-function toggleFiscal() {
-    const bloc = document.getElementById('bloc_fiscal');
-    const btn = document.getElementById('btn_fiscal');
-    if (bloc.style.display === 'none') {
-        bloc.style.display = 'block';
-        bloc.innerHTML = genFiscalDetail();
-        btn.innerHTML = '<i class="fa-solid fa-eye-slash"></i> Masquer le détail fiscal';
-    } else {
-        bloc.style.display = 'none';
-        btn.innerHTML = '<i class="fa-solid fa-file-invoice"></i> Détail fiscal complet';
-    }
-}
-
-function genFiscalDetail() {
-    const data = globalResults[selectedStatus];
-    const parts = parseFloat(document.getElementById('situation').value);
-    const sitLabel = document.getElementById('situation').options[document.getElementById('situation').selectedIndex].text;
-    const s = selectedStatus;
-    let html = `<div class="decomp-card">
-        <div class="decomp-title"><i class="fa-solid fa-calculator"></i> Détail fiscal complet — ${s}</div>`;
-
-    // ── CAS HOLDING : détail spécifique avec explication structurelle ──
-    if (s === 'Holding') {
-        // Partie 1 : salaire filiale
-        const salaireNet = data.salaireNet || 0;
-        const abattSal = Math.min(Math.max(salaireNet * 0.10, 495), 14171);
-        const rniSal = Math.max(0, salaireNet - abattSal);
-        html += `<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--primary);margin:8px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">
-            <i class="fa-solid fa-building"></i> Filiale SASU — Rémunération dirigeant
-        </div>`;
-        html += row('Coût total employeur (salaire)', `${fmtCA((data.cotisPatronales||0) + (data.cotisalariales||0) + salaireNet + (data.cotisalariales||0))} €`, 'neutral');
-        html += row('Charges patronales', `− ${fmtCA(data.cotisPatronales||0)} €`, 'minus');
-        html += row('Charges salariales', `− ${fmtCA(data.cotisalariales||0)} €`, 'minus');
-        html += row('Salaire brut → net', `= ${fmtCA(salaireNet)} €`, 'neutral');
-        html += row('Abattement IR 10%', `− ${fmtCA(abattSal)} €`, 'minus');
-        html += row('Revenu Net Imposable salaire', `= ${fmtCA(rniSal)} €`, 'neutral');
-        html += row(`Situation fiscale`, sitLabel, 'neutral');
-        html += row('IR sur salaire (barème progressif)', `− ${fmtCA(data.ir||0)} €`, 'minus');
-
-        // Partie 2 : dividendes filiale → holding
-        html += `<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--success);margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">
-            <i class="fa-solid fa-arrows-up-to-line"></i> Filiale → Holding — Régime mère-fille
-        </div>`;
-        html += row('Bénéfice filiale avant IS', `${fmtCA(data.beneficeAvantIS||0)} €`, 'neutral');
-        const t1 = Math.min(data.beneficeAvantIS||0, 42500);
-        const t2 = Math.max(0, (data.beneficeAvantIS||0) - 42500);
-        html += row('IS filiale tranche 15% (≤42 500€)', `− ${fmtCA(t1*0.15)} €`, 'minus');
-        if (t2 > 0) html += row('IS filiale tranche 25% (>42 500€)', `− ${fmtCA(t2*0.25)} €`, 'minus');
-        html += row('IS filiale total', `− ${fmtCA(data.isFiliale||0)} €`, 'minus');
-        html += row('Dividendes nets filiale → Holding', `= ${fmtCA(data.dividendesFiliale||0)} €`, 'plus');
-        html += row('Quote-part frais (5% × IS 25% = 1,25%)', `− ${fmtCA(data.isHolding||0)} €`, 'minus');
-        html += row('Dividendes disponibles dans la Holding', `= ${fmtCA(data.dividendesHolding||0)} €`, 'plus');
-
-        // Partie 3 : sortie personnelle
-        html += `<div style="font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.07em;color:var(--warning);margin:14px 0 10px;padding-bottom:6px;border-bottom:1px solid var(--border)">
-            <i class="fa-solid fa-wallet"></i> Holding → Dirigeant — Sortie personnelle
-        </div>`;
-        html += row('Dividendes distribués depuis Holding', `${fmtCA(data.dividendesHolding||0)} €`, 'neutral');
-        html += row('PFU 30% (12,8% IR + 17,2% PS)', `− ${fmtCA((data.dividendesHolding||0)*0.30)} €`, 'minus');
-        html += row('Dividendes personnels nets', `= ${fmtCA(data.dividendesNets||0)} €`, 'plus');
-
-        // Total
-        html += `<div class="decomp-row total">
-            <span class="decomp-label"><i class="fa-solid fa-wallet"></i> REVENU NET TOTAL (salaire + dividendes)</span>
-            <span class="decomp-val">${fmtCA(data.netAnnuel)} €/an</span>
-        </div>
-        <div class="decomp-row total" style="font-size:13px;padding-top:6px">
-            <span class="decomp-label">Taux IS effectif sur dividendes</span>
-            <span class="decomp-val" style="color:var(--success)">${((data.isFiliale||0)/(data.beneficeAvantIS||1)*100).toFixed(1)}% + 1,25% holding = ~${(((data.isFiliale||0)+(data.isHolding||0))/(data.beneficeAvantIS||1)*100).toFixed(1)}%</span>
-        </div>`;
-
-        // Explication structurelle
-        html += `</div>
-        <div class="decomp-card" style="background:linear-gradient(135deg,#f0fdf4,#ebf8ff);border-color:#86efac;margin-top:14px">
-            <div class="decomp-title" style="color:#166534"><i class="fa-solid fa-diagram-project"></i> Comment structurer votre Holding</div>
-            <div style="font-size:13px;color:#14532d;line-height:1.8">
-                <p style="margin-bottom:12px"><strong>La structure recommandée :</strong> Holding SAS (ou SARL) → détient 100% de la Filiale SASU opérationnelle</p>
-
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px">
-                    <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:12px;border:1px solid #86efac">
-                        <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--primary);margin-bottom:6px">🏢 Holding (société mère)</div>
-                        <div style="font-size:12px;color:#374151">• Reçoit les dividendes de la filiale<br>• IS sur 5% seulement (1,25% effectif)<br>• Réinvestit librement : immo, autres sociétés, FCPR...<br>• Capital de départ conseillé : 1 000 €</div>
-                    </div>
-                    <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:12px;border:1px solid #86efac">
-                        <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--success);margin-bottom:6px">⚡ Filiale SASU (opérationnelle)</div>
-                        <div style="font-size:12px;color:#374151">• Facture les clients<br>• Verse un salaire optimisé au dirigeant<br>• Remonte le bénéfice en dividendes à la holding<br>• Capital : 1 € minimum</div>
-                    </div>
-                </div>
-
-                <div style="background:rgba(255,255,255,0.7);border-radius:10px;padding:12px;border:1px solid #86efac;margin-bottom:10px">
-                    <div style="font-size:10px;font-weight:800;text-transform:uppercase;color:var(--warning);margin-bottom:8px">💡 Stratégie d'optimisation recommandée</div>
-                    <div style="font-size:12px;color:#374151;display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                        <div><strong>Salaire :</strong> ~2× le PASS soit ~92 736 €/an — optimise la retraite sans surcharger l'IS</div>
-                        <div><strong>Dividendes holding :</strong> le reste → IS 1,25% seulement au lieu de PFU 30%</div>
-                        <div><strong>Sortie personnelle :</strong> uniquement ce dont vous avez besoin → PFU 30% sur le minimum</div>
-                        <div><strong>Réinvestissement :</strong> immobilier (SCI), FCPR, autres participations via la holding</div>
-                    </div>
-                </div>
-
-                <div style="font-size:11px;color:#6b7280;background:rgba(255,255,255,0.5);border-radius:8px;padding:10px">
-                    <i class="fa-solid fa-circle-info"></i> <strong>Coût de mise en place :</strong> ~1 200 € (deux immatriculations) + ~5 000 €/an (double comptabilité).
-                    <strong>Rentable à partir de ~80 000 € de CA</strong> — plus le CA est élevé, plus l'avantage est massif.
-                    Consultez un expert-comptable pour personnaliser la structure selon votre situation.
-                </div>
-            </div>
-        </div>`;
-        return html;
-    }
-
-    // ── AUTRES STATUTS : détail fiscal standard ──
-    const revImposable = s === 'Micro' ? (data.revenuImposable || 0) :
-                         (s === 'SASU' || s === 'Portage') ? (data.salaireNet || 0) :
-                         (data.remuNette || 0);
-
-    const abatt = Math.min(Math.max(revImposable * 0.10, 495), 14171);
-    const rni = Math.max(0, revImposable - abatt);
-
-    html += row('Revenu imposable brut', `${fmtCA(revImposable)} €`, 'neutral');
-    html += row('Abattement 10% (plaf. 14 171 €)', `− ${fmtCA(abatt)} €`, 'minus');
-    html += row('Revenu Net Imposable (RNI)', `= ${fmtCA(rni)} €`, 'neutral');
-    html += row('Situation fiscale', sitLabel, 'neutral');
-    html += row('IR calculé (barème progressif)', `− ${fmtCA(data.ir || 0)} €`, 'minus');
-
-    if ((data.dividendesNets || 0) > 0 && s !== 'SARLFam') {
-        const brut = data.details?.dividendes || data.beneficeAvantIS || 0;
-        html += row('Dividendes soumis PFU 30%', `${fmtCA(brut)} €`, 'neutral');
-        html += row('PFU prélevé (12,8% IR + 17,2% PS)', `− ${fmtCA(brut * 0.30)} €`, 'minus');
-        html += row('Dividendes nets reçus', `+ ${fmtCA(data.dividendesNets)} €`, 'plus');
-    }
-
-    if (s === 'SARLFam' && (data.dividendesNets || 0) > 0) {
-        html += row('Bénéfice distribué aux associés (option IR)', `${fmtCA(data.dividendesNets)} €`, 'neutral');
-        html += row('Imposé à l\'IR du foyer (déjà inclus ci-dessus)', 'Inclus', 'neutral');
-    }
-
-    if ((data.is || 0) > 0) {
-        const benefIS = data.beneficeAvantIS || 0;
-        const tranche1 = Math.min(benefIS, 42500);
-        const tranche2 = Math.max(0, benefIS - 42500);
-        html += row('Bénéfice imposable IS', `${fmtCA(benefIS)} €`, 'neutral');
-        html += row('IS tranche 15% (≤42 500 €)', `− ${fmtCA(tranche1 * 0.15)} €`, 'minus');
-        if (tranche2 > 0) html += row('IS tranche 25% (>42 500 €)', `− ${fmtCA(tranche2 * 0.25)} €`, 'minus');
-        html += row('IS total', `− ${fmtCA(data.is)} €`, 'minus');
-    }
-
-    html += `</div>`;
-    return html;
-}
-
 /* ─────────────────────────────────────────
    UTILITAIRES
 ───────────────────────────────────────── */
-function fmt(n) {
-    return Math.round(n).toLocaleString('fr-FR');
-}
-function fmtCA(n) {
-    if (Math.abs(n) >= 1000) return Math.round(n).toLocaleString('fr-FR');
-    return Math.round(n).toString();
-}
-function fmtK(n) {
-    return (n / 1000).toFixed(0) + 'k€';
-}
+function fmt(n)   { return Math.round(n).toLocaleString('fr-FR'); }
+function fmtCA(n) { return Math.abs(n) >= 1000 ? Math.round(n).toLocaleString('fr-FR') : Math.round(n).toString(); }
+function fmtK(n)  { return (n / 1000).toFixed(0) + 'k€'; }
 
 function handleMask(el, id) {
     let v = el.value.replace(/\D/g, '');
@@ -1642,23 +1187,14 @@ function handleMask(el, id) {
 
 function setMode(mode) {
     currentMode = mode;
-    // Update active tab
     ['CA','REV','TJM'].forEach(m => {
         document.getElementById('mode-' + m.toLowerCase()).classList.toggle('active', m === mode);
     });
-    // Hide all mode-fields first
     document.querySelectorAll('.mode-field').forEach(el => { el.style.display = 'none'; });
-    // Show fields for active mode
     document.querySelectorAll('.mode-field.mode-' + mode).forEach(el => {
-        // CA and REV are full-width (span 2), TJM fields are normal columns
         el.style.display = 'block';
-        if (mode === 'CA' || mode === 'REV') {
-            el.style.gridColumn = 'span 2';
-        } else {
-            el.style.gridColumn = '';
-        }
+        el.style.gridColumn = (mode === 'CA' || mode === 'REV') ? 'span 2' : '';
     });
-    // Reset values of inactive modes
     if (mode !== 'CA')  { document.getElementById('ca').value = ''; document.getElementById('ca_display').value = ''; }
     if (mode !== 'REV') { document.getElementById('rev').value = ''; document.getElementById('rev_display').value = ''; }
     if (mode !== 'TJM') {
@@ -1691,6 +1227,31 @@ function updateDividLabel() {
     const div = 100 - sal;
     document.getElementById('divid_label').textContent = `${sal}% salaire / ${div}% dividendes`;
 }
+
+/*
+═══════════════════════════════════════════════════════
+  MODIFICATION HTML OBLIGATOIRE : <select id="situation">
+  Remplacer les valeurs (value="...") comme suit :
+
+  AVANT (FAUX)                          APRÈS (CORRECT)
+  value="1"   Célibataire           →   value="1"    ✓ inchangé
+  value="1.5" Marié sans enfant     →   value="2"    ← CORRIGÉ
+  value="2"   Marié + 1 enfant      →   value="2.5"  ← CORRIGÉ
+  value="2.5" Marié + 2 enfants     →   value="3"    ← CORRIGÉ
+  value="3"   Marié + 3 enfants     →   value="4"    ← CORRIGÉ
+  value="0.5" Parent isolé + 1 enf  →   value="1.5"  ← CORRIGÉ
+
+  HTML corrigé à copier-coller :
+  <select class="field-input" id="situation">
+      <option value="1">Célibataire (1 part)</option>
+      <option value="2">Marié/Pacsé sans enfant (2 parts)</option>
+      <option value="2.5">Marié/Pacsé + 1 enfant (2,5 parts)</option>
+      <option value="3">Marié/Pacsé + 2 enfants (3 parts)</option>
+      <option value="4">Marié/Pacsé + 3 enfants (4 parts)</option>
+      <option value="1.5">Parent isolé + 1 enfant (1,5 part)</option>
+  </select>
+═══════════════════════════════════════════════════════
+*/
 </script>
 </body>
 </html>

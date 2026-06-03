@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TJM Freelance 2026 : calculer son Taux Journalier Moyen selon son statut</title>
+  <meta name="description" content="Comment calculer son TJM en 2026 ? Grille de TJM par métier, formule de calcul selon la micro-entreprise, EURL ou SASU. Simulez votre revenu net cible." />
+  <link rel="canonical" href="https://simulateur-statut-entrepreneur.github.io/tjm-freelance-2026.html" />
+  <meta property="og:title" content="TJM Freelance 2026 : calculer son Taux Journalier Moyen" />
+  <meta property="og:description" content="Formule, grille par métier et simulateur pour fixer votre TJM freelance en 2026 selon votre statut juridique." />
+  <meta property="og:url" content="https://simulateur-statut-entrepreneur.github.io/tjm-freelance-2026.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "TJM Freelance 2026 : calculer son Taux Journalier Moyen",
+    "description": "Comment calculer son TJM freelance en 2026 selon son statut juridique.",
+    "author": { "@type": "Organization", "name": "Simulateur Statut Entrepreneur" },
+    "dateModified": "2026-06-01"
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #f8f9fb; --surface: #fff; --border: #e5e7eb;
+      --text: #1a1a2e; --muted: #6b7280;
+      --primary: #2563eb; --primary-light: #eff6ff;
+      --accent: #7c3aed; --accent-light: #f5f3ff;
+      --green: #059669; --green-light: #ecfdf5;
+      --orange: #d97706; --orange-light: #fffbeb;
+      --radius: 12px; --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 16px; }
+    p { margin-bottom: 12px; }
+
+    nav { background: var(--surface); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; gap: 32px; height: 56px; position: sticky; top: 0; z-index: 100; }
+    .nav-brand { font-weight: 700; font-size: 15px; color: var(--text); text-decoration: none; white-space: nowrap; }
+    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    .nav-links a { font-size: 14px; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 6px; transition: background .15s, color .15s; }
+    .nav-links a:hover { background: var(--bg); color: var(--text); }
+    .nav-links a.active { color: var(--primary); font-weight: 600; }
+
+    main { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+    .eyebrow { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; line-height: 1.2; margin-bottom: 16px; letter-spacing: -.02em; }
+    .lead { font-size: 17px; color: var(--muted); max-width: 680px; margin-bottom: 40px; }
+    h2 { font-size: 22px; font-weight: 700; margin: 48px 0 20px; padding-bottom: 10px; border-bottom: 2px solid var(--border); }
+    h3 { font-size: 17px; font-weight: 700; margin: 28px 0 10px; }
+
+    .cta-band { background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%); color: #fff; border-radius: var(--radius); padding: 20px 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 48px; flex-wrap: wrap; }
+    .cta-band p { font-size: 15px; font-weight: 500; opacity: .95; }
+    .cta-band a { background: #fff; color: var(--primary); font-weight: 700; font-size: 14px; padding: 10px 20px; border-radius: 8px; text-decoration: none; white-space: nowrap; }
+
+    /* CALCULATOR */
+    .calc-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: var(--shadow); margin: 24px 0; }
+    .calc-box h3 { margin: 0 0 20px; font-size: 18px; }
+    .calc-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    @media (max-width: 560px) { .calc-row { grid-template-columns: 1fr; } }
+    .field label { display: block; font-size: 13px; font-weight: 600; color: var(--muted); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+    .field input, .field select {
+      width: 100%; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 15px; background: var(--bg); color: var(--text); outline: none; transition: border-color .15s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--primary); background: #fff; }
+    .calc-result { background: linear-gradient(135deg, var(--primary-light), var(--accent-light)); border: 1.5px solid #c7d2fe; border-radius: var(--radius); padding: 20px 24px; margin-top: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+    .calc-result .res-label { font-size: 14px; color: var(--muted); }
+    .calc-result .res-val { font-size: 32px; font-weight: 800; color: var(--primary); }
+    .calc-btn { width: 100%; padding: 13px; background: var(--primary); color: #fff; font-size: 15px; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; margin-top: 16px; transition: background .15s; }
+    .calc-btn:hover { background: #1d4ed8; }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); margin: 20px 0; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    thead th { padding: 13px 16px; font-size: 13px; font-weight: 700; text-align: left; background: var(--bg); border-bottom: 2px solid var(--border); }
+    tbody td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody td:first-child { font-weight: 600; }
+    .badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 8px; border-radius: 20px; }
+    .badge-green { background: var(--green-light); color: var(--green); }
+    .badge-orange { background: var(--orange-light); color: var(--orange); }
+    .badge-purple { background: var(--accent-light); color: var(--accent); }
+
+    /* FORMULA */
+    .formula-box { background: var(--surface); border: 2px dashed var(--primary); border-radius: var(--radius); padding: 24px; margin: 20px 0; text-align: center; }
+    .formula { font-size: 18px; font-weight: 700; color: var(--primary); margin-bottom: 8px; font-family: 'Courier New', monospace; }
+    .formula-note { font-size: 13px; color: var(--muted); }
+
+    .tip { background: var(--primary-light); border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 16px 20px; font-size: 14px; margin: 20px 0; display: flex; gap: 10px; align-items: flex-start; }
+    .tip::before { content: '💡'; font-size: 18px; margin-top: 1px; }
+    .warn { background: var(--orange-light); border: 1px solid #fde68a; border-radius: var(--radius); padding: 16px 20px; font-size: 14px; margin: 20px 0; display: flex; gap: 10px; align-items: flex-start; }
+    .warn::before { content: '⚠️'; font-size: 18px; margin-top: 1px; }
+
+    /* COMPARISON BY STATUT */
+    .statut-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin: 20px 0; }
+    .statut-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); }
+    .statut-card .s-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+    .statut-card.s-micro .s-label { color: var(--green); }
+    .statut-card.s-eurl .s-label { color: var(--accent); }
+    .statut-card.s-sasu .s-label { color: var(--primary); }
+    .statut-card .s-formula { font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+    .statut-card .s-example { font-size: 15px; font-weight: 700; }
+    .statut-card .s-note { font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 24px; text-align: center; }
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
+    .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur Statut 2026</a>
+  <div class="nav-links">
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/guide.html">Guide</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/statuts.html">Les statuts</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/faq.html">FAQ</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/tjm-freelance-2026.html" class="active">TJM Freelance</a>
+  </div>
+</nav>
+
+<main>
+  <span class="eyebrow">Guide 2026</span>
+  <h1>TJM Freelance 2026 : comment calculer son Taux Journalier Moyen ?</h1>
+  <p class="lead">La formule exacte pour calculer votre TJM selon votre revenu net cible, votre statut juridique (micro, EURL, SASU) et votre nombre de jours facturés.</p>
+
+  <div class="cta-band">
+    <p>Entrez votre TJM dans le simulateur pour voir votre revenu net exact selon 7 statuts.</p>
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simuler depuis mon TJM →</a>
+  </div>
+
+  <!-- CALCULATOR -->
+  <h2>Calculateur de TJM — revenu net cible</h2>
+  <div class="calc-box">
+    <h3>Quel TJM fixer pour atteindre votre revenu cible ?</h3>
+    <div class="calc-row">
+      <div class="field">
+        <label>Revenu net mensuel cible (€)</label>
+        <input type="number" id="revenu" value="3500" min="500" max="20000" step="100" />
+      </div>
+      <div class="field">
+        <label>Jours facturés / mois</label>
+        <input type="number" id="jours" value="18" min="5" max="23" step="1" />
+      </div>
+    </div>
+    <div class="calc-row">
+      <div class="field">
+        <label>Statut juridique</label>
+        <select id="statut">
+          <option value="micro">Micro-entreprise (BNC)</option>
+          <option value="eurl" selected>EURL (IS)</option>
+          <option value="sasu">SASU</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Situation familiale</label>
+        <select id="parts">
+          <option value="1" selected>Célibataire (1 part)</option>
+          <option value="2">Marié/Pacsé sans enfant (2 parts)</option>
+          <option value="2.5">Marié + 1 enfant (2,5 parts)</option>
+          <option value="3">Marié + 2 enfants (3 parts)</option>
+        </select>
+      </div>
+    </div>
+    <button class="calc-btn" onclick="calculerTJM()">Calculer mon TJM minimum</button>
+    <div class="calc-result" id="resultat" style="display:none;">
+      <div>
+        <div class="res-label">TJM minimum estimé</div>
+        <div class="res-val" id="tjm-val">—</div>
+      </div>
+      <div>
+        <div class="res-label">CA annuel correspondant</div>
+        <div class="res-val" id="ca-val">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tip">
+    Ce calculateur donne une estimation rapide. Pour un résultat précis intégrant votre quotient familial, vos frais réels et la stratégie dividendes, <a href="https://simulateur-statut-entrepreneur.github.io/index.html" style="color:var(--primary);font-weight:600;">utilisez le simulateur complet</a>.
+  </div>
+
+  <!-- FORMULE -->
+  <h2>La formule de calcul du TJM</h2>
+  <p>Le TJM se calcule à rebours à partir du revenu net que vous souhaitez atteindre. La clé est d'intégrer le <strong>taux de charges</strong> lié à votre statut.</p>
+
+  <div class="formula-box">
+    <div class="formula">TJM = Revenu net mensuel cible ÷ (1 − taux de charges) ÷ Jours facturés par mois</div>
+    <div class="formula-note">Exemple : 3 500 € net / mois en EURL, 18 jours/mois → TJM = 3 500 ÷ 0,55 ÷ 18 = <strong>environ 353 €/jour</strong></div>
+  </div>
+
+  <!-- PAR STATUT -->
+  <h2>TJM selon votre statut juridique</h2>
+  <p>Le même revenu net cible nécessite un TJM différent selon votre statut, car les charges varient fortement :</p>
+
+  <div class="statut-grid">
+    <div class="statut-card s-micro">
+      <div class="s-label">🟢 Micro-entreprise (BNC)</div>
+      <div class="s-formula">Charges totales ≈ 30–35 % du CA<br>(cotisations 21 % + IR ~10 %)</div>
+      <div class="s-example">Pour 3 000 €/mois net → TJM ≈ 255 €/j</div>
+      <div class="s-note">18 jours facturés/mois — au-delà du plafond, statut impossible</div>
+    </div>
+    <div class="statut-card s-eurl">
+      <div class="s-label">🟣 EURL (IS)</div>
+      <div class="s-formula">Charges totales ≈ 45–55 % du CA<br>(TNS ~44 % + IS + IR)</div>
+      <div class="s-example">Pour 3 000 €/mois net → TJM ≈ 305 €/j</div>
+      <div class="s-note">Le meilleur ratio charges/protection pour un CA &gt; 50 k€</div>
+    </div>
+    <div class="statut-card s-sasu">
+      <div class="s-label">🔵 SASU</div>
+      <div class="s-formula">Charges totales ≈ 55–65 % du CA<br>(assimilé-salarié ~82 % + IS + IR)</div>
+      <div class="s-example">Pour 3 000 €/mois net → TJM ≈ 375 €/j</div>
+      <div class="s-note">Plus élevé, mais meilleure protection sociale et ARE possible</div>
+    </div>
+  </div>
+
+  <!-- GRILLE PAR MÉTIER -->
+  <h2>Grille de TJM par métier freelance en 2026</h2>
+  <p>Les TJM varient fortement selon le secteur, l'expérience et la région. Voici les fourchettes observées sur le marché français en 2026 :</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Métier</th>
+          <th>Junior</th>
+          <th>Confirmé</th>
+          <th>Senior / Expert</th>
+          <th>Niveau de demande</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Développeur fullstack</td>
+          <td>350 – 450 €</td>
+          <td>500 – 650 €</td>
+          <td>700 – 900 €</td>
+          <td><span class="badge badge-green">Très élevé</span></td>
+        </tr>
+        <tr>
+          <td>Data scientist / ML engineer</td>
+          <td>400 – 500 €</td>
+          <td>550 – 700 €</td>
+          <td>750 – 1 000 €</td>
+          <td><span class="badge badge-green">Très élevé</span></td>
+        </tr>
+        <tr>
+          <td>DevOps / Cloud architect</td>
+          <td>400 – 500 €</td>
+          <td>550 – 700 €</td>
+          <td>750 – 950 €</td>
+          <td><span class="badge badge-green">Très élevé</span></td>
+        </tr>
+        <tr>
+          <td>Chef de projet IT</td>
+          <td>350 – 450 €</td>
+          <td>500 – 620 €</td>
+          <td>650 – 850 €</td>
+          <td><span class="badge badge-orange">Élevé</span></td>
+        </tr>
+        <tr>
+          <td>Consultant SAP / ERP</td>
+          <td>450 – 550 €</td>
+          <td>600 – 750 €</td>
+          <td>800 – 1 100 €</td>
+          <td><span class="badge badge-orange">Élevé</span></td>
+        </tr>
+        <tr>
+          <td>UX/UI designer</td>
+          <td>280 – 380 €</td>
+          <td>400 – 550 €</td>
+          <td>580 – 750 €</td>
+          <td><span class="badge badge-orange">Élevé</span></td>
+        </tr>
+        <tr>
+          <td>Consultant marketing digital</td>
+          <td>250 – 350 €</td>
+          <td>380 – 500 €</td>
+          <td>550 – 700 €</td>
+          <td><span class="badge badge-orange">Élevé</span></td>
+        </tr>
+        <tr>
+          <td>Consultant RH / Formation</td>
+          <td>300 – 400 €</td>
+          <td>420 – 550 €</td>
+          <td>580 – 750 €</td>
+          <td><span class="badge badge-purple">Modéré</span></td>
+        </tr>
+        <tr>
+          <td>Expert-comptable indépendant</td>
+          <td>300 – 400 €</td>
+          <td>450 – 600 €</td>
+          <td>650 – 850 €</td>
+          <td><span class="badge badge-purple">Modéré</span></td>
+        </tr>
+        <tr>
+          <td>Rédacteur web / Copywriter</td>
+          <td>150 – 250 €</td>
+          <td>280 – 400 €</td>
+          <td>420 – 600 €</td>
+          <td><span class="badge badge-purple">Modéré</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    Ces fourchettes sont indicatives et basées sur le marché français (Paris et grandes métropoles en tête). En province, les TJM sont souvent 10 à 20 % inférieurs. Les missions en full-remote ont partiellement homogénéisé les niveaux.
+  </div>
+
+  <!-- JOURS FACTURABLES -->
+  <h2>Combien de jours facturer par mois ?</h2>
+  <p>Un freelance ne peut pas facturer 365 jours par an. Voici le calcul réaliste :</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>Poste</th><th>Jours</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Jours ouvrés / an</td><td>252</td></tr>
+        <tr><td>Congés et jours fériés (−5 semaines)</td><td>−25</td></tr>
+        <tr><td>Formation, admin, prospection (−10 %)</td><td>−22</td></tr>
+        <tr><td>Inter-missions / aléas (−5 %)</td><td>−10</td></tr>
+        <tr><td><strong>Jours facturables réalistes / an</strong></td><td><strong>≈ 195 jours</strong></td></tr>
+        <tr><td><strong>Soit / mois</strong></td><td><strong>≈ 16 – 18 jours</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip">
+    Le simulateur intègre un champ <strong>"Jours facturés par mois"</strong> directement dans le mode TJM. Ajustez ce curseur pour voir l'impact sur votre revenu net selon votre rythme de travail réel.
+  </div>
+
+  <!-- ERREURS -->
+  <h2>Les erreurs courantes dans le calcul du TJM</h2>
+  <h3>1. Ne pas intégrer les charges dans le calcul</h3>
+  <p>L'erreur la plus fréquente : diviser son salaire cible par le nombre de jours sans intégrer les cotisations. Un salarié à 3 500 €/mois net coûte environ 7 000 €/mois à son employeur. En freelance, c'est vous qui supportez ces charges.</p>
+
+  <h3>2. Oublier les temps non facturables</h3>
+  <p>Administration, prospection, formation, congés : en moyenne 20 à 25 % du temps ne peut pas être facturé. Un TJM calculé sur 22 jours facturés est irréaliste — utilisez 16 à 18 jours comme base.</p>
+
+  <h3>3. Ne pas adapter son TJM à son statut</h3>
+  <p>Un même TJM de 400 €/jour donne un revenu net très différent en micro-entreprise (≈ 2 500 €/mois), en EURL (≈ 2 100 €/mois après IS) ou en SASU (≈ 1 700 €/mois). Le statut change tout au résultat.</p>
+
+  <h3>4. Ignorer la TVA dans la négociation</h3>
+  <p>Si vous êtes assujetti à la TVA (hors franchise en base), votre TJM s'affiche HT. Pour un client particulier, ajoutez 20 % — ce qui peut freiner la négociation. Pour les entreprises, la TVA est neutre car elles la récupèrent.</p>
+
+  <div class="cta-band" style="margin-top: 48px;">
+    <p>Entrez votre TJM dans le simulateur et comparez les 7 statuts en temps réel.</p>
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simuler depuis mon TJM →</a>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/statuts.html">Les statuts</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/faq.html">FAQ</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/eurl-vs-sasu.html">EURL vs SASU</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/micro-entreprise-2026.html">Micro-entreprise</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/a-propos.html">À propos</a>
+  </div>
+  <p class="footer-copy">© 2026 Simulateur Statut Entrepreneur — Estimations indicatives, non un conseil fiscal ou juridique.</p>
+</footer>
+
+<script>
+function calculerTJM() {
+  const revenu = parseFloat(document.getElementById('revenu').value) || 3500;
+  const jours = parseFloat(document.getElementById('jours').value) || 18;
+  const statut = document.getElementById('statut').value;
+
+  // Taux de "perte" entre CA et revenu net selon statut (approx)
+  const tauxCharges = { micro: 0.32, eurl: 0.45, sasu: 0.58 };
+  const taux = tauxCharges[statut] || 0.45;
+
+  const caAnnuel = (revenu / (1 - taux)) * 12;
+  const tjm = caAnnuel / (jours * 12);
+
+  document.getElementById('tjm-val').textContent = Math.round(tjm) + ' €/j';
+  document.getElementById('ca-val').textContent = Math.round(caAnnuel / 1000) + ' k€/an';
+  document.getElementById('resultat').style.display = 'flex';
+}
+// Auto-calculate on load
+window.addEventListener('load', calculerTJM);
+document.querySelectorAll('input, select').forEach(el => el.addEventListener('change', calculerTJM));
+document.querySelectorAll('input').forEach(el => el.addEventListener('input', calculerTJM));
+</script>
+
+</body>
+</html>

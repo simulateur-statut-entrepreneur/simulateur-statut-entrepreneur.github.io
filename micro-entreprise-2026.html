@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Micro-entreprise 2026 : plafonds, charges, impôts et simulateur</title>
+  <meta name="description" content="Tout sur la micro-entreprise en 2026 : plafonds de CA, taux de cotisations, impôt, ACRE, versement libératoire. Simulez votre revenu net en 2 minutes." />
+  <link rel="canonical" href="https://simulateur-statut-entrepreneur.github.io/micro-entreprise-2026.html" />
+  <meta property="og:title" content="Micro-entreprise 2026 : guide complet + simulateur" />
+  <meta property="og:description" content="Plafonds, charges, impôts, ACRE : tout ce qu'il faut savoir sur la micro-entreprise en 2026." />
+  <meta property="og:url" content="https://simulateur-statut-entrepreneur.github.io/micro-entreprise-2026.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Quel est le plafond de CA de la micro-entreprise en 2026 ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "77 700 € pour les prestations de services et 188 700 € pour la vente de marchandises en 2026." }
+      },
+      {
+        "@type": "Question",
+        "name": "Quel est le taux de cotisations en micro-entreprise en 2026 ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "21,2 % pour les prestations de services BIC, 21,1 % pour les BNC, et 12,3 % pour la vente de marchandises." }
+      },
+      {
+        "@type": "Question",
+        "name": "Quand passer de la micro-entreprise à une société ?",
+        "acceptedAnswer": { "@type": "Answer", "text": "En général à partir de 40 000 à 50 000 € de CA annuel pour les prestataires de services ayant des frais professionnels importants." }
+      }
+    ]
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f9fb;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #1a1a2e;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --accent: #7c3aed;
+      --accent-light: #f5f3ff;
+      --green: #059669;
+      --green-light: #ecfdf5;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --orange: #d97706;
+      --orange-light: #fffbeb;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+    }
+
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; font-size: 16px; }
+    p { margin-bottom: 12px; }
+
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand { font-weight: 700; font-size: 15px; color: var(--text); text-decoration: none; white-space: nowrap; }
+    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    .nav-links a { font-size: 14px; color: var(--muted); text-decoration: none; padding: 6px 10px; border-radius: 6px; transition: background .15s, color .15s; }
+    .nav-links a:hover { background: var(--bg); color: var(--text); }
+    .nav-links a.active { color: var(--primary); font-weight: 600; }
+
+    main { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    .eyebrow { display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--primary); background: var(--primary-light); padding: 4px 10px; border-radius: 20px; margin-bottom: 16px; }
+    h1 { font-size: clamp(26px, 4vw, 38px); font-weight: 800; line-height: 1.2; margin-bottom: 16px; letter-spacing: -.02em; }
+    .lead { font-size: 17px; color: var(--muted); max-width: 680px; margin-bottom: 40px; }
+    h2 { font-size: 22px; font-weight: 700; margin: 48px 0 20px; padding-bottom: 10px; border-bottom: 2px solid var(--border); letter-spacing: -.01em; }
+    h3 { font-size: 17px; font-weight: 700; margin: 28px 0 10px; }
+
+    .cta-band {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: #fff; border-radius: var(--radius); padding: 20px 24px;
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 48px; flex-wrap: wrap;
+    }
+    .cta-band p { font-size: 15px; font-weight: 500; opacity: .95; }
+    .cta-band a { background: #fff; color: var(--primary); font-weight: 700; font-size: 14px; padding: 10px 20px; border-radius: 8px; text-decoration: none; white-space: nowrap; }
+
+    /* STAT CARDS */
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin: 24px 0; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); text-align: center; }
+    .stat-card .stat-val { font-size: 28px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+    .stat-card .stat-label { font-size: 13px; color: var(--muted); }
+
+    /* TABLE */
+    .table-wrap { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--border); margin: 20px 0; }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    thead th { padding: 13px 16px; font-size: 13px; font-weight: 700; text-align: left; background: var(--bg); border-bottom: 2px solid var(--border); }
+    tbody td { padding: 12px 16px; font-size: 14px; border-bottom: 1px solid var(--border); }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody td:first-child { font-weight: 600; }
+    .highlight { background: var(--primary-light); font-weight: 700; color: var(--primary); }
+
+    /* EXAMPLE */
+    .example-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin: 20px 0; box-shadow: var(--shadow); }
+    .example-box .ex-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 16px; }
+    .ex-row { display: flex; justify-content: space-between; font-size: 14px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .ex-row:last-child { border-bottom: none; font-weight: 700; font-size: 15px; }
+
+    /* TIMELINE */
+    .timeline { position: relative; padding-left: 32px; margin: 20px 0; }
+    .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--border); }
+    .tl-item { position: relative; margin-bottom: 24px; }
+    .tl-item::before { content: attr(data-n); position: absolute; left: -32px; top: 2px; width: 22px; height: 22px; border-radius: 50%; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+    .tl-item strong { display: block; font-size: 15px; margin-bottom: 4px; }
+    .tl-item p { font-size: 14px; color: var(--muted); margin: 0; }
+
+    /* PROS CONS */
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    @media (max-width: 540px) { .pros-cons { grid-template-columns: 1fr; } }
+    .pros, .cons { border-radius: var(--radius); padding: 16px; }
+    .pros { background: var(--green-light); border: 1px solid #a7f3d0; }
+    .cons { background: var(--red-light); border: 1px solid #fecaca; }
+    .pros h4 { color: var(--green); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .cons h4 { color: var(--red); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .pros li, .cons li { font-size: 14px; margin-bottom: 6px; list-style: none; padding-left: 20px; position: relative; }
+    .pros li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+    .cons li::before { content: '✗'; position: absolute; left: 0; color: var(--red); font-weight: 700; }
+
+    .tip { background: var(--primary-light); border: 1px solid #bfdbfe; border-radius: var(--radius); padding: 16px 20px; font-size: 14px; margin: 20px 0; display: flex; gap: 10px; align-items: flex-start; }
+    .tip::before { content: '💡'; font-size: 18px; margin-top: 1px; }
+    .warn { background: var(--orange-light); border: 1px solid #fde68a; border-radius: var(--radius); padding: 16px 20px; font-size: 14px; margin: 20px 0; display: flex; gap: 10px; align-items: flex-start; }
+    .warn::before { content: '⚠️'; font-size: 18px; margin-top: 1px; }
+
+    /* FAQ */
+    .faq { margin: 20px 0; }
+    details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow); }
+    summary { padding: 16px 20px; cursor: pointer; font-weight: 600; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center; }
+    summary::after { content: '+'; font-size: 20px; color: var(--primary); font-weight: 400; }
+    details[open] summary::after { content: '−'; }
+    details[open] summary { border-bottom: 1px solid var(--border); }
+    .faq-body { padding: 16px 20px; font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+    footer { background: var(--surface); border-top: 1px solid var(--border); padding: 24px; text-align: center; }
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
+    .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur Statut 2026</a>
+  <div class="nav-links">
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/guide.html">Guide</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/statuts.html">Les statuts</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/faq.html">FAQ</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/micro-entreprise-2026.html" class="active">Micro-entreprise</a>
+  </div>
+</nav>
+
+<main>
+  <span class="eyebrow">Guide complet 2026</span>
+  <h1>Micro-entreprise 2026 : plafonds, charges et simulateur de revenu net</h1>
+  <p class="lead">Plafonds de CA, taux de cotisations, impôt sur le revenu, ACRE, versement libératoire : tout ce que vous devez savoir pour bien gérer votre micro-entreprise en 2026.</p>
+
+  <div class="cta-band">
+    <p>Calculez votre revenu net en micro-entreprise et comparez avec l'EURL et la SASU.</p>
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simuler mon revenu net →</a>
+  </div>
+
+  <!-- CHIFFRES CLÉS -->
+  <h2>Les chiffres clés de la micro-entreprise 2026</h2>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="stat-val">77 700 €</div>
+      <div class="stat-label">Plafond CA – Services</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">188 700 €</div>
+      <div class="stat-label">Plafond CA – Commerce</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">21,2 %</div>
+      <div class="stat-label">Cotisations – Services BIC</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">12,3 %</div>
+      <div class="stat-label">Cotisations – Commerce</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">34 %</div>
+      <div class="stat-label">Abattement forfaitaire – Services</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-val">71 %</div>
+      <div class="stat-label">Abattement forfaitaire – Commerce</div>
+    </div>
+  </div>
+
+  <!-- TAUX DE COTISATIONS -->
+  <h2>Taux de cotisations 2026 selon l'activité</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Type d'activité</th>
+          <th>Taux cotisations</th>
+          <th>Abattement IR forfaitaire</th>
+          <th>Plafond CA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Vente de marchandises</td>
+          <td>12,3 %</td>
+          <td>71 %</td>
+          <td>188 700 €</td>
+        </tr>
+        <tr>
+          <td>Prestations de services BIC</td>
+          <td>21,2 %</td>
+          <td>50 %</td>
+          <td>77 700 €</td>
+        </tr>
+        <tr>
+          <td>Prestations de services BNC (libéral)</td>
+          <td>21,1 %</td>
+          <td>34 %</td>
+          <td>77 700 €</td>
+        </tr>
+        <tr class="highlight">
+          <td>Avec ACRE (1re année) – Services</td>
+          <td>~10,6 %</td>
+          <td>34 %</td>
+          <td>77 700 €</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip">
+    L'<strong>ACRE</strong> réduit de moitié vos cotisations la première année. Pour un CA de 50 000 €, cela représente une économie de <strong>~5 300 €</strong> sur l'année.
+  </div>
+
+  <!-- EXEMPLE CHIFFRÉ -->
+  <h2>Exemple : revenu net pour 40 000 € de CA (prestataire de services)</h2>
+
+  <div class="example-box">
+    <div class="ex-title">Simulation — Consultant BNC, 40 000 € de CA, célibataire</div>
+    <div class="ex-row"><span>Chiffre d'affaires HT</span><span>40 000 €</span></div>
+    <div class="ex-row"><span>Cotisations sociales (21,1 %)</span><span>– 8 440 €</span></div>
+    <div class="ex-row"><span>Revenu avant IR</span><span>31 560 €</span></div>
+    <div class="ex-row"><span>Abattement forfaitaire (34 %)</span><span>– 13 600 €</span></div>
+    <div class="ex-row"><span>Revenu imposable</span><span>26 400 €</span></div>
+    <div class="ex-row"><span>Impôt sur le revenu (barème 2026)</span><span>– 2 780 €</span></div>
+    <div class="ex-row"><span><strong>Revenu net disponible / an</strong></span><span><strong>≈ 28 780 €</strong></span></div>
+    <div class="ex-row"><span><strong>Soit / mois</strong></span><span><strong>≈ 2 398 €/mois</strong></span></div>
+  </div>
+
+  <div class="tip">
+    Avec les mêmes 40 000 € de CA en <strong>EURL</strong>, le revenu net serait d'environ <strong>2 800 – 3 000 €/mois</strong> selon les frais professionnels déduits. Utilisez le simulateur pour comparer.
+  </div>
+
+  <!-- VERSEMENT LIBÉRATOIRE -->
+  <h2>Le versement libératoire de l'impôt</h2>
+  <p>Le versement libératoire permet de payer l'IR en même temps que les cotisations, à un taux fixe sur le CA. C'est une option à activer auprès de l'URSSAF si vous êtes éligible.</p>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Activité</th>
+          <th>Taux VL</th>
+          <th>Condition de revenus N-2</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Vente de marchandises</td>
+          <td>1 %</td>
+          <td>Revenus N-2 &lt; 27 478 € (1 part)</td>
+        </tr>
+        <tr>
+          <td>Prestations de services BIC</td>
+          <td>1,7 %</td>
+          <td>Revenus N-2 &lt; 27 478 € (1 part)</td>
+        </tr>
+        <tr>
+          <td>Prestations de services BNC</td>
+          <td>2,2 %</td>
+          <td>Revenus N-2 &lt; 27 478 € (1 part)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="warn">
+    Le versement libératoire est avantageux si votre tranche marginale d'imposition est à 30 % ou plus. En dessous, le barème progressif classique est souvent moins coûteux. Simulez les deux options.
+  </div>
+
+  <!-- QUAND PASSER EN SOCIÉTÉ -->
+  <h2>Quand quitter la micro-entreprise pour une société ?</h2>
+  <p>La micro-entreprise est idéale pour démarrer, mais elle montre ses limites au-delà d'un certain seuil. Voici les signaux qui doivent vous pousser à évoluer :</p>
+
+  <div class="timeline">
+    <div class="tl-item" data-n="1">
+      <strong>Vous approchez du plafond de CA (77 700 € en services)</strong>
+      <p>Deux dépassements consécutifs entraînent la perte du régime micro. Anticipez en créant une EURL ou une SASU avant d'atteindre le plafond.</p>
+    </div>
+    <div class="tl-item" data-n="2">
+      <strong>Vos frais professionnels dépassent 30 000 €/an</strong>
+      <p>En micro, vous ne déduisez pas vos frais réels — seulement un abattement forfaitaire. Si vos frais sont importants, l'EURL ou la SASU devient plus rentable dès 40 000 – 50 000 € de CA.</p>
+    </div>
+    <div class="tl-item" data-n="3">
+      <strong>Vous souhaitez optimiser votre retraite</strong>
+      <p>Les cotisations retraite en micro sont calculées sur le CA, pas le bénéfice, ce qui génère peu de points de retraite à CA modéré. En société, vous pouvez cotiser sur une assiette plus élevée.</p>
+    </div>
+    <div class="tl-item" data-n="4">
+      <strong>Vous êtes soumis à la TVA</strong>
+      <p>Au-delà du seuil de franchise TVA (distinct du plafond CA), vous devez collecter la TVA. Si vos clients sont des particuliers, cela renchérit vos prix et plombe votre compétitivité.</p>
+    </div>
+    <div class="tl-item" data-n="5">
+      <strong>Vous voulez vous associer</strong>
+      <p>La micro-entreprise est une structure unipersonnelle. Impossible d'y intégrer un associé. Créez une SASU (évolutive en SAS) ou une EURL (évolutive en SARL) dès que vous souhaitez vous associer.</p>
+    </div>
+  </div>
+
+  <!-- AVANTAGES INCONVÉNIENTS -->
+  <h2>Avantages et inconvénients de la micro-entreprise</h2>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>Avantages</h4>
+      <ul>
+        <li>Création gratuite et rapide (en ligne)</li>
+        <li>Comptabilité ultra-simplifiée</li>
+        <li>Pas de capital social requis</li>
+        <li>Cotisations proportionnelles au CA (rien si CA nul)</li>
+        <li>Idéal pour tester une idée ou activité secondaire</li>
+        <li>ACRE possible dès la création</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>Inconvénients</h4>
+      <ul>
+        <li>Plafond de CA limitant (77 700 € services)</li>
+        <li>Pas de déduction des frais réels</li>
+        <li>Pas de dividendes possibles</li>
+        <li>Retraite souvent insuffisante</li>
+        <li>Protection sociale moins bonne qu'en SASU</li>
+        <li>Responsabilité patrimoniale (sauf déclaration insaisissabilité)</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- FAQ -->
+  <h2>Questions fréquentes sur la micro-entreprise 2026</h2>
+  <div class="faq">
+    <details>
+      <summary>Puis-je cumuler la micro-entreprise avec un emploi salarié ?</summary>
+      <div class="faq-body">Oui, c'est tout à fait légal. Vous cumulez vos revenus du salariat et votre CA de micro-entrepreneur pour le calcul de l'IR. En revanche, si votre contrat de travail contient une clause d'exclusivité, vérifiez avec votre employeur. Certaines conventions collectives ou professions réglementées ont aussi des restrictions à vérifier.</div>
+    </details>
+    <details>
+      <summary>Comment déclarer mon CA en micro-entreprise ?</summary>
+      <div class="faq-body">La déclaration se fait mensuellement ou trimestriellement sur le site autoentrepreneur.urssaf.fr. Vous déclarez votre CA brut HT encaissé sur la période. Même en l'absence de CA, vous devez déclarer 0. Les cotisations sont calculées automatiquement et prélevées sur le compte bancaire que vous avez renseigné.</div>
+    </details>
+    <details>
+      <summary>Que se passe-t-il si je dépasse le plafond de CA ?</summary>
+      <div class="faq-body">Si vous dépassez le plafond de CA deux années civiles consécutives, vous basculez automatiquement au régime réel l'année suivante. En cas de premier dépassement, vous restez en micro pour l'année en cours. Si vous dépassez le double du plafond sur une seule année (154 900 € pour les services), la perte du régime micro est immédiate en cours d'année.</div>
+    </details>
+    <details>
+      <summary>Quelle est la différence entre BIC et BNC en micro-entreprise ?</summary>
+      <div class="faq-body">BIC (Bénéfices Industriels et Commerciaux) couvre les activités commerciales, artisanales et industrielles. BNC (Bénéfices Non Commerciaux) couvre les professions libérales et les activités intellectuelles (consultants, formateurs, graphistes…). Le taux de cotisations est similaire (~21 %), mais l'abattement forfaitaire pour l'IR est de 50 % en BIC et 34 % en BNC — ce qui rend les BNC légèrement plus taxés sur le revenu.</div>
+    </details>
+    <details>
+      <summary>La micro-entreprise permet-elle d'embaucher des salariés ?</summary>
+      <div class="faq-body">Oui, c'est possible juridiquement, mais très peu pratiqué car la structure d'une micro-entreprise n'est pas adaptée à la gestion de salariés. Dès que vous envisagez d'embaucher, il vaut mieux créer une société (EURL, SASU) pour bénéficier d'une comptabilité séparée et d'une structure juridique plus solide.</div>
+    </details>
+  </div>
+
+  <div class="cta-band" style="margin-top: 48px;">
+    <p>Comparez micro-entreprise, EURL et SASU avec vos vrais chiffres en 2 minutes.</p>
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Lancer le simulateur →</a>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/statuts.html">Les statuts</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/faq.html">FAQ</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/guide.html">Guide</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/eurl-vs-sasu.html">EURL vs SASU</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/a-propos.html">À propos</a>
+  </div>
+  <p class="footer-copy">© 2026 Simulateur Statut Entrepreneur — Estimations indicatives, non un conseil fiscal ou juridique.</p>
+</footer>
+
+</body>
+</html>

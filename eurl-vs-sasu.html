@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EURL vs SASU 2026 : Comparatif complet pour choisir le bon statut</title>
+  <meta name="description" content="Comparatif EURL vs SASU 2026 : charges sociales, fiscalité, dividendes, protection sociale. Quel statut choisir selon votre CA et votre situation ?" />
+  <link rel="canonical" href="https://simulateur-statut-entrepreneur.github.io/eurl-vs-sasu.html" />
+  <meta property="og:title" content="EURL vs SASU 2026 : Comparatif complet" />
+  <meta property="og:description" content="Charges, fiscalité, dividendes, protection sociale : tout pour choisir entre EURL et SASU en 2026." />
+  <meta property="og:url" content="https://simulateur-statut-entrepreneur.github.io/eurl-vs-sasu.html" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": "EURL vs SASU 2026 : Comparatif complet",
+    "description": "Comparatif EURL vs SASU 2026 : charges sociales, fiscalité, dividendes, protection sociale.",
+    "author": { "@type": "Organization", "name": "Simulateur Statut Entrepreneur" },
+    "dateModified": "2026-06-01"
+  }
+  </script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f8f9fb;
+      --surface: #ffffff;
+      --border: #e5e7eb;
+      --text: #1a1a2e;
+      --muted: #6b7280;
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+      --accent: #7c3aed;
+      --accent-light: #f5f3ff;
+      --green: #059669;
+      --green-light: #ecfdf5;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+      --orange: #d97706;
+      --orange-light: #fffbeb;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.04);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.65;
+      font-size: 16px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      height: 56px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-brand {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+      text-decoration: none;
+      white-space: nowrap;
+    }
+    .nav-links { display: flex; gap: 4px; flex-wrap: wrap; }
+    .nav-links a {
+      font-size: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      padding: 6px 10px;
+      border-radius: 6px;
+      transition: background .15s, color .15s;
+    }
+    .nav-links a:hover { background: var(--bg); color: var(--text); }
+    .nav-links a.active { color: var(--primary); font-weight: 600; }
+
+    /* ── LAYOUT ── */
+    main { max-width: 860px; margin: 0 auto; padding: 48px 24px 80px; }
+
+    .eyebrow {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--primary);
+      background: var(--primary-light);
+      padding: 4px 10px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: clamp(26px, 4vw, 38px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -.02em;
+    }
+    .lead {
+      font-size: 17px;
+      color: var(--muted);
+      max-width: 680px;
+      margin-bottom: 40px;
+    }
+
+    /* ── CTA BAND ── */
+    .cta-band {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+      color: #fff;
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 48px;
+      flex-wrap: wrap;
+    }
+    .cta-band p { font-size: 15px; font-weight: 500; opacity: .95; }
+    .cta-band a {
+      background: #fff;
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 8px;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: opacity .15s;
+    }
+    .cta-band a:hover { opacity: .9; }
+
+    /* ── SECTION TITLES ── */
+    h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin: 48px 0 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--border);
+      letter-spacing: -.01em;
+    }
+    h3 { font-size: 17px; font-weight: 700; margin: 28px 0 10px; }
+
+    /* ── BIG COMPARISON TABLE ── */
+    .table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    thead th {
+      padding: 14px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: left;
+      background: var(--bg);
+      border-bottom: 2px solid var(--border);
+    }
+    thead th:nth-child(2) { background: var(--accent-light); color: var(--accent); }
+    thead th:nth-child(3) { background: var(--primary-light); color: var(--primary); }
+    tbody td {
+      padding: 13px 18px;
+      font-size: 14px;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody td:first-child { color: var(--muted); font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+    tbody td:nth-child(2) { background: rgba(124,58,237,.03); }
+    tbody td:nth-child(3) { background: rgba(37,99,235,.03); }
+    .winner { color: var(--green); font-weight: 700; }
+    .loser { color: var(--red); }
+
+    /* ── VERDICT CARDS ── */
+    .verdict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin: 24px 0; }
+    @media (max-width: 580px) { .verdict-grid { grid-template-columns: 1fr; } }
+    .verdict-card {
+      border-radius: var(--radius);
+      border: 1.5px solid var(--border);
+      background: var(--surface);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+    .verdict-card .tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 3px 9px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+    .card-eurl .tag { background: var(--accent-light); color: var(--accent); }
+    .card-sasu .tag { background: var(--primary-light); color: var(--primary); }
+    .verdict-card h3 { margin: 0 0 10px; font-size: 16px; }
+    .verdict-card ul { padding-left: 18px; }
+    .verdict-card li { font-size: 14px; margin-bottom: 6px; color: var(--muted); }
+    .verdict-card li strong { color: var(--text); }
+
+    /* ── SCENARIO CARDS ── */
+    .scenario-list { display: flex; flex-direction: column; gap: 14px; margin: 20px 0; }
+    .scenario {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-left: 4px solid var(--border);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      box-shadow: var(--shadow);
+    }
+    .scenario.eurl { border-left-color: var(--accent); }
+    .scenario.sasu { border-left-color: var(--primary); }
+    .scenario.neutral { border-left-color: var(--orange); }
+    .scenario-badge {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: 4px 10px;
+      border-radius: 20px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .scenario.eurl .scenario-badge { background: var(--accent-light); color: var(--accent); }
+    .scenario.sasu .scenario-badge { background: var(--primary-light); color: var(--primary); }
+    .scenario.neutral .scenario-badge { background: var(--orange-light); color: var(--orange); }
+    .scenario-body { flex: 1; }
+    .scenario-body strong { font-size: 15px; display: block; margin-bottom: 4px; }
+    .scenario-body p { font-size: 14px; color: var(--muted); }
+
+    /* ── CHIFFRES CONCRETS ── */
+    .example-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      margin: 20px 0;
+      box-shadow: var(--shadow);
+    }
+    .example-box .ex-title {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+    .ex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 500px) { .ex-grid { grid-template-columns: 1fr; } }
+    .ex-col { border-radius: 8px; padding: 16px; }
+    .ex-col.col-eurl { background: var(--accent-light); }
+    .ex-col.col-sasu { background: var(--primary-light); }
+    .ex-col .col-label { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 12px; }
+    .col-eurl .col-label { color: var(--accent); }
+    .col-sasu .col-label { color: var(--primary); }
+    .ex-row { display: flex; justify-content: space-between; font-size: 14px; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,.06); }
+    .ex-row:last-child { border-bottom: none; font-weight: 700; }
+    .ex-row span:last-child { font-weight: 600; }
+
+    /* ── PROS / CONS ── */
+    .pros-cons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+    @media (max-width: 540px) { .pros-cons { grid-template-columns: 1fr; } }
+    .pros, .cons {
+      border-radius: var(--radius);
+      padding: 16px;
+    }
+    .pros { background: var(--green-light); border: 1px solid #a7f3d0; }
+    .cons { background: var(--red-light); border: 1px solid #fecaca; }
+    .pros h4 { color: var(--green); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .cons h4 { color: var(--red); font-size: 13px; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 10px; }
+    .pros li, .cons li { font-size: 14px; margin-bottom: 6px; list-style: none; padding-left: 20px; position: relative; }
+    .pros li::before { content: '✓'; position: absolute; left: 0; color: var(--green); font-weight: 700; }
+    .cons li::before { content: '✗'; position: absolute; left: 0; color: var(--red); font-weight: 700; }
+
+    /* ── ASTUCE ── */
+    .tip {
+      background: var(--primary-light);
+      border: 1px solid #bfdbfe;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-size: 14px;
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .tip::before { content: '💡'; font-size: 18px; margin-top: 1px; }
+
+    /* ── WARNING ── */
+    .warn {
+      background: var(--orange-light);
+      border: 1px solid #fde68a;
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      font-size: 14px;
+      margin: 20px 0;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .warn::before { content: '⚠️'; font-size: 18px; margin-top: 1px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      padding: 24px;
+      text-align: center;
+    }
+    .footer-links { display: flex; justify-content: center; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
+    .footer-links a { font-size: 14px; color: var(--muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-copy { font-size: 13px; color: var(--muted); }
+
+    p { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur Statut 2026</a>
+  <div class="nav-links">
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/guide.html">Guide</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/statuts.html">Les statuts</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/faq.html">FAQ</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/eurl-vs-sasu.html" class="active">EURL vs SASU</a>
+  </div>
+</nav>
+
+<main>
+  <span class="eyebrow">Comparatif 2026</span>
+  <h1>EURL vs SASU : quel statut choisir en 2026 ?</h1>
+  <p class="lead">Charges sociales, fiscalité, dividendes, protection sociale : tout ce qu'il faut comparer pour choisir entre EURL et SASU selon votre situation réelle.</p>
+
+  <div class="cta-band">
+    <p>Calculez votre revenu net exact en EURL et SASU selon votre CA et votre situation familiale.</p>
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Lancer le simulateur →</a>
+  </div>
+
+  <!-- TABLE PRINCIPALE -->
+  <h2>Tableau comparatif EURL vs SASU</h2>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Critère</th>
+          <th>🟣 EURL</th>
+          <th>🔵 SASU</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Régime social dirigeant</td>
+          <td><strong>TNS</strong> (Travailleur Non Salarié)</td>
+          <td><strong>Assimilé-salarié</strong></td>
+        </tr>
+        <tr>
+          <td>Charges sur le salaire</td>
+          <td class="winner">~44 % du net</td>
+          <td class="loser">~82 % du net</td>
+        </tr>
+        <tr>
+          <td>Revenu net / €100 facturés</td>
+          <td class="winner">~55 – 60 €</td>
+          <td>~40 – 48 €</td>
+        </tr>
+        <tr>
+          <td>Dividendes</td>
+          <td class="loser">Partiellement soumis TNS si &gt; 10 % du capital</td>
+          <td class="winner">PFU 30 % uniquement, sans cotisations sociales</td>
+        </tr>
+        <tr>
+          <td>Accès au chômage (ARE)</td>
+          <td class="loser">Non</td>
+          <td class="winner">Oui (fin de mandat)</td>
+        </tr>
+        <tr>
+          <td>Retraite</td>
+          <td>Moyenne (régime SSI)</td>
+          <td class="winner">Élevée (régime général)</td>
+        </tr>
+        <tr>
+          <td>Arrêts maladie</td>
+          <td class="loser">Carence 3 jours, indemnités faibles</td>
+          <td class="winner">Dès le 4e jour, meilleures indemnités</td>
+        </tr>
+        <tr>
+          <td>Comptabilité</td>
+          <td>Obligatoire (IS ou IR)</td>
+          <td>Obligatoire</td>
+        </tr>
+        <tr>
+          <td>Flexibilité statutaire</td>
+          <td>Limitée</td>
+          <td class="winner">Très élevée (pactes, actions de préférence…)</td>
+        </tr>
+        <tr>
+          <td>Coût expert-comptable</td>
+          <td>1 500 – 2 500 €/an</td>
+          <td>1 800 – 3 000 €/an</td>
+        </tr>
+        <tr>
+          <td>Idéal pour</td>
+          <td>Maximiser le revenu net immédiat</td>
+          <td>Protection sociale, ARE, investisseurs futurs</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="tip">
+    En règle générale, l'EURL dégage <strong>15 à 25 % de revenu net de plus</strong> que la SASU pour un même chiffre d'affaires — sauf si vous bénéficiez de l'ARE ou que vous optimisez fortement les dividendes SASU.
+  </div>
+
+  <!-- EXEMPLE CHIFFRÉ -->
+  <h2>Exemple chiffré : 80 000 € de CA, prestataire de services</h2>
+  <p>Voici une simulation indicative pour un consultant célibataire (1 part fiscale), sans frais professionnels significatifs, sans ACRE.</p>
+
+  <div class="example-box">
+    <div class="ex-title">Simulation annuelle — CA 80 000 € HT</div>
+    <div class="ex-grid">
+      <div class="ex-col col-eurl">
+        <div class="col-label">🟣 EURL (IS)</div>
+        <div class="ex-row"><span>CA HT</span><span>80 000 €</span></div>
+        <div class="ex-row"><span>Charges de structure</span><span>– 2 200 €</span></div>
+        <div class="ex-row"><span>Bénéfice avant rémunération</span><span>77 800 €</span></div>
+        <div class="ex-row"><span>Rémunération brute gérant</span><span>40 000 €</span></div>
+        <div class="ex-row"><span>Cotisations TNS (~44 %)</span><span>– 17 600 €</span></div>
+        <div class="ex-row"><span>IS sur bénéfice restant (15 %)</span><span>– 3 300 €</span></div>
+        <div class="ex-row"><span>IR (après abattements)</span><span>– 3 100 €</span></div>
+        <div class="ex-row"><span>Revenu net annuel estimé</span><span>≈ 42 000 €</span></div>
+        <div class="ex-row"><span>Soit / mois</span><span><strong>≈ 3 500 €/mois</strong></span></div>
+      </div>
+      <div class="ex-col col-sasu">
+        <div class="col-label">🔵 SASU</div>
+        <div class="ex-row"><span>CA HT</span><span>80 000 €</span></div>
+        <div class="ex-row"><span>Charges de structure</span><span>– 2 500 €</span></div>
+        <div class="ex-row"><span>Bénéfice avant rémunération</span><span>77 500 €</span></div>
+        <div class="ex-row"><span>Salaire brut président</span><span>35 000 €</span></div>
+        <div class="ex-row"><span>Charges patronales (~45 %)</span><span>– 15 750 €</span></div>
+        <div class="ex-row"><span>Charges salariales (~23 %)</span><span>– 8 050 €</span></div>
+        <div class="ex-row"><span>IS sur bénéfice restant (15 %)</span><span>– 2 140 €</span></div>
+        <div class="ex-row"><span>IR (sur salaire net)</span><span>– 2 900 €</span></div>
+        <div class="ex-row"><span>Revenu net annuel estimé</span><span>≈ 32 000 €</span></div>
+        <div class="ex-row"><span>Soit / mois</span><span><strong>≈ 2 660 €/mois</strong></span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="warn">
+    Ces chiffres sont des estimations simplifiées à titre indicatif. Utilisez le simulateur pour un calcul précis intégrant votre situation familiale, vos frais réels et votre stratégie dividendes.
+  </div>
+
+  <!-- AVANTAGES / INCONVÉNIENTS -->
+  <h2>Avantages et inconvénients de chaque statut</h2>
+
+  <h3>🟣 EURL</h3>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>Avantages</h4>
+      <ul>
+        <li>Charges sociales faibles (~44 %)</li>
+        <li>Revenu net immédiat maximisé</li>
+        <li>Déduction des frais professionnels réels</li>
+        <li>Option IS ou IR pendant 5 ans</li>
+        <li>Plus simple à transformer en SARL</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>Inconvénients</h4>
+      <ul>
+        <li>Pas d'accès au chômage (ARE)</li>
+        <li>Protection sociale moins bonne</li>
+        <li>Dividendes partiellement soumis TNS</li>
+        <li>Retraite plus faible qu'en SASU</li>
+        <li>Crédibilité bancaire légèrement moindre</li>
+      </ul>
+    </div>
+  </div>
+
+  <h3>🔵 SASU</h3>
+  <div class="pros-cons">
+    <div class="pros">
+      <h4>Avantages</h4>
+      <ul>
+        <li>Maintien ou cumul de l'ARE possible</li>
+        <li>Dividendes au PFU 30 % sans cotisations</li>
+        <li>Meilleure protection sociale (maladie, retraite)</li>
+        <li>Très flexible statutairement</li>
+        <li>Crédible pour des levées de fonds</li>
+      </ul>
+    </div>
+    <div class="cons">
+      <h4>Inconvénients</h4>
+      <ul>
+        <li>Charges salariales très élevées (~82 % du net)</li>
+        <li>Revenu net plus faible à CA égal</li>
+        <li>Comptabilité plus coûteuse</li>
+        <li>Optimisation plus complexe</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- QUAND CHOISIR -->
+  <h2>Quel statut choisir selon votre situation ?</h2>
+
+  <div class="scenario-list">
+    <div class="scenario eurl">
+      <span class="scenario-badge">EURL</span>
+      <div class="scenario-body">
+        <strong>Vous n'avez pas d'ARE et vous voulez maximiser votre revenu net</strong>
+        <p>L'EURL est presque toujours gagnante sur le revenu disponible immédiat. Idéal si vous quittez le statut de salarié sans droits au chômage.</p>
+      </div>
+    </div>
+    <div class="scenario sasu">
+      <span class="scenario-badge">SASU</span>
+      <div class="scenario-body">
+        <strong>Vous bénéficiez de l'ARE (allocations chômage)</strong>
+        <p>La SASU permet de suspendre et de reprendre l'ARE. Vous pouvez ne pas vous verser de salaire en début d'activité, ce qui rend la SASU très compétitive dans ce cas précis.</p>
+      </div>
+    </div>
+    <div class="scenario sasu">
+      <span class="scenario-badge">SASU</span>
+      <div class="scenario-body">
+        <strong>Votre CA dépasse 120 000 € et vous optimisez via les dividendes</strong>
+        <p>À haut CA, verser un salaire minimal et distribuer le reste en dividendes (PFU 30 %) peut rendre la SASU aussi compétitive que l'EURL, avec une meilleure protection sociale en prime.</p>
+      </div>
+    </div>
+    <div class="scenario eurl">
+      <span class="scenario-badge">EURL</span>
+      <div class="scenario-body">
+        <strong>Votre CA est entre 40 000 € et 100 000 €, sans ARE</strong>
+        <p>C'est le cœur de cible de l'EURL. Le différentiel de charges TNS vs assimilé-salarié est maximal sur cette plage de revenus.</p>
+      </div>
+    </div>
+    <div class="scenario neutral">
+      <span class="scenario-badge">À simuler</span>
+      <div class="scenario-body">
+        <strong>Vous avez 3 parts fiscales ou plus (famille nombreuse)</strong>
+        <p>Avec un quotient familial élevé, l'IR est réduit significativement, ce qui change radicalement la comparaison. Testez les deux statuts dans le simulateur avec votre situation familiale réelle.</p>
+      </div>
+    </div>
+    <div class="scenario sasu">
+      <span class="scenario-badge">SASU</span>
+      <div class="scenario-body">
+        <strong>Vous envisagez d'ouvrir votre capital à des investisseurs</strong>
+        <p>La SAS (et donc la SASU) offre une flexibilité statutaire bien supérieure pour accueillir des associés, créer des actions de préférence ou intégrer des pactes d'actionnaires.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIVIDENDES -->
+  <h2>La stratégie dividendes : un point crucial</h2>
+  <p>La gestion des dividendes diffère radicalement entre les deux statuts :</p>
+
+  <div class="verdict-grid">
+    <div class="verdict-card card-eurl">
+      <span class="tag">EURL</span>
+      <h3>Dividendes EURL</h3>
+      <ul>
+        <li>Soumis aux <strong>cotisations TNS</strong> pour la part dépassant <strong>10 % du capital social</strong></li>
+        <li>Si capital = 1 € → quasiment tous les dividendes sont cotisés</li>
+        <li>Solution : augmenter le capital social ou privilégier la rémunération</li>
+        <li>Le simulateur intègre un curseur salaire / dividendes pour optimiser</li>
+      </ul>
+    </div>
+    <div class="verdict-card card-sasu">
+      <span class="tag">SASU</span>
+      <h3>Dividendes SASU</h3>
+      <ul>
+        <li><strong>PFU 30 %</strong> uniquement (12,8 % IR + 17,2 % prélèvements sociaux)</li>
+        <li>Aucune cotisation sociale supplémentaire</li>
+        <li>Stratégie optimale : salaire minimal pour les droits sociaux, puis maximum en dividendes</li>
+        <li>Très avantageux si votre TMI est &lt; 30 %</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tip">
+    Le simulateur intègre un curseur <strong>"part salaire vs dividendes"</strong> pour trouver la répartition optimale selon votre TMI et votre statut. Testez les deux extrêmes pour visualiser l'impact réel.
+  </div>
+
+  <!-- CONCLUSION -->
+  <h2>En résumé : EURL ou SASU ?</h2>
+  <p><strong>Choisissez l'EURL</strong> si vous n'avez pas d'ARE, que votre CA est entre 40 000 € et 120 000 €, et que vous voulez maximiser votre revenu net disponible chaque mois.</p>
+  <p><strong>Choisissez la SASU</strong> si vous bénéficiez de l'ARE, que vous envisagez des dividendes importants à haut CA, ou que vous prévoyez d'ouvrir votre capital à terme.</p>
+  <p>Dans tous les cas, la décision définitive dépend de votre situation personnelle. Utilisez le simulateur pour comparer les deux statuts sur vos chiffres exacts, puis confirmez avec un expert-comptable.</p>
+
+  <div class="cta-band" style="margin-top:40px;">
+    <p>Comparez EURL et SASU en 2 minutes avec vos vrais chiffres.</p>
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Lancer le simulateur →</a>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://simulateur-statut-entrepreneur.github.io/index.html">Simulateur</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/statuts.html">Les statuts</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/faq.html">FAQ</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/guide.html">Guide</a>
+    <a href="https://simulateur-statut-entrepreneur.github.io/a-propos.html">À propos</a>
+  </div>
+  <p class="footer-copy">© 2026 Simulateur Statut Entrepreneur — Estimations indicatives, non un conseil fiscal ou juridique.</p>
+</footer>
+
+</body>
+</html>
